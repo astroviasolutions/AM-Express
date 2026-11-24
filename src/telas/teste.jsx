@@ -18,7 +18,7 @@ export var xi = [{
   titulo: "Casos especiais do pedido",
   perfil: "u-c2",
   rota: "/cli/nova",
-  texto: "Marque \"pacote maior que 1,00 × 1,00 m\" e depois escolha um peso personalizado (15 ou 20 kg).",
+  texto: "Marque \"pacote maior que 1,00 × 1,00 m\" e depois escolha um peso personalizado (15 ou 20 kg). O preço segue a conta normal para esses kg.",
   olhar: "O pacote grande bloqueia o envio, como no amcoletas? O peso personalizado cobra o valor certo?"
 }, {
   id: "c3",

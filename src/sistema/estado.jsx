@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Ar, Cr, Jn, Kn, Sr, Tr, Yn, _r, br, dr, fr, hr, kr, lr, rr, sr, tr, vr, wr, yr } from '../lib/regras';
+import { Ar, Cr, Jn, Kn, Sr, Tr, Yn, _r, br, dr, fr, hr, kr, lr, pesoTarifavelG, rr, sr, tr, vr, wr, yr } from '../lib/regras';
 
 export function SistemaProvider({
   children: e
@@ -77,7 +77,8 @@ export function SistemaProvider({
           criarRemessa: e => {
             let n = hr.find(t => t.nome === e.cidade),
               r = t.clientes.find(t => t.id === e.clienteId),
-              i = rr(t.cfg, n, e.pesoRealG, r, t.cfg.pesos.find(t => t.id === e.pesoPersonalizadoId));
+              tx = pesoTarifavelG(t.cfg, e.pesoRealG, e.c, e.l, e.a, e.volumes).tarifavelG,
+              i = rr(t.cfg, n, tx, r, t.cfg.pesos.find(t => t.id === e.pesoPersonalizadoId));
             if (!i.ok && !e.precoManualC) throw Error("Cliente sem valor base ou desativado.");
             let {
                 precoManualC: s,
@@ -89,7 +90,7 @@ export function SistemaProvider({
                 id: Sr(),
                 codigo: Cr(),
                 ...c,
-                pesoTaxG: e.pesoRealG,
+                pesoTaxG: Math.max(tx, (t.cfg.pesos.find(t => t.id === e.pesoPersonalizadoId)?.kg ?? 0) * 1e3),
                 precoC: s ?? (i.ok ? i.precoC : 0),
                 prazo: u,
                 previsao: Yn(Jn(), u),
@@ -266,11 +267,12 @@ export function SistemaProvider({
               if (r.id !== e) return r;
               let i = hr.find(e => e.nome === r.cidade),
                 o = n.clientes.find(e => e.id === r.clienteId),
-                s = rr(n.cfg, i, t, o, p(n, r));
+                tx = pesoTarifavelG(n.cfg, t, r.c, r.l, r.a, r.volumes).tarifavelG,
+                s = rr(n.cfg, i, tx, o, p(n, r));
               return u({
                 ...r,
                 pesoRealG: t,
-                pesoTaxG: t,
+                pesoTaxG: s.ok ? s.pesoCobradoG : tx,
                 precoC: s.ok ? s.precoC : r.precoC
               }, "ajuste_peso", a?.nome);
             })
@@ -306,7 +308,7 @@ export function SistemaProvider({
               remessaId: e
             });
           }),
-          registrarOcorrencia: (e, t) => o(n => {
+          registrarOcorrencia: (e, t, x = {}) => o(n => {
             let r = n.remessas.find(t => t.id === e);
             if (!r) return n;
             let i = {
@@ -316,6 +318,9 @@ export function SistemaProvider({
                 status: "ocorrencia",
                 ocorrencia: {
                   motivo: t,
+                  detalhe: x.detalhe || void 0,
+                  foto: x.foto || void 0,
+                  gps: x.gps || void 0,
                   resolvida: !1
                 }
               } : n)
@@ -323,22 +328,45 @@ export function SistemaProvider({
             return l(i, {
               para: ["gerente", "operacional"],
               titulo: "Ocorrência na entrega",
-              corpo: `${r.codigo} · ${t}`,
+              corpo: `${r.codigo} · ${t}${x.detalhe ? ": " + x.detalhe : ""}`,
               remessaId: e
             });
           }),
-          resolverOcorrencia: e => o(t => ({
-            ...t,
-            remessas: t.remessas.map(t => t.id === e ? {
-              ...u(t, "conferido", a?.nome),
-              status: "conferido",
-              motoristaId: void 0,
-              ocorrencia: t.ocorrencia ? {
-                ...t.ocorrencia,
-                resolvida: !0
-              } : void 0
-            } : t)
-          })),
+          resolverOcorrencia: (e, d = {}) => {
+            let nota = (d.nota || "").trim();
+            if (nota.length < 5) throw Error("Anote o que foi combinado.");
+            if (!d.novaData || d.novaData < Jn()) throw Error("Informe uma nova data de entrega a partir de hoje.");
+            o(t => ({
+              ...t,
+              remessas: t.remessas.map(t => {
+                if (t.id !== e) return t;
+                let w = u(t, "conferido", a?.nome);
+                return {
+                  ...w,
+                  eventos: [...w.eventos, {
+                    tipo: "reprogramado",
+                    em: br(),
+                    por: a?.nome,
+                    nota,
+                    novaData: d.novaData
+                  }],
+                  status: "conferido",
+                  motoristaId: void 0,
+                  previsao: d.novaData,
+                  ocorrencia: t.ocorrencia ? {
+                    ...t.ocorrencia,
+                    resolvida: !0,
+                    resolucao: {
+                      nota,
+                      novaData: d.novaData,
+                      por: a?.nome,
+                      em: br()
+                    }
+                  } : void 0
+                };
+              })
+            }));
+          },
           marcarLidas: () => o(e => ({
             ...e,
             notifs: e.notifs.map(e => a && e.para.includes(a.papel) && (!e.clienteId || e.clienteId === a.clienteId) && (!e.motoristaId || e.motoristaId === a.id) ? {
@@ -617,11 +645,11 @@ export function SistemaProvider({
         entregar: (e, t, a, o) => {
           n.entregar(e, t, a, o), r("Entrega concluída", `${i(e)} · recebido por ${t}`);
         },
-        registrarOcorrencia: (e, t) => {
-          n.registrarOcorrencia(e, t), r("Ocorrência registrada", `${i(e)} · ${t}`);
+        registrarOcorrencia: (e, t, x) => {
+          n.registrarOcorrencia(e, t, x), r("Ocorrência registrada", `${i(e)} · ${t}`);
         },
-        resolverOcorrencia: e => {
-          n.resolverOcorrencia(e), r("Ocorrência resolvida", i(e));
+        resolverOcorrencia: (e, d) => {
+          n.resolverOcorrencia(e, d), r("Ocorrência resolvida", `${i(e)} · nova data ${d.novaData}`);
         },
         salvarCfg: e => {
           n.salvarCfg(e), r("Configurações alteradas", g(t.cfg, e, {

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { $n, Kn, N, P, Zn, er, gr, ir, rr } from '../lib/regras';
+import { $n, Kn, N, P, Zn, er, gr, ir, pesoTarifavelG, rr } from '../lib/regras';
 import { B, Di_, H, Ii_, L, Li_, R, V, Z } from '../componentes/ui';
 import { useSistema } from '../sistema/estado';
 import { Ur, useToast } from '../sistema/acesso-toast';
@@ -37,6 +37,10 @@ export function _o({
       telefone: "",
       endereco: "",
       origem: l[0]?.cidade ?? "Santo Antônio da Platina",
+      enderecoColeta: "",
+      c: 20,
+      l: 15,
+      a: 10,
       cidade: c.find(e => e.km > 0)?.nome ?? "",
       peso: "1",
       volumes: 1,
@@ -53,7 +57,8 @@ export function _o({
     g = c.find(e => e.nome === u.cidade),
     v = r.pesos.find(e => e.id === u.pers && e.ativo) ?? null,
     y = Math.round(v ? v.kg * 1e3 : (parseFloat(u.peso.replace(",", ".")) || 0) * 1e3),
-    b = h && g && y > 0 ? rr(r, g, y, h, v) : null,
+    cb = pesoTarifavelG(r, y, u.c, u.l, u.a, u.volumes),
+    b = h && g && y > 0 ? rr(r, g, cb.tarifavelG, h, v) : null,
     x = !!h && !!g && y > 0 && u.destinatario.trim().length > 1 && u.endereco.trim().length > 4 && (b && b.ok || u.manualC > 0);
   return <Di_ aberto onFechar={e} titulo={f ? "Processo criado" : "Novo processo"} largo>{f ? <div className="grid gap-5 sm:grid-cols-[auto_1fr] sm:items-start"><Eo_ r={f} cliente={o(f.clienteId)} /><div className="space-y-3 text-sm text-ink"><p><b>{f.codigo}</b> para <b>{f.cidade}</b>, de {o(f.clienteId)?.nome}. O cliente e a equipe foram avisados.</p><p className="text-ink/70">Imprima em etiqueta térmica 100×150 mm e cole no volume.</p><div className="flex flex-wrap gap-2"><R tone="dark" onClick={() => window.print()}>Imprimir etiqueta</R><R tone="line" className="!border-ink/30 !text-ink" onClick={() => {
             p(null), d(e => ({
@@ -71,7 +76,7 @@ export function _o({
             clienteId: e.target.value,
             origem: n?.cidade ?? t.origem
           }));
-        }}>{l.map(e => <option key={e.id} value={e.id}>{e.nome}{e.valorBaseC <= 0 ? " (sem valor base)" : ""}</option>)}</B><Z label="Nome do destinatário" value={u.destinatario} onChange={e => m("destinatario", e.target.value)} autoComplete="off" /><Z label="Telefone do destinatário" value={u.telefone} onChange={e => m("telefone", e.target.value)} inputMode="tel" placeholder="(43) 9 0000-0000" /><Z label="Endereço de entrega" className="sm:col-span-2" value={u.endereco} onChange={e => m("endereco", e.target.value)} placeholder="Rua, número, bairro" /><B label="Cidade de coleta" value={u.origem} onChange={e => m("origem", e.target.value)}>{c.map(e => <option key={e.ibge} value={e.nome}>{e.nome}</option>)}</B><B label="Cidade de entrega" value={u.cidade} onChange={e => m("cidade", e.target.value)}>{c.map(e => <option key={e.ibge} value={e.nome}>{e.nome}</option>)}</B><Z label="Peso (kg)" value={v ? String(v.kg) : u.peso} disabled={!!v} onChange={e => m("peso", e.target.value)} inputMode="decimal" /><Z label="Volumes" type="number" min={1} value={u.volumes} onChange={e => m("volumes", Math.max(1, +e.target.value || 1))} />{r.pesos.some(e => e.ativo) && <B label="Peso personalizado (opcional)" value={u.pers} onChange={e => m("pers", e.target.value)} className="sm:col-span-2"><option value="">Usar o peso informado</option>{r.pesos.filter(e => e.ativo).map(e => <option key={e.id} value={e.id}>{e.kg} kg · {N(e.valorC)}</option>)}</B>}<B label="Motoboy da coleta (opcional)" value={u.motoboy} onChange={e => m("motoboy", e.target.value)} className="sm:col-span-2"><option value="">Deixar no mural da cidade</option>{n.map(e => <option key={e.id} value={e.id}>{e.nome}{e.motoboy?.cidade ? ` · ${e.motoboy.cidade}` : ""}</option>)}</B></div><div className="rounded-2xl border border-ink/10 p-3 text-sm text-ink">{b && b.ok ? <p>Valor calculado: <b>{N(b.precoC)}</b>{" "}<small className="text-ink/60">({ir[b.origem]}{b.excedenteKg > 0 ? `, com ${b.excedenteKg} kg de excedente` : ""})</small></p> : <p className="text-acc">{h ? b && !b.ok && b.motivo === "inativo" ? "Cliente desativado." : "Este cliente ainda não tem valor base. Informe o valor à mão abaixo." : "Escolha um cliente."}</p>}<div className="mt-2 max-w-xs"><Go_ label={b && b.ok ? "Valor à mão (opcional, substitui o calculado)" : "Valor à mão (R$)"} valorC={u.manualC} onChange={e => m("manualC", e)} /></div></div><R tone="dark" className="w-full" disabled={!x} onClick={() => {
+        }}>{l.map(e => <option key={e.id} value={e.id}>{e.nome}{e.valorBaseC <= 0 ? " (sem valor base)" : ""}</option>)}</B><Z label="Nome do destinatário" value={u.destinatario} onChange={e => m("destinatario", e.target.value)} autoComplete="off" /><Z label="Telefone do destinatário" value={u.telefone} onChange={e => m("telefone", e.target.value)} inputMode="tel" placeholder="(43) 9 0000-0000" /><Z label="Endereço de entrega" className="sm:col-span-2" value={u.endereco} onChange={e => m("endereco", e.target.value)} placeholder="Rua, número, bairro" /><B label="Cidade de coleta" value={u.origem} onChange={e => m("origem", e.target.value)}>{c.map(e => <option key={e.ibge} value={e.nome}>{e.nome}</option>)}</B><Z label="Endereço de coleta" className="sm:col-span-2" value={u.enderecoColeta || h?.endereco || ""} onChange={e => m("enderecoColeta", e.target.value)} placeholder="Rua, número, bairro" /><B label="Cidade de entrega" value={u.cidade} onChange={e => m("cidade", e.target.value)}>{c.map(e => <option key={e.ibge} value={e.nome}>{e.nome}</option>)}</B><Z label="Peso (kg)" value={v ? String(v.kg) : u.peso} disabled={!!v} onChange={e => m("peso", e.target.value)} inputMode="decimal" /><Z label="Volumes" type="number" min={1} value={u.volumes} onChange={e => m("volumes", Math.max(1, +e.target.value || 1))} /><Z label="Compr. (cm)" type="number" min={1} value={u.c} onChange={e => m("c", +e.target.value)} /><Z label="Larg. (cm)" type="number" min={1} value={u.l} onChange={e => m("l", +e.target.value)} /><Z label="Alt. (cm)" type="number" min={1} value={u.a} onChange={e => m("a", +e.target.value)} />{r.pesos.some(e => e.ativo) && <B label="Peso personalizado (opcional)" value={u.pers} onChange={e => m("pers", e.target.value)} className="sm:col-span-2"><option value="">Usar o peso informado</option>{r.pesos.filter(e => e.ativo).map(e => <option key={e.id} value={e.id}>{e.kg} kg · {N(e.valorC)}</option>)}</B>}<B label="Motoboy da coleta (opcional)" value={u.motoboy} onChange={e => m("motoboy", e.target.value)} className="sm:col-span-2"><option value="">Deixar no mural da cidade</option>{n.map(e => <option key={e.id} value={e.id}>{e.nome}{e.motoboy?.cidade ? ` · ${e.motoboy.cidade}` : ""}</option>)}</B></div><div className="rounded-2xl border border-ink/10 p-3 text-sm text-ink">{b && b.ok ? <p>Valor calculado: <b>{N(b.precoC)}</b>{" "}<small className="text-ink/60">({ir[b.origem]}{b.excedenteKg > 0 ? `, com ${b.excedenteKg} kg de excedente` : ""})</small></p> : <p className="text-acc">{h ? b && !b.ok && b.motivo === "inativo" ? "Cliente desativado." : "Este cliente ainda não tem valor base. Informe o valor à mão abaixo." : "Escolha um cliente."}</p>}<div className="mt-2 max-w-xs"><Go_ label={b && b.ok ? "Valor à mão (opcional, substitui o calculado)" : "Valor à mão (R$)"} valorC={u.manualC} onChange={e => m("manualC", e)} /></div></div><R tone="dark" className="w-full" disabled={!x} onClick={() => {
         if (!x || !h) return;
         let e = i({
           clienteId: h.id,
@@ -80,12 +85,13 @@ export function _o({
           endereco: u.endereco.trim(),
           cidade: u.cidade,
           origem: u.origem,
+          enderecoColeta: (u.enderecoColeta || h?.endereco || "").trim(),
           volumes: u.volumes,
           pesoRealG: y,
           pesoPersonalizadoId: v?.id,
-          c: 20,
-          l: 15,
-          a: 10,
+          c: u.c,
+          l: u.l,
+          a: u.a,
           valorDeclC: 0,
           precoManualC: u.manualC > 0 ? u.manualC : void 0
         });

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSistema } from '../sistema/estado';
 import { useToast } from '../sistema/acesso-toast';
-import { Kn, N, hr, rr } from '../lib/regras';
+import { Kn, N, hr, pesoTarifavelG, rr } from '../lib/regras';
 import { Ii_, L, Li_, R, V, Z } from '../componentes/ui';
 import { Uo_ } from './minhas-remessas';
 
@@ -21,7 +21,7 @@ export function Conferencia() {
     f = Math.round((parseFloat(c.replace(",", ".")) || 0) * 1e3),
     p = d && f ? f - d.pesoRealG : 0,
     m = d ? t(d.clienteId) : void 0,
-    h = d && f && p !== 0 && m ? rr(i, hr.find(e => e.nome === d.cidade), f, m, i.pesos.find(e => e.id === d.pesoPersonalizadoId)) : null,
+    h = d && f && p !== 0 && m ? rr(i, hr.find(e => e.nome === d.cidade), pesoTarifavelG(i, f, d.c, d.l, d.a, d.volumes).tarifavelG, m, i.pesos.find(e => e.id === d.pesoPersonalizadoId)) : null,
     g = h && h.ok ? h : null,
     v = !!d && !!f && Math.abs(p) > Math.max(100, d.pesoRealG * .1);
   return <><Ii_ sub="Leia o QR ou o código da etiqueta e pese o pacote. Se o peso medido for diferente, o valor é ajustado.">Conferência</Ii_><div className="grid gap-3 lg:grid-cols-[1fr_1fr]"><L><Z label="Código da etiqueta" value={o} onChange={e => {

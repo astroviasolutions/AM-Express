@@ -51,6 +51,42 @@ export var tr = {
 
 export var nr = e => Qn(e.nome);
 
+/* Cubagem: peso cubado = comprimento × largura × altura (cm) ÷ divisor, por volume.
+   O peso cobrado é o maior entre o peso real e o cubado. */
+export function pesoCubadoG(cfg, c, l, a, volumes = 1) {
+  let d = cfg.divisorCubagem > 0 ? cfg.divisorCubagem : 6000;
+  return Math.round(c * l * a / d * 1e3 * Math.max(1, volumes || 1));
+}
+export function pesoTarifavelG(cfg, pesoG, c, l, a, volumes = 1) {
+  let cub = c > 0 && l > 0 && a > 0 ? pesoCubadoG(cfg, c, l, a, volumes) : 0;
+  return {
+    tarifavelG: Math.max(pesoG, cub),
+    cubadoG: cub,
+    usouCubagem: cub > pesoG
+  };
+}
+/* Atraso: coleta parada (pedido sem motoboy ou motoboy que não coletou há mais de X horas)
+   ou entrega com previsão vencida. Retorna null quando está em dia. */
+export function atrasoDe(r, cfg, agora = new Date()) {
+  if (r.status === "entregue" || r.status === "cancelada") return null;
+  if (r.status === "pedido" || r.status === "a_caminho") {
+    let desde = r.status === "a_caminho" ? r.eventos.find(e => e.tipo === "a_caminho")?.em ?? r.criadoEm : r.criadoEm,
+      horas = (agora.getTime() - new Date(desde).getTime()) / 36e5,
+      limite = cfg.coletaParadaHoras > 0 ? cfg.coletaParadaHoras : 4;
+    if (horas > limite) return {
+      tipo: "coleta_parada",
+      horas: Math.floor(horas),
+      sem: r.status === "pedido" ? "sem motoboy" : "motoboy não coletou"
+    };
+  }
+  let hoje = qn(agora);
+  if (r.previsao && r.previsao < hoje) return {
+    tipo: "entrega_atrasada",
+    dias: Math.round((new Date(hoje + "T12:00:00") - new Date(r.previsao + "T12:00:00")) / 864e5)
+  };
+  return null;
+}
+export var rotuloAtraso = a => a.tipo === "coleta_parada" ? `Coleta parada há ${a.horas} h (${a.sem})` : `Entrega atrasada há ${a.dias} dia${a.dias > 1 ? "s" : ""}`;
 export function rr(e, t, n, r, i, a = new Date()) {
   if (!r.ativo) return {
     ok: !1,
@@ -61,14 +97,8 @@ export function rr(e, t, n, r, i, a = new Date()) {
     motivo: "sem_valor"
   };
   let o = a.getHours() >= e.corteHora ? 2 : 1;
-  if (i) return {
-    ok: !0,
-    precoC: i.valorC,
-    tarifaC: i.valorC,
-    excedenteKg: 0,
-    dias: o,
-    origem: "peso"
-  };
+  /* peso personalizado: só define os kg cobrados; o preço segue a conta normal (tarifa + excedente) */
+  if (i) n = Math.max(n, i.kg * 1e3);
   let s = nr(t),
     c = r.valorBaseC,
     l = "base";
@@ -80,7 +110,9 @@ export function rr(e, t, n, r, i, a = new Date()) {
     tarifaC: c,
     excedenteKg: u,
     dias: o,
-    origem: l
+    origem: l,
+    personalizado: !!i,
+    pesoCobradoG: n
   };
 }
 
@@ -94,6 +126,8 @@ export var ir = {
 export var ar = {
   limiteKg: 10,
   excedenteKgC: 100,
+  divisorCubagem: 6000,
+  coletaParadaHoras: 4,
   corteHora: 12,
   tarifas: {
     "santo antonio da platina": 700
@@ -101,12 +135,10 @@ export var ar = {
   pesos: [{
     id: "p15",
     kg: 15,
-    valorC: 3e3,
     ativo: !0
   }, {
     id: "p20",
     kg: 20,
-    valorC: 4e3,
     ativo: !0
   }],
   comissaoIndicacaoC: 300,
@@ -282,6 +314,7 @@ export var Dr = [{
   nome: "Papelaria Aurora",
   documento: "00.000.000/0001-00",
   whatsapp: "(43) 90000-0001",
+  endereco: "Rua das Flores, 120 · Centro (exemplo)",
   email: "contato@aurora.exemplo",
   cidade: "Santo Antônio da Platina",
   valorBaseC: 2e3,
@@ -292,6 +325,7 @@ export var Dr = [{
   nome: "Ótica Horizonte",
   documento: "00.000.000/0001-01",
   whatsapp: "(43) 90000-0002",
+  endereco: "Av. Brasil, 845 · Centro (exemplo)",
   email: "contato@horizonte.exemplo",
   cidade: "Jacarezinho",
   valorBaseC: 1700,
@@ -303,6 +337,7 @@ export var Dr = [{
   nome: "Brindes Vale Norte",
   documento: "00.000.000/0001-02",
   whatsapp: "(43) 90000-0003",
+  endereco: "Rua do Comércio, 51 · Centro (exemplo)",
   email: "contato@valenorte.exemplo",
   cidade: "Cambará",
   valorBaseC: 3500,

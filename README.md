@@ -57,3 +57,18 @@ src/
 `referencia/amcoletas-html/` guarda a estrutura HTML do sistema atual de coleta
 e entrega (admin, cliente, motoboy), usada apenas como referência de telas e
 fluxos para a versão real.
+
+## Regras de pedido, coleta e entrega (ajustes de 24/11/2026)
+
+- **Cubagem:** peso cubado = comprimento × largura × altura (cm) ÷ divisor × volumes.
+  O frete usa o maior entre o peso real e o cubado. Divisor padrão 6000, editável em
+  Configurações.
+- **Peso personalizado:** só define os kg cobrados (15, 20…); o preço segue a conta
+  normal (tarifa + excedente por kg), sem valor fixo.
+- **Coleta:** o motoboy vê endereço, mapa e telefone do lojista depois de aceitar, e só
+  conclui lendo o QR da etiqueta (BarcodeDetector ou jsQR; sem câmera, digita o código).
+- **Entrega:** Ligar/WhatsApp só aparecem com telefone válido. "Outro motivo" exige texto
+  e a ocorrência aceita foto.
+- **Operação:** "Resolver e reprogramar" exige o que foi combinado e a nova data.
+  Coleta parada (padrão 4 h, editável) e entrega com previsão vencida aparecem como
+  atrasadas em Processos, Ocorrências e Visão geral.

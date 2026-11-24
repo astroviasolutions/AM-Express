@@ -80,7 +80,11 @@ export function Configuracoes() {
             excedenteKgC: e
           })} /><Z label="Horário de corte (hora cheia)" type="number" min={0} max={23} value={c.corteHora} onChange={e => h({
             corteHora: Math.max(0, Math.min(23, +e.target.value || 12))
-          })} /></div><p className="mt-3 text-xs text-on2">Pedidos depois do corte saem um dia útil depois. Pacotes maiores que 1,00 × 1,00 m não são aceitos pelo formulário, como no amcoletas.</p></L><L tone="dark" i={1}><h2 className="disp mb-1 text-xl">Pagamento dos motoboys</h2><p className="mb-4 text-xs text-on2">Valores usados ao cadastrar um motoboy novo. Quem já está cadastrado mantém os seus; para mudar um motoboy, abra o cadastro dele em Equipe.</p><div className="grid gap-4 sm:grid-cols-2"><Go_ label="Por entrega (R$)" valorC={c.motoboyEntregaPadraoC} onChange={e => h({
+          })} /><Z label="Divisor de cubagem (cm³ por kg)" type="number" min={1000} max={10000} step={100} value={c.divisorCubagem || 6000} onChange={e => h({
+            divisorCubagem: Math.max(1000, Math.min(10000, +e.target.value || 6000))
+          })} /><Z label="Coleta parada após (horas)" type="number" min={1} max={72} value={c.coletaParadaHoras || 4} onChange={e => h({
+            coletaParadaHoras: Math.max(1, Math.min(72, +e.target.value || 4))
+          })} /></div><p className="mt-3 text-xs text-on2">Cubagem: peso cubado = comprimento × largura × altura (cm) ÷ divisor. O frete usa o maior entre o peso real e o cubado. Coleta sem motoboy, ou com motoboy que não coletou, passa a contar como atrasada depois do prazo em horas. Pedidos depois do corte saem um dia útil depois. Pacotes maiores que 1,00 × 1,00 m não são aceitos pelo formulário, como no amcoletas.</p></L><L tone="dark" i={1}><h2 className="disp mb-1 text-xl">Pagamento dos motoboys</h2><p className="mb-4 text-xs text-on2">Valores usados ao cadastrar um motoboy novo. Quem já está cadastrado mantém os seus; para mudar um motoboy, abra o cadastro dele em Equipe.</p><div className="grid gap-4 sm:grid-cols-2"><Go_ label="Por entrega (R$)" valorC={c.motoboyEntregaPadraoC} onChange={e => h({
             motoboyEntregaPadraoC: e
           })} /><Go_ label="Por coleta (R$)" valorC={c.motoboyColetaPadraoC} onChange={e => h({
             motoboyColetaPadraoC: e
@@ -104,13 +108,10 @@ export function Configuracoes() {
             pesos: [...c.pesos, {
               id: "p" + Date.now().toString(36),
               kg: 25,
-              valorC: 5e3,
               ativo: !0
             }]
-          })}>Adicionar</R></div><p className="mb-3 text-xs text-on2">O cliente escolhe um destes na hora do pedido e paga o valor fixo, no lugar de tarifa mais excedente.</p><ul className="space-y-3">{c.pesos.map(e => <li key={e.id} className="grid grid-cols-[1fr_1fr_auto] items-end gap-3"><Z label="Peso (kg)" type="number" min={1} value={e.kg} onChange={t => b(e.id, {
+          })}>Adicionar</R></div><p className="mb-3 text-xs text-on2">O cliente escolhe um destes na hora do pedido. O peso vale como o informado: o preço segue a conta normal (tarifa da cidade + excedente por kg), sem valor fixo.</p><ul className="space-y-3">{c.pesos.map(e => <li key={e.id} className="grid grid-cols-[1fr_auto] items-end gap-3"><Z label="Peso (kg)" type="number" min={1} value={e.kg} onChange={t => b(e.id, {
               kg: Math.max(1, +t.target.value || 1)
-            })} /><Go_ label="Valor (R$)" valorC={e.valorC} onChange={t => b(e.id, {
-              valorC: t
             })} /><div className="flex items-center"><Ci_ label="Ativo" checked={e.ativo} onChange={t => b(e.id, {
                 ativo: t
               })} /><button type="button" aria-label={`Remover peso de ${e.kg} kg`} className="min-h-11 min-w-11 rounded-xl text-on2 hover:bg-white/10" onClick={() => h({
