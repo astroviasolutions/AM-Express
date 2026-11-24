@@ -1,0 +1,139 @@
+/**
+ * Estilos para o sistema de atualização automática
+ */
+
+/* Animação de destaque para novos itens */
+.nova-coleta {
+    position: relative;
+    border-width: 2px !important;
+}
+
+.coleta-item.highlight {
+    animation: pulse-border 2s ease-in-out;
+}
+
+@keyframes pulse-border {
+    0% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+    }
+}
+
+/* Animação para badges de notificação */
+.badge.pulsing {
+    animation: pulse-badge 1s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Estilos para o container de toasts */
+#toast-container {
+    z-index: 1080;
+}
+
+/* Animação para números/contadores */
+.pulsing {
+    animation: pulse-text 2s ease-in-out;
+}
+
+@keyframes pulse-text {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3);
+        color: #0d6efd;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.atualizacao-notificacao {
+  position: fixed;
+  bottom: -100px;
+  left: 0;
+  right: 0;
+  background-color: #2c3e50;
+  color: white;
+  padding: 10px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  transition: bottom 0.3s ease;
+  text-align: center;
+}
+
+.atualizacao-notificacao.mostrar {
+  bottom: 0;
+}
+
+.atualizacao-conteudo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.atualizacao-conteudo p {
+  margin: 0;
+  font-size: 16px;
+}
+
+.atualizacao-botoes {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-atualizar {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.btn-atualizar:hover {
+  background-color: #2ecc71;
+}
+
+.btn-depois {
+  background-color: transparent;
+  color: #bdc3c7;
+  border: 1px solid #bdc3c7;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-depois:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 600px) {
+  .atualizacao-conteudo {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+} 

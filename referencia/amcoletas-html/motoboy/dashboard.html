@@ -1,0 +1,1396 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Motoboy] - </title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="">
+    <meta name="description" content="Painel do Motoboy - Sistema de Logística Intermunicipal">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../pwa-icons/icon-192x192.png">
+    <link rel="stylesheet" href="../assets/css/atualizacao-automatica.css">
+    <script src="../assets/js/pwa.js" defer></script>
+
+    <style type='text/css'>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 70px;
+        }
+    </style>
+    <link rel="stylesheet" href="../assets/css/motoboy.css">
+</head>    
+<body data-tipo-usuario="motoboy" data-usuario-id="">
+  <!-- Sidebar / Menu Lateral -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                            <img src="" alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                        <h3> </h3>
+                    </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+    </div>
+    
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a href="dashboard.html" class="nav-link ">
+                <i class="bi bi-speedometer2"></i>
+                <span>Painel de Controle</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="notificacoes.html" class="nav-link ">
+                <i class="bi bi-bell"></i> <span>Notificações</span>
+                                    <span id="notificacoesBadge" class="badge rounded-pill bg-danger ms-auto"></span>
+                                    <span id="notificacoesBadge" class="badge rounded-pill bg-danger ms-auto" style="display: none;">0</span>
+                            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="finalizar_entrega.html" class="nav-link ">
+                <i class="bi bi-check-circle"></i>
+                <span>Finalizar uma Entrega</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="indicacoes.html" class="nav-link ">
+                <i class="bi bi-people-fill"></i>
+                <span>Minhas Indicações</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="perfil.html" class="nav-link ">
+                <i class="bi bi-person"></i>
+                <span>Meu Perfil</span>
+            </a>
+        </li>
+
+        <li class="nav-item mt-5">
+            <a href="../login.html" class="nav-link">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sair</span>
+            </a>
+        </li>
+    </ul>
+</div>    <!-- Conteúdo Principal -->
+    <div class="main-content" id="mainContent">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <div class="d-flex align-items-center">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+            <h1 class="h4 mb-0">Dashboard</h1>
+                </div>
+                
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Motoboy - </small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mensagem de sucesso ou erro -->
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+                
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+                
+        <!-- Status do Motoboy -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <h5 class="mb-0">Status: 
+                                                                                            <span class="badge bg-success">Disponível</span>
+                                                                                            <span class="badge bg-secondary">Indisponível</span>
+                                                                                    </h5>
+                                        <p class="text-muted mb-0">Área de atuação:  - </p>
+                                    </div>
+                                    <div>
+                                        <form method="post" action="#">
+                                            <input type="hidden" name="status" value="">
+                                            <button type="submit" class="btn ">
+                                                                                            </button>
+                                        </form>
+                                    </div>
+
+                                </div>
+
+                                <hr />
+                                <div>
+                                    <h5 class="mb-0">Código de indicação:
+                                        <span class="badge bg-info"></span>
+                                    </h5>
+                                                                            <p class="text-muted mb-0">Nenhum cadastro com o seu código.</p>
+                                                                            <p class="text-muted mb-0">1 cliente indicado.</p>
+                                                                            <p class="text-muted mb-0"> clientes indicados.</p>
+                                                                    </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100 border-0 bg-light">
+                                    <div class="card-body py-2">
+                                        <h6 class="text-center mb-3">Dados Financeiros</h6>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="bi bi-credit-card text-primary me-1"></i> Valor Base:</span>
+                                            <span class="fw-bold">R$ </span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span><i class="bi bi-cash-stack text-success me-1"></i> Faturamento:</span>
+                                            <span class="fw-bold">R$ </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notificação de Download do App -->
+        <div class="row mb-4" id="app-download-notification" style="display: none;">
+            <div class="col-12">
+                <div class="card border-0 bg-light">
+                    <div class="card-body py-2">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-phone text-primary me-2" style="font-size: 1.4rem;"></i>
+                                <div>
+                                    <p class="mb-0 fw-medium">Tenha acesso rápido às suas entregas</p>
+                                    <small class="text-muted">Instale nosso app para uma melhor experiência</small>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" id="install-app-btn" class="btn btn-sm btn-primary me-2">
+                                    <i class="bi bi-download me-1"></i> Instalar App
+                                </button>
+                                <button type="button" id="dismiss-app-notification" class="btn btn-sm btn-link text-muted">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+      <!-- Entregas em Andamento -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-truck"></i> Entregas em Andamento
+                    </div>
+                    <div class="card-body p-2 p-sm-3">
+                                                    <div class="mobile-scrollable-cards">
+                                <div class="entregas-lista" id="entregas-andamento-container">
+                                                                        <div class="entrega-card mb-2 card-clicavel" data-entrega-id=""
+                                         data-bs-toggle="modal" 
+                                         data-bs-target="#entregaModal"
+                                         data-entrega-id=""
+                                         data-cliente=""
+                                         data-telefone=""
+                                         data-endereco-coleta=""
+                                         data-endereco-entrega=""
+                                         data-cidade-origem=""
+                                         data-cidade-destino=""
+                                         data-destinatario=""
+                                         data-descricao=""
+                                         data-codigo-rastreio=""
+                                         data-data=""
+                                         data-status=""
+                                         data-status-texto=""
+                                         data-action="update">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="entrega-info flex-grow-1">
+                                                <div class="d-flex justify-content-between">
+                                                    <h6 class="mb-0 d-flex align-items-center">
+                                                        <span class="entrega-id">#</span>
+                                                        <span class="badge-container ms-2">
+                                                            <span class="status-badge ">
+                                                                <i class="bi  me-1"></i>
+                                                                                                                            </span>
+                                                        </span>
+                                                    </h6>
+                                                </div>
+                                                <p class="card-text mb-1 mt-2">
+                                                    <i class="bi bi-shop text-primary me-1"></i>
+                                                    <strong>Loja:</strong>                                                 </p>
+                                                <p class="card-text mb-1">
+                                                    <i class="bi bi-person text-primary me-1"></i>
+                                                    <strong>Cliente:</strong>                                                 </p>
+                                                <div class="rota-info mt-1">
+                                                    <i class="bi bi-geo-alt text-primary"></i>
+                                                    <span></span>
+                                                    <i class="bi bi-arrow-right mx-1"></i>
+                                                    <span></span>
+                                                </div>
+                                                <div class="data-info mt-1 text-muted small">
+                                                    <i class="bi bi-calendar-event"></i>
+                                                    <span class="data-atualizacao"></span>
+                                                </div>
+                                            </div>
+                                            <div class="entrega-acoes ms-2">
+                                                <div class="d-flex flex-column align-items-end">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary mb-2" 
+                                                        onclick="event.stopPropagation();"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#entregaModal" 
+                                                        data-entrega-id=""
+                                                        data-cliente=""
+                                                        data-telefone=""
+                                                        data-endereco-coleta=""
+                                                        data-endereco-entrega=""
+                                                        data-cidade-origem=""
+                                                        data-cidade-destino=""
+                                                        data-destinatario=""
+                                                        data-descricao=""
+                                                        data-codigo-rastreio=""
+                                                        data-data=""
+                                                        data-status=""
+                                                        data-status-texto="">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-outline-success" 
+                                                        onclick="event.stopPropagation();"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#entregaModal"
+                                                        data-entrega-id=""
+                                                        data-cliente=""
+                                                        data-telefone=""
+                                                        data-endereco-coleta=""
+                                                        data-endereco-entrega=""
+                                                        data-cidade-origem=""
+                                                        data-cidade-destino=""
+                                                        data-destinatario=""
+                                                        data-descricao=""
+                                                        data-codigo-rastreio=""    
+                                                        data-data=""
+                                                        data-status=""
+                                                        data-status-texto=""
+                                                        data-action="update">
+                                                        <i class="bi bi-arrow-up-circle"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                    <div class="alert alert-info mb-0">
+                                <i class="bi bi-info-circle"></i> Você não possui entregas em andamento no momento.
+                            </div>
+                                            </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Coletas em Andamento -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-truck"></i> Coletas em Andamento
+                    </div>
+                    <div class="card-body p-2 p-sm-3">
+                                                    <div class="mobile-scrollable-cards">
+                                <div class="entregas-lista" id="entregas-andamento-container">
+                                                                        <div class="entrega-card mb-2 card-clicavel" data-entrega-id=""
+                                         data-bs-toggle="modal" 
+                                         data-bs-target="#entregaModal"
+                                         data-entrega-id=""
+                                         data-cliente=""
+                                         data-telefone=""
+                                         data-endereco-coleta=""
+                                         data-endereco-entrega=""
+                                         data-cidade-origem=""
+                                         data-cidade-destino=""
+                                         data-destinatario=""
+                                         data-descricao=""
+                                         data-codigo-rastreio=""
+                                         data-data=""
+                                         data-status=""
+                                         data-status-texto=""
+                                         data-action="update">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="entrega-info flex-grow-1">
+                                                <div class="d-flex justify-content-between">
+                                                    <h6 class="mb-0 d-flex align-items-center">
+                                                        <span class="entrega-id">#</span>
+                                                        <span class="badge-container ms-2">
+                                                            <span class="status-badge ">
+                                                                <i class="bi  me-1"></i>
+                                                                                                                            </span>
+                                                        </span>
+                                                    </h6>
+                                                </div>
+                                                <p class="card-text mb-1 mt-2">
+                                                    <i class="bi bi-shop text-primary me-1"></i>
+                                                    <strong>Loja:</strong>                                                 </p>
+                                                <p class="card-text mb-1">
+                                                    <i class="bi bi-person text-primary me-1"></i>
+                                                    <strong>Cliente:</strong>                                                 </p>
+                                                <div class="rota-info mt-1">
+                                                    <i class="bi bi-geo-alt text-primary"></i>
+                                                    <span></span>
+                                                    <i class="bi bi-arrow-right mx-1"></i>
+                                                    <span></span>
+                                                </div>
+                                                <div class="data-info mt-1 text-muted small">
+                                                    <i class="bi bi-calendar-event"></i>
+                                                    <span class="data-atualizacao"></span>
+                                                </div>
+                                            </div>
+                                            <div class="entrega-acoes ms-2">
+                                                <div class="d-flex flex-column align-items-end">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary mb-2" 
+                                                        onclick="event.stopPropagation();"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#entregaModal" 
+                                                        data-entrega-id=""
+                                                        data-cliente=""
+                                                        data-telefone=""
+                                                        data-endereco-coleta=""
+                                                        data-endereco-entrega=""
+                                                        data-cidade-origem=""
+                                                        data-cidade-destino=""
+                                                        data-destinatario=""
+                                                        data-descricao=""
+                                                        data-codigo-rastreio=""
+                                                        data-data=""
+                                                        data-status=""
+                                                        data-status-texto="">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-outline-success" 
+                                                        onclick="event.stopPropagation();"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#entregaModal"
+                                                        data-entrega-id=""
+                                                        data-cliente=""
+                                                        data-telefone=""
+                                                        data-endereco-coleta=""
+                                                        data-endereco-entrega=""
+                                                        data-cidade-origem=""
+                                                        data-cidade-destino=""
+                                                        data-destinatario=""
+                                                        data-descricao=""
+                                                        data-codigo-rastreio=""    
+                                                        data-data=""
+                                                        data-status=""
+                                                        data-status-texto=""
+                                                        data-action="update">
+                                                        <i class="bi bi-arrow-up-circle"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                    </div>
+                            </div>
+                                                    <div class="alert alert-info mb-0">
+                                <i class="bi bi-info-circle"></i> Você não possui coletas em andamento no momento.
+                            </div>
+                                            </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Coletas Disponíveis -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-box-seam me-2"></i> Coletas Disponíveis
+                                                            <span class="badge bg-danger" id="totalColetasDisponiveis"></span>
+                                                    </div>
+                    </div>
+                    <div class="card-body">
+                                                    <div id="coletas-disponiveis">
+                                <div class="row" id="coletasContainer">
+                                                                    <div class="col-lg-4 col-md-6 mb-3">
+                                        <div class="card h-100 coleta-card coleta-item">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Coleta #</h5>
+                                                <p class="card-text mb-1"><strong>Loja:</strong> </p>
+                                                <p class="card-text mb-1"><strong>Cliente:</strong> </p>
+                                                <p class="card-text mb-1"><strong>Endereço:</strong> </p>
+                                                <p class="card-text mb-1"><strong>Destino:</strong> </p>
+                                                <p class="card-text mb-3"><strong>Data:</strong> </p>
+                                                <div class="d-grid gap-2">
+                                                    <button type="button" class="btn btn-outline-primary mb-2" data-bs-toggle="modal" data-bs-target="#entregaModal" 
+                                                        data-entrega-id=""
+                                                        data-cliente=""
+                                                        data-telefone=""
+                                                        data-endereco-coleta=""
+                                                        data-endereco-entrega=""
+                                                        data-cidade-origem=""
+                                                        data-cidade-destino=""
+                                                        data-destinatario=""
+                                                        data-descricao=""
+                                                        data-data=""
+                                                        data-status="aguardando_coleta"
+                                                        data-status-texto="Aguardando Coleta">
+                                                        <i class="bi bi-eye"></i> Ver Detalhes
+                                                    </button>
+                                                    <a href="#" class="btn btn-primary">Aceitar Coleta</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                </div>
+                            </div>
+                                                    <div class="alert alert-info mb-0" id="coletas-disponiveis">
+                                <div id="coletasContainer">
+                                    <i class="bi bi-info-circle"></i> Não há coletas disponíveis em sua cidade no momento.
+                                </div>
+                            </div>
+                                            </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resumo de Entregas -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-pie-chart"></i> Minhas Entregas
+                    </div>
+                    <div class="card-body">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-clock-history"></i> Entregas Recentes
+                    </div>
+                    <div class="card-body p-2 p-sm-3">
+                        <div class="mobile-scrollable-cards">
+                                                            <div class="entregas-lista" id="entregas-recentes-container">
+                                                                        <div class="entrega-card mb-2" data-entrega-id="">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="entrega-info">
+                                                <h6 class="mb-0 d-flex align-items-center">
+                                                    <span class="entrega-id">#</span>
+                                                    <span class="badge-container ms-2">
+                                                        <span class="status-badge ">
+                                                            <i class="bi  me-1"></i>
+                                                                                                                    </span>
+                                                    </span>
+                                                </h6>
+                                                <div class="rota-info mt-1">
+                                                    <i class="bi bi-geo-alt text-primary"></i>
+                                                    <span></span>
+                                                    <i class="bi bi-arrow-right mx-1"></i>
+                                                    <span></span>
+                                                </div>
+                                                <div class="data-info mt-1 text-muted small">
+                                                    <i class="bi bi-calendar-event"></i>
+                                                    <span class="data-atualizacao"></span>
+                                                </div>
+                                                 <div class="data-info mt-1 text-muted small">
+                                                 	<span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                    </div>
+                                                            <div class="text-center py-4">
+                                    <i class="bi bi-inbox fs-2 text-muted"></i>
+                                    <p class="mt-2">Nenhuma entrega finalizada encontrada.</p>
+                                </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Adicionar estilos para os cards móveis -->
+            <style>
+                .mobile-scrollable-cards {
+                    max-height: 350px;
+                    overflow-y: auto;
+                    scrollbar-width: thin;
+                }
+                
+                .mobile-scrollable-cards::-webkit-scrollbar {
+                    width: 5px;
+                }
+                
+                .mobile-scrollable-cards::-webkit-scrollbar-thumb {
+                    background-color: rgba(0,0,0,0.2);
+                    border-radius: 10px;
+                }
+                
+                .entrega-card {
+                    background: #fff;
+                    border-radius: 10px;
+                    padding: 12px;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                    transition: all 0.3s ease;
+                    border-left: 4px solid var(--primary-color);
+                }
+                
+                .entrega-card:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                }
+                
+                .entrega-id {
+                    font-weight: bold;
+                    color: var(--primary-color);
+                }
+                
+                .status-badge {
+                    font-size: 0.8rem;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    white-space: nowrap;
+                }
+                
+                /* Aumentar tamanho dos ícones nos botões */
+                .btn-sm .bi {
+                    font-size: 1.2rem;
+                }
+                
+                .entrega-acoes .btn-sm {
+                    padding: 0.35rem 0.65rem;
+                }
+                
+                .btn .bi {
+                    font-size: 1.15rem;
+                    vertical-align: -0.125em;
+                }
+                
+                @media (max-width: 576px) {
+                    .entrega-card {
+                        margin-bottom: 10px;
+                    }
+                    
+                    .badge-container {
+                        display: block;
+                        margin-top: 5px;
+                        margin-left: 0 !important;
+                    }
+                    
+                    .btn-sm {
+                        padding: 0.35rem 0.65rem;
+                        font-size: 0.85rem;
+                    }
+                    
+                    /* Ícones maiores em dispositivos móveis */
+                    .btn-sm .bi {
+                        font-size: 1.3rem;
+                    }
+                    
+                    .main-content {
+                        padding-left: 0.5rem;
+                        padding-right: 0.5rem;
+                    }
+                    
+                    .container, .container-fluid, .container-sm, .container-md, .container-lg, .container-xl {
+                        padding-left: 0.5rem;
+                        padding-right: 0.5rem;
+                    }
+                    
+                    .row {
+                        margin-left: -0.25rem;
+                        margin-right: -0.25rem;
+                    }
+                    
+                    .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12, 
+                    .col-sm, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12,
+                    .col-md, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+                        padding-left: 0.25rem;
+                        padding-right: 0.25rem;
+                    }
+                    
+                    .card {
+                        margin-bottom: 0.75rem;
+                    }
+                    
+                    .card-body {
+                        padding: 0.75rem;
+                    }
+                }
+            </style>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Notificações Scripts -->
+    <script src="../assets/js/notificacoes.js"></script>
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    
+    <script>
+        // Registrar plugin de rótulos de dados
+        Chart.register(ChartDataLabels);
+        
+        // Dados para o gráfico de status
+        const statusData = {
+            labels: [
+                'Aguardando Coleta',
+                'A Caminho',
+                'Coletado',
+                'Centro de Distribuição',
+                'Em Rota de Entrega',
+                'Entregue'
+            ],
+            datasets: [{
+                data: [
+                                    ],
+                backgroundColor: [
+                    'rgba(176, 176, 176, 0.8)', // cinza claro
+                    'rgba(77, 166, 255, 0.8)', // azul claro
+                    'rgba(0, 123, 255, 0.8)', // azul escuro
+                    'rgba(108, 99, 255, 0.8)', // roxo/indigo
+                    'rgba(255, 165, 0, 0.8)', // laranja/ambar
+                    'rgba(76, 175, 80, 0.8)' // verde sucesso
+                ],
+                borderColor: [
+                    'rgb(176, 176, 176)', // cinza claro
+                    'rgb(77, 166, 255)', // azul claro
+                    'rgb(0, 123, 255)', // azul escuro
+                    'rgb(108, 99, 255)', // roxo/indigo
+                    'rgb(255, 165, 0)', // laranja/ambar
+                    'rgb(76, 175, 80)' // verde sucesso
+                ],
+                hoverBackgroundColor: [
+                    'rgba(176, 176, 176, 1)', // cinza claro
+                    'rgba(77, 166, 255, 1)', // azul claro
+                    'rgba(0, 123, 255, 1)', // azul escuro
+                    'rgba(108, 99, 255, 1)', // roxo/indigo
+                    'rgba(255, 165, 0, 1)', // laranja/ambar
+                    'rgba(76, 175, 80, 1)' // verde sucesso
+                ],
+                borderWidth: 2,
+                hoverBorderWidth: 3,
+                hoverOffset: 10
+            }]
+        };
+
+        // Configuração do gráfico
+        const statusChart = new Chart(
+            document.getElementById('statusChart'),
+            {
+                type: 'doughnut',
+                data: statusData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '65%',
+                    layout: {
+                        padding: 20
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Distribuição por Status',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 20
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 15,
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        datalabels: {
+                            formatter: (value, ctx) => {
+                                if (value === 0) return '';
+                                let sum = 0;
+                                let dataArr = ctx.chart.data.datasets[0].data;
+                                dataArr.map(data => {
+                                    sum += data;
+                                });
+                                const percentage = (value * 100 / sum).toFixed(1) + "%";
+                                return percentage;
+                            },
+                            color: '#fff',
+                            font: {
+                                weight: 'bold',
+                                size: 11
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    let value = context.raw || 0;
+                                    let total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                                    let percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true,
+                        duration: 1000
+                    }
+                }
+            }
+        );
+    </script>
+    
+    <script>
+        // Função para atualizar a disponibilidade
+        async function atualizarDisponibilidade(disponivel) {
+            try {
+                const response = await fetch('atualizar_disponibilidade.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `disponivel=${disponivel ? 1 : 0}`
+                });
+                
+                const data = await response.json();
+                
+                if (data.sucesso) {
+                    // Atualizar status na interface se necessário
+                    document.getElementById('status-disponivel').textContent = disponivel ? 'Disponível' : 'Indisponível';
+                    document.getElementById('status-disponivel').className = disponivel ? 'text-success' : 'text-danger';
+                } else {
+                    alert('Erro ao atualizar disponibilidade: ' + data.erro);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao processar requisição');
+            }
+        }
+    </script>
+    
+    <script>
+        // Funcionalidade para o menu lateral recolhível
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const mainContent = document.getElementById('mainContent');
+            const mobileToggle = document.getElementById('mobileToggle');
+            
+            // Função para alternar o menu lateral em desktop
+            if(sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    mainContent.classList.toggle('expanded');
+                    
+                    // Alterna o ícone do botão
+                    const icon = sidebarToggle.querySelector('i');
+                    if (icon.classList.contains('bi-chevron-left')) {
+                        icon.classList.replace('bi-chevron-left', 'bi-chevron-right');
+                    } else {
+                        icon.classList.replace('bi-chevron-right', 'bi-chevron-left');
+                    }
+                });
+            }
+            
+            // Função para alternar o menu lateral em dispositivos móveis
+            if(mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                });
+            }
+            
+            // Fechar o menu ao clicar fora dele em dispositivos móveis
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnMobileToggle = mobileToggle.contains(event.target);
+                
+                if (window.innerWidth <= 768 && !isClickInsideSidebar && !isClickOnMobileToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+            
+            // Ajustar em caso de redimensionamento da tela
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        });
+    </script>
+  <script>
+    function verificarNovasNotificacoes() {
+        // Chamamos o ficheiro que já tens, ele vai retornar o COUNT da nova tabela
+        fetch('../api/verificar-coletas-novas.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.sucesso) {
+                    const badge = document.getElementById('notificacoesBadge');
+                    if (badge) {
+                        if (data.novas_notificacoes > 0) {
+                            badge.textContent = data.novas_notificacoes;
+                            badge.style.display = 'block'; // Mostra a bolinha vermelha
+
+                            // Se quiseres que o telemóvel vibre ou faça som quando chegar:
+                            if (window.navigator.vibrate) window.navigator.vibrate(200);
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    }
+                }
+            });
+    }
+
+    // Verifica a cada 20 segundos se há algo novo no banco
+    setInterval(verificarNovasNotificacoes, 20000);
+    </script>
+    
+    <!-- Modal de Detalhes da Entrega -->
+    <div class="modal fade" id="entregaModal" tabindex="-1" aria-labelledby="entregaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="entregaModalLabel">Detalhes da Entrega #<span id="entregaId"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Informações da Coleta</h5>
+                            <p><strong>Cliente:</strong> <span id="clienteNome"></span></p>
+                            <p><strong>Telefone:</strong> <span id="clienteTelefone"></span></p>
+                            <p><strong>Endereço de Coleta:</strong> <span id="enderecoColeta"></span></p>
+                            <p><strong>Cidade de Origem:</strong> <span id="cidadeOrigem"></span></p>
+                            <p><strong>Data da Solicitação:</strong> <span id="dataSolicitacao"></span></p>
+                            <p><strong>Descrição:</strong> <span id="descricaoEntrega"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Informações da Entrega</h5>
+                            <p><strong>Destinatário:</strong> <span id="nomeDestinatario"></span></p>
+                            <p><strong>Endereço de Entrega:</strong> <span id="enderecoEntrega"></span></p>
+                            <p><strong>Cidade de Destino:</strong> <span id="cidadeDestino"></span></p>
+                            <p><strong>Status Atual:</strong> <span id="statusAtual" class="status-badge"></span></p>
+                          	<p><strong>Código de Rastreio:</strong> <span id="codigoRastreio"></span></p>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    <h5>Atualizar Status</h5>
+                    <form id="formAtualizacaoStatus">
+                        <input type="hidden" id="entregaIdInput" name="entrega_id">
+                        <div class="mb-3">
+                            <label for="novoStatus" class="form-label">Novo Status</label>
+                            <select class="form-select" id="novoStatus" name="novo_status">
+                                <!-- Opções serão carregadas dinamicamente via JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="observacao" class="form-label">Observações</label>
+                            <textarea class="form-control" id="observacao" name="observacao" rows="3" placeholder="Adicione informações relevantes sobre a entrega..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="btnAtualizarStatus">Atualizar Status</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmação -->
+    <div class="modal fade" id="confirmacaoModal" tabindex="-1" aria-labelledby="confirmacaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmacaoModalLabel">Confirmar Atualização</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja atualizar o status desta entrega para <strong><span id="novoStatusTexto"></span></strong>?</p>
+                    <div id="infoStatusConfirmacao" class="alert alert-info">
+                        <p id="infoStatusTexto" class="mb-0"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmarAtualizacao">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Script para o modal de detalhes da entrega
+        document.addEventListener('DOMContentLoaded', function() {
+            const entregaModal = document.getElementById('entregaModal');
+            const confirmacaoModal = document.getElementById('confirmacaoModal');
+            
+            if (entregaModal) {
+                entregaModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    
+                    // Obter dados do botão
+                    const entregaId = button.getAttribute('data-entrega-id');
+                    const cliente = button.getAttribute('data-cliente');
+                    const telefone = button.getAttribute('data-telefone');
+                    const enderecoColeta = button.getAttribute('data-endereco-coleta');
+                    const enderecoEntrega = button.getAttribute('data-endereco-entrega');
+                    const cidadeOrigem = button.getAttribute('data-cidade-origem');
+                    const cidadeDestino = button.getAttribute('data-cidade-destino');
+                    const destinatario = button.getAttribute('data-destinatario');
+                    const descricao = button.getAttribute('data-descricao');
+                  	const codigoRastreio = button.getAttribute('data-codigo-rastreio');
+                    const dataSolicitacao = button.getAttribute('data-data');
+                    const status = button.getAttribute('data-status');
+                    const statusTexto = button.getAttribute('data-status-texto');
+                    const action = button.getAttribute('data-action'); // Verificar se é para atualizar direto
+                    
+                    // Preencher o modal com os dados
+                    document.getElementById('entregaId').textContent = entregaId;
+                    document.getElementById('clienteNome').textContent = cliente;
+                    document.getElementById('clienteTelefone').textContent = telefone || 'Não informado';
+                    document.getElementById('enderecoColeta').textContent = enderecoColeta;
+                    document.getElementById('cidadeOrigem').textContent = cidadeOrigem;
+                    document.getElementById('dataSolicitacao').textContent = dataSolicitacao;
+                    document.getElementById('descricaoEntrega').textContent = descricao || 'Sem descrição';
+                  	if (status == 'coletado' || status == 'centro_distribuicao' || status == 'Em_Rota_de_entrega'){
+                      document.getElementById('codigoRastreio').textContent = codigoRastreio || 'Código de rastreio não gerado';
+                    } else{
+                      document.getElementById('codigoRastreio').textContent = 'Acesso não liberado';
+                    }         
+                    document.getElementById('nomeDestinatario').textContent = destinatario || 'Não informado';
+                    document.getElementById('enderecoEntrega').textContent = enderecoEntrega;
+                    document.getElementById('cidadeDestino').textContent = cidadeDestino;
+                    
+                    // Atualizar o status atual
+                    const statusAtual = document.getElementById('statusAtual');
+                    statusAtual.textContent = statusTexto;
+                    
+                    // Limpar classes antigas e adicionar a classe específica do status
+                    statusAtual.className = 'status-badge';
+                    switch(status) {
+                        case 'aguardando_coleta':
+                            statusAtual.classList.add('status-aguardando');
+                            break;
+                        case 'a_caminho':
+                            statusAtual.classList.add('status-caminho');
+                            break;
+                        case 'coletado':
+                            statusAtual.classList.add('status-coletado');
+                            break;
+                        case 'centro_distribuicao':
+                            statusAtual.classList.add('status-distribuicao');
+                            break;
+                        case 'em_rota_de_entrega':
+                            statusAtual.classList.add('status-rota-entrega');
+                            break;
+                        case 'entregue':
+                            statusAtual.classList.add('status-entregue');
+                            break;
+                    }
+                    
+                    // Configurar o formulário de atualização
+                    document.getElementById('entregaIdInput').value = entregaId;
+                    
+                    // Verificar se é uma coleta aguardando aceitação
+                    const secaoAtualizacao = document.querySelector('#entregaModal .modal-body hr').parentNode.lastElementChild;
+                    const secaoHR = document.querySelector('#entregaModal .modal-body hr');
+                    const btnAtualizar = document.getElementById('btnAtualizarStatus');
+                    
+                    if (status === 'aguardando_coleta') {
+                        // Esconder seção de atualização para coletas não aceitas
+                        secaoAtualizacao.style.display = 'none';
+                        secaoHR.style.display = 'none';
+                        btnAtualizar.style.display = 'none';
+                    } else {
+                        // Mostrar seção de atualização para entregas aceitas
+                        secaoAtualizacao.style.display = 'block';
+                        secaoHR.style.display = 'block';
+                        btnAtualizar.style.display = 'inline-block';
+                        
+                        // Limpar e popular o select de status
+                        const selectStatus = document.getElementById('novoStatus');
+                        selectStatus.innerHTML = '';
+                        let opcoesDisponíveis = false;
+                        
+                        // Adicionar opções baseadas no status atual
+                        if (status === 'a_caminho') {
+                            const option = document.createElement('option');
+                            option.value = 'coletado';
+                            option.textContent = 'Coletado - Pacote em mãos';
+                            selectStatus.appendChild(option);
+                            opcoesDisponíveis = true;
+                        } else if (status === 'coletado') {
+                            let option = document.createElement('option');
+                            option.value = 'centro_distribuicao';
+                            option.textContent = 'Entregue no Centro de Distribuição';
+                            selectStatus.appendChild(option);
+                            
+                            option = document.createElement('option');
+                            option.value = 'entregue';
+                            option.textContent = 'Entregue ao Destinatário';
+                            selectStatus.appendChild(option);
+                            opcoesDisponíveis = true;
+                        } else if (status === 'centro_distribuicao') {
+                            let option = document.createElement('option');
+                            option.value = 'Em_Rota_de_entrega';
+                            option.textContent = 'Em Rota de entrega para o Destinatário';
+                            selectStatus.appendChild(option);
+                            opcoesDisponíveis = true;
+                        } else if (status === 'Em_Rota_de_entrega') {
+                            const option = document.createElement('option');
+                            option.value = 'entregue';
+                            option.textContent = 'Entregue ao Destinatário';
+                            selectStatus.appendChild(option);
+                            opcoesDisponíveis = true;
+                        } else {
+                            // Status finalizado que não pode ser alterado
+                            const divMensagem = document.createElement('div');
+                            divMensagem.className = 'alert alert-info mt-3';
+                            divMensagem.innerHTML = '<i class="bi bi-info-circle me-2"></i> Esta entrega já foi finalizada e não pode ter seu status alterado.';
+                            
+                            // Substituir o formulário pela mensagem
+                            const formContainer = document.getElementById('formAtualizacaoStatus').parentNode;
+                            formContainer.innerHTML = '';
+                            formContainer.appendChild(divMensagem);
+                            
+                            // Esconder botão de atualizar
+                            btnAtualizar.style.display = 'none';
+                        }
+                        
+                        // Se vem da opção "Atualizar", focar diretamente no formulário
+                        if (action === 'update') {
+                            // Rolar para o formulário
+                            setTimeout(() => {
+                                const formSection = document.getElementById('formAtualizacaoStatus');
+                                formSection.scrollIntoView({ behavior: 'smooth' });
+                                
+                                // Focar no select
+                                const selectStatus = document.getElementById('novoStatus');
+                                selectStatus.focus();
+                            }, 300); // Pequeno delay para garantir que o modal foi aberto
+                        }
+                    }
+                });
+            }
+            
+            // Botão para abrir o modal de confirmação
+            const btnAtualizarStatus = document.getElementById('btnAtualizarStatus');
+            if (btnAtualizarStatus) {
+                btnAtualizarStatus.addEventListener('click', function() {
+                    const selectStatus = document.getElementById('novoStatus');
+                    const novoStatus = selectStatus.value;
+                    const novoStatusTexto = selectStatus.options[selectStatus.selectedIndex].text;
+                    
+                    // Verificar se um status foi selecionado
+                    if (!novoStatus) {
+                        alert('Por favor, selecione um novo status.');
+                        return;
+                    }
+                    
+                    // Preencher o modal de confirmação
+                    document.getElementById('novoStatusTexto').textContent = novoStatusTexto;
+                    
+                    // Texto informativo baseado no status
+                    let infoTexto = '';
+                    switch (novoStatus) {
+                        case 'coletado':
+                            infoTexto = 'Confirmo que o pacote foi coletado e está em minhas mãos.';
+                            break;
+                        case 'centro_distribuicao':
+                            infoTexto = 'Confirmo que o pacote foi entregue no centro de distribuição.';
+                            break;
+                        case 'Em_Rota_de_entrega':
+                            infoTexto = 'Confirmo que o pacote saiu para entrega ao destinatário.';
+                            break;
+                        case 'entregue':
+                            infoTexto = 'Confirmo que o pacote foi entregue diretamente ao destinatário.';
+                            break;
+                    }
+                    document.getElementById('infoStatusTexto').textContent = infoTexto;
+                    
+                    // Mostrar o modal de confirmação
+                    const confirmacaoModalObj = new bootstrap.Modal(confirmacaoModal);
+                    confirmacaoModalObj.show();
+                });
+            }
+            
+            // Botão para confirmar a atualização de status
+            const btnConfirmarAtualizacao = document.getElementById('btnConfirmarAtualizacao');
+            if (btnConfirmarAtualizacao) {
+                btnConfirmarAtualizacao.addEventListener('click', function() {
+                    // Obter dados do formulário
+                    const entregaId = document.getElementById('entregaIdInput').value;
+                    const novoStatus = document.getElementById('novoStatus').value;
+                    const observacao = document.getElementById('observacao').value;
+                    const codigoRastreio = document.getElementById('codigoRastreio').textContent.trim();
+                  
+			 if (novoStatus === 'entregue') {
+                  window.location.href = `finalizar_entrega.php?codigo=${codigoRastreio}`;
+                  return; // Interrompe a execução para não enviar o formulário abaixo
+              }
+                    
+                    // Criar formulário para envio via POST
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = 'processar_atualizacao_status.php';
+                    
+                    // Adicionar campos
+                    const campos = {
+                        'entrega_id': entregaId,
+                        'novo_status': novoStatus,
+                        'observacao': observacao
+                    };
+                    
+                    for (const [nome, valor] of Object.entries(campos)) {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = nome;
+                        input.value = valor;
+                        form.appendChild(input);
+                    }
+                    
+                    // Adicionar ao body e enviar
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+            }
+        });
+    </script>
+
+    <script src="../assets/js/atualizacao-automatica.js"></script>
+
+    <!-- Script para atualização automática das coletas -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar o sistema de atualização automática
+            const atualizacaoAutomatica = new AtualizacaoAutomatica({
+                // Configuração personalizada
+                intervalo: 15000, // Verificar a cada 15 segundos
+                seletorColetas: '#coletasContainer', // Container das coletas
+                seletorNovasColetas: '#totalColetasDisponiveis', // Elemento que mostra o total
+                seletorNotificacoes: '#notificacoesBadge', // Badge de notificações
+                
+                // Callback para novas coletas
+                onNovasColetas: function(novasColetas) {
+                    // Notificar também via notification API se disponível
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        const titulo = `${novasColetas.length} nova${novasColetas.length > 1 ? 's' : ''} coleta${novasColetas.length > 1 ? 's' : ''} disponível${novasColetas.length > 1 ? 'is' : ''}!`;
+                        const opcoes = {
+                            body: "Clique para ver as coletas disponíveis",
+                            icon: "../pwa-icons/icon-192x192.png",
+                            vibrate: [200, 100, 200]
+                        };
+                        
+                        // Criar notificação
+                        const notification = new Notification(titulo, opcoes);
+                        notification.onclick = function() {
+                            window.focus();
+                            notification.close();
+                            // Rolar para as coletas
+                            document.querySelector('#coletas-disponiveis').scrollIntoView({ 
+                                behavior: 'smooth' 
+                            });
+                        };
+                    }
+                }
+            });
+
+            // Solicitar permissão para notificações
+            function solicitarPermissaoNotificacoes() {
+                if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+                    Notification.requestPermission().then(function (permission) {
+                        if (permission === "granted") {
+                            console.log("Permissão de notificação concedida");
+                        }
+                    });
+                }
+            }
+
+            // Solicitar permissão quando o usuário interagir com a página
+            document.addEventListener('click', function() {
+                solicitarPermissaoNotificacoes();
+            }, { once: true });
+        });
+    </script>
+
+    <div id="install-banner" class="install-banner" style="display: none;">
+    <div class="install-content">
+        <div class="banner-logo">
+                            <img src="pwa-icons/icon-192x192.png" alt="Logo do Aplicativo" height="40">
+                            <img src="../pwa-icons/icon-192x192.png" alt="Logo do Aplicativo" height="40">
+                    </div>
+        <p>Baixe nosso app</p>
+        <div class="install-actions">
+            <button id="install-button" class="btn btn-primary">Instalar</button>
+            <button id="close-install-banner" class="btn btn-outline-secondary">Não, obrigado</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .install-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #fff;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        z-index: 1000;
+    }
+    
+    .install-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .banner-logo {
+        margin-right: 15px;
+    }
+    
+    .install-content p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    
+    .install-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .install-content {
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+        }
+        
+        .banner-logo {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+    }
+</style>     
+    <!-- Script para notificação de download do app -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const appNotification = document.getElementById('app-download-notification');
+            const dismissBtn = document.getElementById('dismiss-app-notification');
+            const installBtn = document.getElementById('install-app-btn');
+            
+            // Verificar se o usuário já dispensou a notificação anteriormente
+            const appNotificationDismissed = localStorage.getItem('appNotificationDismissed');
+            // Verificar se estamos em um dispositivo móvel
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // Função para verificar se o app já está instalado
+            function isPWAInstalled() {
+                // Em iOS
+                if (window.navigator.standalone) return true;
+                
+                // Em Android/Chrome
+                if (window.matchMedia('(display-mode: standalone)').matches) return true;
+                
+                return false;
+            }
+            
+            // Mostrar notificação apenas se:
+            // 1. Estiver em um dispositivo móvel
+            // 2. O app não estiver instalado
+            // 3. O usuário não tiver dispensado a notificação anteriormente
+            if (isMobile && !isPWAInstalled() && appNotificationDismissed !== 'true') {
+                // Esperar 3 segundos antes de mostrar a notificação para não incomodar imediatamente
+                setTimeout(() => {
+                    appNotification.style.display = 'block';
+                }, 3000);
+            }
+            
+            // Evento para o botão de dispensar
+            dismissBtn.addEventListener('click', function() {
+                appNotification.style.display = 'none';
+                // Armazenar a preferência do usuário para não mostrar novamente por 7 dias
+                localStorage.setItem('appNotificationDismissed', 'true');
+                // Definir tempo de expiração (7 dias)
+                const expirationDate = new Date();
+                expirationDate.setDate(expirationDate.getDate() + 7);
+                localStorage.setItem('appNotificationDismissedExpiration', expirationDate.getTime());
+            });
+            
+            // Evento para o botão de instalar
+            installBtn.addEventListener('click', function() {
+                // Mostrar o banner de instalação padrão se disponível
+                const installBanner = document.getElementById('install-banner');
+                if (installBanner) {
+                    installBanner.style.display = 'block';
+                    appNotification.style.display = 'none';
+                }
+                
+                // Chamar diretamente o prompt de instalação se disponível
+                if (window.deferredPrompt) {
+                    window.deferredPrompt.prompt();
+                    window.deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('Usuário aceitou a instalação do PWA');
+                            localStorage.setItem('appNotificationDismissed', 'true');
+                        }
+                        window.deferredPrompt = null;
+                    });
+                }
+            });
+            
+            // Verificar se a expiração do dismiss já passou
+            const dismissedExpiration = localStorage.getItem('appNotificationDismissedExpiration');
+            if (dismissedExpiration) {
+                const expirationDate = new Date(parseInt(dismissedExpiration));
+                const now = new Date();
+                if (now > expirationDate) {
+                    // Se expirou, remover os itens do localStorage
+                    localStorage.removeItem('appNotificationDismissed');
+                    localStorage.removeItem('appNotificationDismissedExpiration');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

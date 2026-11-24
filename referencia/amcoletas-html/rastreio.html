@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastreio de Pacotes - </title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="">
+    <meta name="description" content="Rastreie suas entregas - Sistema de Logística Intermunicipal">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="pwa-icons/icon-192x192.png">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: #333;
+        }
+        
+        .navbar {
+            background-color: var(--secondary-color);
+            padding: 1rem 2rem;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .navbar-brand span {
+            color: var(--primary-color);
+        }
+        
+        .header-section {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: 1;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .search-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            margin: -50px auto 2rem;
+            position: relative;
+            z-index: 3;
+        }
+        
+        .tracking-results {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .tracking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tracking-status {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .route-info {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 1.5rem 0;
+        }
+        
+        .tracking-timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #ddd;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -2.5rem;
+            top: 0;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background-color: #ddd;
+        }
+        
+        .timeline-item.active::after {
+            background-color: var(--primary-color);
+        }
+        
+        .timeline-item:last-child::before {
+            height: 0;
+        }
+        
+        .timeline-content {
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: #e64a2a;
+            border-color: #e64a2a;
+        }
+        
+        .status-aguardando {
+            background-color: #FFA500; /* Laranja */
+            color: #fff;
+        }
+        
+        .status-caminho {
+            background-color: #1E90FF; /* Azul vibrante */
+            color: #fff;
+        }
+        
+        .status-coletado {
+            background-color: #17A2B8; /* Ciano / Azul claro */
+            color: #fff;
+        }
+        
+        .status-distribuicao {
+            background-color: #6F42C1; /* Roxo */
+            color: #fff;
+        }
+        
+        .status-entregue {
+            background-color: #28A745; /* Verde */
+            color: #fff;
+        }
+
+        .status-rota-entrega {
+            background-color: #FD7E14; /* Laranja escuro */
+            color: #fff;
+        }
+        
+        .details-row {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .details-row:last-child {
+            border-bottom: none;
+        }
+        
+        .footer {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .header-section {
+                padding: 2rem 0;
+            }
+            
+            .search-box {
+                margin: -30px 15px 2rem;
+            }
+        }
+        
+        /* Estilo para código de rastreio formatado */
+        .codigo-rastreio {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="login.html">
+                                    <img src="" alt="Logo" height="40" class="me-2">
+                                            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="rastreio.html">Rastreio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Cabeçalho da Página -->
+    <header class="header-section">
+        <div class="container header-content">
+            <h1 class="display-4 fw-bold">Rastreio de Pacotes</h1>
+            <p class="lead">Acompanhe sua entrega em tempo real de forma simples e rápida</p>
+        </div>
+    </header>
+    
+    <!-- Formulário de Busca -->
+    <div class="container">
+        <div class="search-box">
+            <form method="get" action="">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="bi bi-search text-muted"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" id="codigo" name="codigo" placeholder="Digite o código de rastreio (ex: AM-2345-XYZ)" value="" required>
+                    <button class="btn btn-primary px-4" type="submit">Rastrear</button>
+                </div>
+                                    <div class="alert alert-danger mt-3 mb-0">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>                     </div>
+                            </form>
+        </div>
+        
+                    <!-- Resultados do Rastreio -->
+            <div class="tracking-results">
+                <div class="tracking-header">
+                    <div>
+                        <h2>Entrega #</h2>
+                        <p class="text-muted mb-0">Código de Rastreio: <span class="codigo-rastreio"></span></p>
+                    </div>
+                    <div>
+                        <span class="tracking-status ">
+                                                    </span>
+                    </div>
+                </div>
+                
+                <div class="route-info">
+                     
+                    <i class="bi bi-arrow-right mx-3"></i> 
+                                    </div>
+                
+                <!-- Detalhes da Entrega -->
+                <div class="row details-row">
+                    <div class="col-md-6">
+                        <h5><i class="bi bi-box-seam me-2"></i>Informações da Entrega</h5>
+                        <p><strong>Data da Solicitação:</strong> </p>
+                        <p><strong>Remetente:</strong> </p>
+                        <p><strong>Destinatário:</strong> </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><i class="bi bi-geo-alt me-2"></i>Endereço de Entrega</h5>
+                        <p></p>
+                        <p></p>
+                    </div>
+                </div>
+                
+                                <div class="details-row">
+                    <h5><i class="bi bi-card-text me-2"></i>Descrição do Conteúdo</h5>
+                    <p></p>
+                </div>
+                                
+                <!-- Timeline de Status -->
+                <h5 class="mt-4 mb-3"><i class="bi bi-clock-history me-2"></i>Status de Rastreamento</h5>
+                <div class="tracking-timeline">
+                    <div class="timeline-item ">
+                        <div class="timeline-content">
+                            <div class="timeline-title">Aguardando Coleta</div>
+                            <div class="text-muted">Solicitação registrada pelo cliente</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item ">
+                        <div class="timeline-content">
+                            <div class="timeline-title">A Caminho para Coleta</div>
+                            <div class="text-muted">O motoboy está a caminho para coletar o pacote</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item ">
+                        <div class="timeline-content">
+                            <div class="timeline-title">Pacote Coletado</div>
+                            <div class="text-muted">O pacote foi coletado com o remetente</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item ">
+                        <div class="timeline-content">
+                            <div class="timeline-title">Em Centro de Distribuição</div>
+                            <div class="text-muted">O pacote está no centro de distribuição</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item ">
+                        <div class="timeline-content">
+                            <div class="timeline-title">Entregue ao Destinatário</div>
+                            <div class="text-muted">A entrega foi concluída com sucesso</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                    <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Digite o código de rastreio correto para visualizar informações da sua entrega.
+            </div>
+                    <div class="text-center my-5">
+                <!-- Substituir a imagem com erro por um ícone do Bootstrap -->
+                <div class="mb-4">
+                    <i class="bi bi-box-seam text-primary" style="font-size: 5rem;"></i>
+                </div>
+                <h3>Como rastrear seu pacote?</h3>
+                <p class="text-muted">Digite o código de rastreio no campo acima para acompanhar o status da sua entrega.</p>
+                <p>Exemplo de código: <span class="codigo-rastreio">AM-2345-XYZ</span></p>
+            </div>
+            </div>
+    
+    <!-- Rodapé -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5></h5>
+                    <p>Especialistas em logística intermunicipal, entregando seus pacotes com segurança e rapidez.</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>Links Úteis</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="login.html">Home</a></li>
+                        <li><a href="rastreio.html">Rastreamento</a></li>
+                        <li><a href="login.html">Área do Cliente</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contato</h5>
+                    <p><i class="bi bi-envelope me-2"></i> </p>
+                    <p><i class="bi bi-telephone me-2"></i> </p>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3" style="border-color: rgba(255,255,255,0.1);">
+            <div class="text-center">
+                <p class="mb-0">&copy;  . Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <div id="install-banner" class="install-banner" style="display: none;">
+    <div class="install-content">
+        <div class="banner-logo">
+                            <img src="pwa-icons/icon-192x192.png" alt="Logo do Aplicativo" height="40">
+                            <img src="pwa-icons/icon-192x192.png" alt="Logo do Aplicativo" height="40">
+                    </div>
+        <p>Baixe nosso app</p>
+        <div class="install-actions">
+            <button id="install-button" class="btn btn-primary">Instalar</button>
+            <button id="close-install-banner" class="btn btn-outline-secondary">Não, obrigado</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .install-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #fff;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        z-index: 1000;
+    }
+    
+    .install-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .banner-logo {
+        margin-right: 15px;
+    }
+    
+    .install-content p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    
+    .install-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .install-content {
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+        }
+        
+        .banner-logo {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+    }
+</style>     
+    <!-- PWA Script -->
+    <script src="assets/js/pwa.js"></script>
+</body>
+</html>

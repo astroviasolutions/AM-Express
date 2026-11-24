@@ -1,0 +1,504 @@
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Faturamento - </title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <!-- Estilos personalizados -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 70px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            overflow-x: hidden;
+        }
+        
+        .sidebar {
+            background-color: var(--secondary-color);
+            height: 100vh;
+            color: white;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: var(--sidebar-width);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .sidebar.collapsed {
+            width: var(--sidebar-width-collapsed);
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            background-color: rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .sidebar-header h3 {
+            display: none;
+        }
+        
+        .sidebar.collapsed .sidebar-header img {
+            margin-right: 0 !important;
+        }
+        
+        .sidebar-header span {
+            color: var(--primary-color);
+        }
+        
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            min-width: 24px;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .main-content.expanded {
+            margin-left: var(--sidebar-width-collapsed);
+        }
+        
+        .status-badge {
+            padding: 0.5rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        /* Media queries para responsividade */
+        @media (max-width: 992px) {
+            :root {
+                --sidebar-width: 200px;
+            }
+            
+            .sidebar-toggle {
+                display: block;
+            }
+            
+            .sidebar-header h3 {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 0px;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                width: 100%;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+        }
+    </style>
+        <!-- Layout padrao do painel admin (igual em todas as telas) -->
+        <style>:where(:root){--primary-color: #0d6efd;--secondary-color: #6c757d;}</style>
+    <link rel="stylesheet" href="../../assets/css/admin-padrao.css">
+</head>
+<body>
+    <!-- Sidebar / Menu Lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                                    <img src="" alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                                <h3></h3>
+                            </div>
+        </div>
+        
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="../dashboard.html" class="nav-link">
+                    <i class="bi bi-speedometer2"></i> <span>Painel de Controle</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                                <a href="../notificacoes.html" class="nav-link">
+                    <i class="bi bi-bell"></i> <span>Notificações</span>
+                                            <span class="badge bg-danger ms-auto rounded-pill"></span>
+                                    </a>
+            </li>
+            <li class="nav-item">
+                <a href="../regioes/index.html" class="nav-link">
+                    <i class="bi bi-geo-alt"></i> <span>Regiões</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../tarifas/index.html" class="nav-link">
+                    <i class="bi bi-cash-coin"></i> <span>Tarifas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../clientes/index.html" class="nav-link">
+                    <i class="bi bi-people"></i> <span>Clientes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="index.html" class="nav-link active">
+                    <i class="bi bi-bicycle"></i> <span>Motoboys</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../entregas/index.html" class="nav-link">
+                    <i class="bi bi-box-seam"></i> <span>Entregas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../configuracoes/index.html" class="nav-link">
+                    <i class="bi bi-gear"></i> <span>Configurações</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../perfil.html" class="nav-link">
+                    <i class="bi bi-key"></i> <span>Alterar Senha</span>
+                </a>
+            </li>
+            <li class="nav-item mt-5">
+                <a href="../../login.html" class="nav-link">
+                    <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Conteúdo Principal -->
+    <div class="main-content" id="mainContent">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3">Histórico de Faturamento</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="../dashboard.html">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="index.html">Motoboys</a></li>
+                        <li class="breadcrumb-item active">Histórico de Faturamento</li>
+                    </ol>
+                </nav>
+            </div>
+            <a href="index.html" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+        
+                    <div class="alert alert-danger">
+                            </div>
+                
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-person-circle"></i> </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="mb-1"><i class="bi bi-envelope"></i> <strong>E-mail:</strong> </p>
+                                <p class="mb-1"><i class="bi bi-telephone"></i> <strong>Telefone:</strong> </p>
+                                <p class="mb-1"><i class="bi bi-geo-alt"></i> <strong>Cidade:</strong> </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1"><i class="bi bi-truck"></i> <strong>Veículo:</strong> </p>
+                                <p class="mb-1"><i class="bi bi-card-text"></i> <strong>Placa:</strong> </p>
+                                <p class="mb-1"><i class="bi bi-person-vcard"></i> <strong>CNH:</strong> </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-cash-stack"></i> Dados Financeiros</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">Valor Base</small>
+                                <h3 class="mb-3">R$ </h3>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Faturamento Atual</small>
+                                <h3 class="mb-3">R$ </h3>
+                            </div>
+                            <div class="col-12">
+                                <hr>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Total de Entregas:</span>
+                                    <strong></strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Faturadas:</span>
+                                    <strong></strong>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Pendentes:</span>
+                                    <strong></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-clock-history"></i> Histórico de Entregas</h5>
+                  <a href="#" class="btn btn-danger btn-sm" 
+                     onclick="return confirm('Tem certeza que deseja zerar o faturamento deste motoboy? Esta ação marcará todas as entregas como faturadas.')">
+                      <i class="bi bi-arrow-counterclockwise"></i> Zerar Faturamento
+                  </a>
+            </div>
+            <div class="card-body">
+                                    <div class="table-responsive">
+                        <table class="table table-hover" id="tabela-entregas">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Rota</th>
+                                    <th>Status</th>
+                                    <th>Data</th>
+                                    <th>Valor</th>
+                                    <th>Pagamento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                                                <tr>
+                                    <td></td>
+                                    <td>
+                                                                                                                            <br><small class="text-muted"></small>
+                                                                            </td>
+                                    <td>
+                                        <small>
+                                            <i class="bi bi-geo-alt text-primary"></i>                                             <i class="bi bi-arrow-right mx-1"></i>
+                                            <i class="bi bi-geo-alt-fill text-success"></i>                                         </small>
+                                    </td>
+                                    <td>
+                                                                                    <span class="badge bg-info">
+                                                <i class="bi bi-building"></i> Centro
+                                            </span>
+                                                                                    <span class="badge bg-success">
+                                                <i class="bi bi-check-circle"></i> Entregue
+                                            </span>
+                                                                            </td>
+                                    <td></td>
+                                    <td>R$ </td>
+                                    <td>
+                                                                                    <span class="badge text-bg-success">
+                                                <i class="bi bi-check-circle"></i> Faturado
+                                            </span>
+                                                                                    <span class="badge text-bg-warning">
+                                                <i class="bi bi-clock"></i> Pendente
+                                            </span>
+                                                                            </td>
+                                </tr>
+                                                            </tbody>
+                        </table>
+                    </div>
+                                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Este motoboy ainda não realizou nenhuma entrega.
+                    </div>
+                            </div>
+        </div>
+
+        <div class="card" style="margin-top: 25px">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-clock-history"></i> Comissões</h5>
+            </div>
+            <div class="card-body">
+                                    <div class="table-responsive">
+                        <table class="table table-hover" id="tabela-comissoes">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Rota</th>
+                                    <th>Data</th>
+                                    <th>Valor</th>
+                                    <th>Pagamento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                                                <tr>
+                                    <td></td>
+                                    <td>
+                                                                                                                            <br><small class="text-muted"></small>
+                                                                            </td>
+                                    <td>
+                                        <small>
+                                            <i class="bi bi-geo-alt text-primary"></i>                                             <i class="bi bi-arrow-right mx-1"></i>
+                                            <i class="bi bi-geo-alt-fill text-success"></i>                                         </small>
+                                    </td>
+                                    <td></td>
+                                    <td>R$ </td>
+                                    <td>
+                                                                                    <span class="badge text-bg-success">
+                                                <i class="bi bi-check-circle"></i> Faturado
+                                            </span>
+                                                                                    <span class="badge text-bg-warning">
+                                                <i class="bi bi-clock"></i> Pendente
+                                            </span>
+                                                                            </td>
+                                </tr>
+                                                            </tbody>
+                        </table>
+                    </div>
+                                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Este motoboy ainda não recebeu nenhuma comissão.
+                    </div>
+                            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+t   <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Inicializar DataTables
+            if ($.fn.DataTable.isDataTable('#tabela-entregas')) {
+                $('#tabela-entregas').DataTable().destroy();
+            }
+
+            if ($.fn.DataTable.isDataTable('#tabela-comissoes')) {
+                $('#tabela-comissoes').DataTable().destroy();
+            }
+
+            $('#tabela-comissoes').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+                },
+                pageLength: 10,
+                order: [[0, 'desc']],
+                responsive: true,
+                columnDefs: [
+                    { responsivePriority: 1, targets: 0 },
+                    { responsivePriority: 2, targets: -1 },
+                    { responsivePriority: 3, targets: -2 }
+                ]
+            });
+            
+            $('#tabela-entregas').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+                },
+                pageLength: 10,
+                order: [[0, 'desc']],
+                responsive: true,
+                columnDefs: [
+                    { responsivePriority: 1, targets: 0 },
+                    { responsivePriority: 2, targets: -1 },
+                    { responsivePriority: 3, targets: -2 }
+                ]
+            });
+            
+            // Controle da barra lateral
+            $('#sidebarToggle').on('click', function() {
+                $('#sidebar').toggleClass('collapsed');
+                $('#mainContent').toggleClass('expanded');
+            });
+            
+            // Controle para dispositivos móveis
+            $('#mobileToggle').on('click', function() {
+                $('#sidebar').toggleClass('show');
+            });
+            
+            // Detectar tamanho da tela para ajustar o menu
+            function checkWidth() {
+                if ($(window).width() < 768) {
+                    $('#sidebar').removeClass('show');
+                    $('#mainContent').addClass('expanded');
+                } else if ($(window).width() < 992) {
+                    $('#sidebar').removeClass('collapsed');
+                    $('#mainContent').removeClass('expanded');
+                }
+            }
+            
+            // Verificar no carregamento e ao redimensionar
+            checkWidth();
+            $(window).resize(checkWidth);
+        });
+    </script>
+</body>
+</html>

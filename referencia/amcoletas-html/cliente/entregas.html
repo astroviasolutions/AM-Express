@@ -1,0 +1,947 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Entregas - Cliente</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Estilos personalizados -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 70px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            overflow-x: hidden;
+        }
+        
+        .sidebar {
+            background-color: var(--secondary-color);
+            height: 100vh;
+            color: white;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: var(--sidebar-width);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .sidebar.collapsed {
+            width: var(--sidebar-width-collapsed);
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            background-color: rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .sidebar-header h3 {
+            display: none;
+        }
+        
+        .sidebar-header span {
+            color: var(--primary-color);
+        }
+        
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            min-width: 24px;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .main-content.expanded {
+            margin-left: var(--sidebar-width-collapsed);
+        }
+        
+        .top-bar {
+            background-color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .notification-badge {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .notification-badge .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary-color);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-header i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: #e64a2a;
+            border-color: #e64a2a;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        
+        .status-badge i {
+            margin-right: 0.4rem;
+        }
+        
+        .status-aguardando {
+            background-color: #B0B0B0; /* Cinza Claro */
+        }
+        
+        .status-caminho {
+            background-color: #4DA6FF; /* Azul Claro */
+        }
+        
+        .status-coletado {
+            background-color: #007BFF; /* Azul Escuro */
+        }
+        
+        .status-distribuicao {
+            background-color: #6C63FF; /* Roxo/Indigo */
+        }
+        
+        .status-rota-entrega {
+            background-color: #FFA500; /* Laranja/Ambar */
+        }
+        
+        .status-entregue {
+            background-color: #4CAF50; /* Verde Sucesso */
+        }
+
+        .status-cancelado {
+            background-color: #DC3545; /* Vermelho */
+        }
+
+        /* Novos estilos para cards de entrega */
+        .entrega-card {
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .entrega-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+        
+        .entrega-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 0.75rem;
+        }
+        
+        .entrega-id {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .entrega-data {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .entrega-rota {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            flex-wrap: wrap;
+        }
+        
+        .entrega-cidade {
+            display: flex;
+            align-items: center;
+            margin-right: 0.5rem;
+        }
+        
+        .entrega-cidade i {
+            margin-right: 0.25rem;
+            color: #6c757d;
+        }
+        
+        .entrega-seta {
+            margin: 0 0.5rem;
+            color: #6c757d;
+        }
+        
+        .entrega-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .entrega-acoes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        /* Estilos para o filtro colapsável */
+        .filtro-card {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+        }
+        
+        .filtro-card .card-header {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .filtro-card .card-header .toggle-icon {
+            transition: transform 0.3s;
+        }
+        
+        .filtro-card .card-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+        
+        .filtro-card .card-body {
+            transition: max-height 0.4s ease-out;
+            overflow: hidden;
+        }
+        
+        .filtro-card .card-body.collapsed {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-top: none;
+        }
+        
+        .filtro-card .btn-filter {
+            background-color: #4747FA;
+            color: white;
+        }
+        
+        .filtro-card .btn-filter:hover {
+            background-color: #3636c5;
+        }
+        
+        .filtro-card .btn-clear {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #ced4da;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table th {
+            white-space: nowrap;
+            background-color: #f8f9fa;
+        }
+        
+        /* Media queries para responsividade */
+        @media (max-width: 992px) {
+            :root {
+                --sidebar-width: 200px;
+            }
+            
+            .sidebar-toggle {
+                display: block;
+        }
+        
+            .sidebar-header h3 {
+                font-size: 1.2rem;
+            }
+            
+            .entrega-card {
+                padding: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 0px;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                width: 100%;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .top-bar {
+                margin-top: 0;
+                padding: 0.8rem 1rem;
+            }
+            
+            .top-bar h1 {
+                font-size: 1.2rem;
+            }
+            
+            .user-info p {
+                font-size: 0.9rem;
+            }
+            
+            .user-info small {
+                font-size: 0.7rem;
+            }
+            
+            .status-badge {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
+            }
+            
+            .btn-sm {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+            
+            .entrega-acoes {
+                margin-top: 0.75rem;
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-info {
+                margin-top: 1rem;
+            }
+            
+            .card-header {
+                padding: 0.75rem 1rem;
+            }
+            
+            .card-body {
+                padding: 0.75rem;
+            }
+            
+            .entrega-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .entrega-data {
+                margin-top: 0.25rem;
+            }
+            
+            .status-tabs {
+                gap: 0.35rem;
+            }
+            
+            .status-tab {
+                padding: 0.6rem 1rem;
+                min-width: auto;
+            }
+        }
+
+        /* Tab de status para visualização rápida */
+        .status-tabs {
+            display: flex;
+            flex-wrap: nowrap;
+            margin-bottom: 1.5rem;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            scrollbar-width: none; /* Firefox */
+            justify-content: flex-start;
+        }
+        
+        .status-tabs::-webkit-scrollbar {
+            display: none; /* Esconde scrollbar no Chrome/Safari */
+        }
+        
+        .status-tab {
+            padding: 0.7rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background-color: #f8f9fa;
+            border: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            text-decoration: none;
+            color: #495057;
+            flex-shrink: 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .status-tab:hover {
+            transform: translateY(-2px);
+        }
+        
+        .status-tab.active {
+            color: white;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+        
+        .status-tab i {
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .status-tab .badge {
+            margin-left: 0.5rem;
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        .status-tab.active .badge {
+            background-color: white;
+            color: var(--primary-color);
+        }
+        
+        .status-tab-todas {
+            background-color: #505CFF;
+            color: white;
+        }
+        
+        .status-tab-aguardando {
+            background-color: #FFA500;
+            color: white;
+        }
+        
+        .status-tab-caminho {
+            background-color: #1E90FF;
+            color: white;
+        }
+        
+        .status-tab-coletado {
+            background-color: #007BFF; /* Azul Escuro */
+            color: white;
+        }
+        
+        .status-tab-distribuicao {
+            background-color: #6C63FF; /* Roxo/Indigo */
+            color: white;
+        }
+        
+        .status-tab-rota-entrega {
+            background-color: #FFA500; /* Laranja/Ambar */
+            color: white;
+        }
+        
+        .status-tab-entregue {
+            background-color: #4CAF50; /* Verde Sucesso */
+            color: white;
+        }
+
+        .status-tab-cancelado {
+            background-color: #DC3545; /* Vermelho */
+            color: white;
+        }
+        
+        @media (max-width: 576px) {
+            .status-tabs {
+                gap: 0.35rem;
+                padding-bottom: 0.75rem;
+            }
+            
+            .status-tab {
+                padding: 0.6rem 1rem;
+                min-width: auto;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar / Menu Lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                                    <img src=".." alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                                <h3></h3>
+                            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+        </div>
+        
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="solicitar_coleta.html" class="nav-link">
+                    <i class="bi bi-box-seam"></i> <span>Solicitar Coleta</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="entregas.html" class="nav-link active">
+                    <i class="bi bi-truck"></i> <span>Minhas Entregas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="notificacoes.html" class="nav-link">
+                    <i class="bi bi-bell"></i> <span>Notificações</span>
+                                            <span class="badge bg-danger ms-2"></span>
+                                    </a>
+            </li>
+            <li class="nav-item">
+                <a href="perfil.html" class="nav-link">
+                    <i class="bi bi-person"></i> <span>Meu Perfil</span>
+                </a>
+            </li>
+            <li class="nav-item mt-5">
+                <a href="../login.html" class="nav-link">
+                    <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Conteúdo Principal -->
+    <div class="main-content" id="mainContent">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <div class="d-flex align-items-center">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+            <h1 class="h4 mb-0">Minhas Entregas</h1>
+            </div>
+            
+            <div class="user-info">
+                <div class="notification-badge me-3">
+                    <a href="notificacoes.html" class="text-dark">
+                        <i class="bi bi-bell fs-4"></i>
+                                                    <span class="badge rounded-pill"></span>
+                                            </a>
+                </div>
+                
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Cliente</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mensagens de Erro e Sucesso -->
+                    <div class="alert alert-danger"></div>
+                
+                    <div class="alert alert-success"></div>
+                
+        <!-- Filtros de Busca -->
+        <div class="card mb-4 filtro-card">
+            <div class="card-header d-flex justify-content-between align-items-center collapsed" id="filtroHeader">
+                <div>
+                <i class="bi bi-funnel me-2"></i> Filtrar Entregas
+            </div>
+                <i class="bi bi-chevron-down toggle-icon"></i>
+            </div>
+            <div class="card-body collapsed" id="filtroBody">
+                <form method="get" action="" class="row g-3">
+                    <div class="col-md-12">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">Todos</option>
+                            <option value="aguardando_coleta" >Aguardando Coleta</option>
+                            <option value="a_caminho" >A Caminho</option>
+                            <option value="coletado" >Coletado</option>
+                            <option value="centro_distribuicao" >Centro de Distribuição</option>
+                            <option value="Em_Rota_de_entrega" >Em Rota de entrega para o Destinatário</option>
+                            <option value="entregue" >Entregue</option>
+                            <option value="cancelado" >Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="data_inicio" class="form-label">Data Inicial</label>
+                        <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="" placeholder="dd/mm/aaaa">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="data_fim" class="form-label">Data Final</label>
+                        <input type="date" class="form-control" id="data_fim" name="data_fim" value="" placeholder="dd/mm/aaaa">
+                    </div>
+                    <div class="col-12 d-flex justify-content-end mt-3">
+                        <button type="submit" class="btn btn-filter me-2">
+                            <i class="bi bi-search me-1"></i> Filtrar
+                        </button>
+                        <a href="entregas.html" class="btn btn-clear">
+                            <i class="bi bi-x-circle me-1"></i> Limpar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Status rápidos para filtro fácil -->
+        <div class="status-tabs">
+            <a href="entregas.html" class="status-tab  status-tab-todas">
+                <i class="bi bi-boxes"></i> Todas
+            </a>
+            <a href="entregas.html" class="status-tab  status-tab-aguardando">
+                <i class="bi bi-clock-history"></i> Aguardando
+            </a>
+            <a href="entregas.html" class="status-tab  status-tab-caminho">
+                <i class="bi bi-truck"></i> A Caminho
+            </a>
+            <a href="entregas.html" class="status-tab  status-tab-coletado">
+                <i class="bi bi-box-seam"></i> Coletado
+            </a>
+            <a href="entregas.html" class="status-tab  status-tab-distribuicao">
+                <i class="bi bi-building"></i> Centro Dist.
+            </a>
+            <a href="entregas.html" class="status-tab  status-tab-rota-entrega">
+                <i class="bi bi-truck"></i> Em Rota
+            </a>
+            <a href="entregas.html" class="status-tab  status-tab-entregue">
+                <i class="bi bi-check-circle"></i> Entregue
+            </a>
+            <a href="entregas.html" class="status-tab  status-tab-cancelado">
+                <i class="bi bi-x-circle"></i> Cancelado
+            </a>
+        </div>
+        
+        <!-- Lista de Entregas -->
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-truck me-2"></i> Histórico de Entregas
+                <span class="badge bg-secondary ms-2"> entrega(s)</span>
+            </div>
+            <div class="card-body">
+                                    <div class="text-center py-5">
+                        <i class="bi bi-inbox fs-1 text-muted"></i>
+                        <p class="mt-3 mb-0">Nenhuma entrega encontrada.</p>
+                        <a href="solicitar_coleta.html" class="btn btn-primary mt-3">
+                            <i class="bi bi-box-seam me-2"></i> Solicitar Nova Coleta
+                        </a>
+                    </div>
+                                    <!-- Visualização em cards para mobile e desktop -->
+                    <div class="d-md-none">
+                                                                                <div class="entrega-card">
+                                <div class="entrega-header">
+                                    <div class="entrega-id">Coleta #</div>
+                                    <div class="entrega-data">
+                                        <i class="bi bi-calendar-event"></i>
+                                                                            </div>
+                                </div>
+                                <div class="entrega-rota">
+                                    <div class="entrega-cidade">
+                                        <i class="bi bi-geo-alt"></i>
+                                                                            </div>
+                                    <div class="entrega-seta">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </div>
+                                    <div class="entrega-cidade">
+                                        <i class="bi bi-geo"></i>
+                                                                            </div>
+                                </div>
+                                <div class="entrega-footer">
+                                    <div>
+                                        <span class="status-badge ">
+                                            <i class="bi "></i>
+                                                                                    </span>
+                                    </div>
+                                                                        <div class="mt-2">
+                                        <i class="bi bi-person"></i>
+                                        <span></span>
+                                        <span class="text-muted d-block small">
+                                            <i class="bi bi-telephone"></i>
+                                                                                    </span>
+                                    </div>
+                                                                            <div class="mt-2 text-muted">
+                                            <i class="bi bi-person-x"></i> Motoboy não atribuído
+                                        </div>
+                                                                        <div class="entrega-acoes">
+                                        <a href="entrega_detalhes.html" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> Detalhes
+                                        </a>
+                                        <a href="gerar_etiqueta.html" class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-tag"></i> Etiqueta
+                                        </a>
+                                                                                <a href="#" 
+                                          class="btn btn-sm btn-outline-danger"
+                                          onclick="return confirm('Tem certeza que deseja cancelar esta coleta?')">
+                                            <i class="bi bi-x-circle"></i> Cancelar
+                                        </a>
+                                                                            </div>
+                                </div>
+                            </div>
+                                            </div>
+                    
+                    <!-- Visualização em tabela para desktop -->
+                    <div class="d-none d-md-block table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Coleta</th>
+                                    <th>Origem → Destino</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Motoboy</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                                                    <tr>
+                                        <td>Coleta #</td>
+                                        <td>
+                                            <div></div>
+                                            <div><i class="bi bi-arrow-down text-muted"></i></div>
+                                            <div></div>
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                                                                        <span class="status-badge ">
+                                                <i class="bi "></i>
+                                                                                            </span>
+                                        </td>
+                                        <td>
+                                                                                            <div></div>
+                                                <small class="text-muted"></small>
+                                                                                            <span class="text-muted">Não atribuído</span>
+                                                                                    </td>
+                                        <td>
+                                            <a href="entrega_detalhes.html" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i> Detalhes
+                                            </a>
+                                            <a href="gerar_etiqueta.html" class="btn btn-sm btn-outline-success">
+                                                <i class="bi bi-tag"></i> Etiqueta
+                                            </a>
+                                                                                        <a href="#" 
+                                               class="btn btn-sm btn-outline-danger"
+                                               onclick="return confirm('Tem certeza que deseja cancelar esta coleta?')">
+                                                <i class="bi bi-x-circle"></i> Cancelar
+                                            </a>
+                                                                                    </td>
+                                    </tr>
+                                                            </tbody>
+                        </table>
+                    </div>
+                            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Funcionalidade para o menu lateral recolhível
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const mainContent = document.getElementById('mainContent');
+            const mobileToggle = document.getElementById('mobileToggle');
+            
+            // Função para alternar o menu lateral em desktop
+            if(sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    mainContent.classList.toggle('expanded');
+                    
+                    // Alterna o ícone do botão
+                    const icon = sidebarToggle.querySelector('i');
+                    if (icon.classList.contains('bi-chevron-left')) {
+                        icon.classList.replace('bi-chevron-left', 'bi-chevron-right');
+                    } else {
+                        icon.classList.replace('bi-chevron-right', 'bi-chevron-left');
+                    }
+                });
+            }
+            
+            // Função para alternar o menu lateral em dispositivos móveis
+            if(mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                });
+            }
+            
+            // Fechar o menu ao clicar fora dele em dispositivos móveis
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnMobileToggle = mobileToggle.contains(event.target);
+                
+                if (window.innerWidth <= 768 && !isClickInsideSidebar && !isClickOnMobileToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+            
+            // Ajustar em caso de redimensionamento da tela
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const filtroHeader = document.getElementById('filtroHeader');
+            const filtroBody = document.getElementById('filtroBody');
+            
+            // Função para alternar o filtro
+            filtroHeader.addEventListener('click', function() {
+                const isCollapsed = filtroHeader.classList.contains('collapsed');
+                
+                if (isCollapsed) {
+                    filtroHeader.classList.remove('collapsed');
+                    filtroBody.classList.remove('collapsed');
+                    filtroBody.style.maxHeight = filtroBody.scrollHeight + 'px';
+                } else {
+                    filtroHeader.classList.add('collapsed');
+                    filtroBody.classList.add('collapsed');
+                    filtroBody.style.maxHeight = '0';
+                }
+            });
+            
+            // Verifica se há filtros ativos e abre o painel caso positivo
+            const hasActiveFilter = null;
+            if (hasActiveFilter) {
+                filtroHeader.click();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Motoboy] - </title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="">
+    <meta name="description" content="Painel do Motoboy - Sistema de Logística Intermunicipal">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../pwa-icons/icon-192x192.png">
+    <link rel="stylesheet" href="../assets/css/atualizacao-automatica.css">
+    <script src="../assets/js/pwa.js" defer></script>
+
+    <style type='text/css'>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 70px;
+        }
+    </style>
+    <link rel="stylesheet" href="../assets/css/motoboy.css">
+</head>    
+
+<body>
+  <!-- Sidebar / Menu Lateral -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                            <img src="" alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                        <h3> </h3>
+                    </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+    </div>
+    
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a href="dashboard.html" class="nav-link ">
+                <i class="bi bi-speedometer2"></i>
+                <span>Painel de Controle</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="notificacoes.html" class="nav-link ">
+                <i class="bi bi-bell"></i> <span>Notificações</span>
+                                    <span id="notificacoesBadge" class="badge rounded-pill bg-danger ms-auto"></span>
+                                    <span id="notificacoesBadge" class="badge rounded-pill bg-danger ms-auto" style="display: none;">0</span>
+                            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="finalizar_entrega.html" class="nav-link ">
+                <i class="bi bi-check-circle"></i>
+                <span>Finalizar uma Entrega</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="indicacoes.html" class="nav-link ">
+                <i class="bi bi-people-fill"></i>
+                <span>Minhas Indicações</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="perfil.html" class="nav-link ">
+                <i class="bi bi-person"></i>
+                <span>Meu Perfil</span>
+            </a>
+        </li>
+
+        <li class="nav-item mt-5">
+            <a href="../login.html" class="nav-link">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sair</span>
+            </a>
+        </li>
+    </ul>
+</div>    
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <h1 class="h4 mb-0">Atualizar Entrega #</h1>
+            
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Motoboy - </small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mensagem de sucesso ou erro -->
+                    <div class="alert alert- alert-dismissible fade show" role="alert">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+                
+        <!-- Detalhes da Entrega -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-info-circle"></i> Detalhes da Entrega
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Informações da Coleta</h5>
+                                <p><strong>Cliente:</strong> </p>
+                                <p><strong>Telefone:</strong> </p>
+                                <p><strong>Endereço de Coleta:</strong> </p>
+                                <p><strong>Cidade de Origem:</strong> </p>
+                                <p><strong>Data da Solicitação:</strong> </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Informações da Entrega</h5>
+                                <p><strong>Destinatário:</strong> </p>
+                                <p><strong>Endereço de Entrega:</strong> </p>
+                                <p><strong>Cidade de Destino:</strong> </p>
+                                <p><strong>Status Atual:</strong> 
+                                                                        <span class="status-badge "></span>
+                                </p>
+                                <p><strong>Descrição:</strong> </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Formulário de Atualização de Status -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-arrow-up-circle"></i> Atualizar Status da Entrega
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="" id="formAtualizacao">
+                            <div class="mb-3">
+                                <label for="novo_status" class="form-label">Novo Status</label>
+                                <select class="form-select" id="novo_status" name="novo_status" required>
+                                                                            <option value="coletado">Coletado - Pacote em mãos</option>
+                                                                            <option value="centro_distribuicao">Entregue no Centro de Distribuição</option>
+                                        <option value="entregue">Entregue ao Destinatário</option>
+                                                                    </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="observacao" class="form-label">Observações</label>
+                                <textarea class="form-control" id="observacao" name="observacao" rows="3" placeholder="Adicione informações relevantes sobre a entrega..."></textarea>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="dashboard.html" class="btn btn-outline-secondary me-md-2">
+                                    <i class="bi bi-arrow-left"></i> Voltar
+                                </a>
+                                <button type="submit" name="atualizar_status" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Atualizar Status
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Modal de Confirmação para Atualização de Status -->
+    <div class="modal fade" id="confirmacaoModal" tabindex="-1" aria-labelledby="confirmacaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmacaoModalLabel">Confirmar Atualização de Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmacaoTexto">Tem certeza que deseja atualizar o status desta entrega?</p>
+                    <div id="infoEntrega" class="alert alert-info">
+                        <p id="statusEntrega" class="mb-0"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmarAtualizacao">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Referências aos elementos
+            const formAtualizacao = document.getElementById('formAtualizacao');
+            const selectStatus = document.getElementById('novo_status');
+            const confirmacaoModal = new bootstrap.Modal(document.getElementById('confirmacaoModal'));
+            const btnConfirmar = document.getElementById('confirmarAtualizacao');
+            const statusEntrega = document.getElementById('statusEntrega');
+            
+            // Prevenir envio padrão do formulário
+            if (formAtualizacao) {
+                formAtualizacao.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Obter o valor selecionado
+                    const novoStatus = selectStatus.value;
+                    
+                    // Texto específico baseado no status
+                    let textoStatus = '';
+                    switch (novoStatus) {
+                        case 'coletado':
+                            textoStatus = 'O pacote foi coletado e está em suas mãos.';
+                            break;
+                        case 'centro_distribuicao':
+                            textoStatus = 'O pacote foi entregue no centro de distribuição.';
+                            break;
+                        case 'entregue':
+                            textoStatus = 'O pacote foi entregue diretamente ao destinatário.';
+                            break;
+                    }
+                    
+                    // Atualizar o texto no modal
+                    statusEntrega.textContent = textoStatus;
+                    
+                    // Mostrar o modal
+                    confirmacaoModal.show();
+                });
+            }
+            
+            // Ao confirmar no modal, enviar o formulário
+            if (btnConfirmar) {
+                btnConfirmar.addEventListener('click', function() {
+                    // Fechar o modal e enviar o formulário
+                    confirmacaoModal.hide();
+                    if (formAtualizacao) {
+                        formAtualizacao.submit();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

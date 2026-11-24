@@ -1,0 +1,1551 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Cliente</title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="">
+    <meta name="description" content="Painel do Cliente - Sistema de Logística Intermunicipal">
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../pwa-icons/icon-192x192.png">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="../assets/css/atualizacao-automatica.css">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 70px;
+            --blue-card: #4169E1;
+            --orange-card: #FA5430;
+            --green-card: #27ae60;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            overflow-x: hidden;
+        }
+        
+        .sidebar {
+            background-color: var(--secondary-color);
+            height: 100vh;
+            color: white;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: var(--sidebar-width);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .sidebar.collapsed {
+            width: var(--sidebar-width-collapsed);
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            background-color: rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .sidebar-header h3 {
+            display: none;
+        }
+        
+        .sidebar.collapsed .sidebar-header img {
+            margin-right: 0 !important;
+        }
+        
+        .sidebar-header span {
+            color: var(--primary-color);
+        }
+        
+        .sidebar-toggle {
+            display: block;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            min-width: 24px;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .main-content.expanded {
+            margin-left: var(--sidebar-width-collapsed);
+        }
+        
+        .top-bar {
+            background-color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .notification-badge {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .notification-badge .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary-color);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+        }
+        
+        /* Novas classes para cards coloridos */
+        .blue-card {
+            background-color: var(--blue-card);
+            color: white;
+        }
+        
+        .orange-card {
+            background-color: var(--orange-card);
+            color: white;
+        }
+        
+        .green-card {
+            background-color: var(--green-card);
+            color: white;
+        }
+        
+        .colored-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+        
+        .colored-card h3 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+        
+        .colored-card p {
+            margin-bottom: 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-aguardando {
+            background-color: #FFA500; /* Laranja */
+            color: #fff;
+        }
+        
+        .status-caminho {
+            background-color: #0d6efd; /* Azul */
+            color: #fff;
+        }
+        
+        .status-coletado {
+            background-color: #198754; /* Verde */
+            color: #fff;
+        }
+        
+        .status-distribuicao {
+            background-color: #6c757d; /* Cinza */
+            color: #fff;
+        }
+        
+        .status-entregue {
+            background-color: #20c997; /* Verde água */
+            color: #fff;
+        }
+
+        .status-cancelado {
+            background-color: #DC3545; /* Vermelho */
+            color: #fff;
+        }
+        
+        /* Estilos para faturas */
+        .fatura-card {
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+        
+        .fatura-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .faturas-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .faturas-toggle:hover {
+            color: var(--primary-color);
+        }
+        
+        .faturas-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        
+        .faturas-content.show {
+            max-height: 2000px;
+        }
+        
+        /* Novas classes para barras de progresso */
+        .progress-container {
+            margin-bottom: 10px;
+        }
+        
+        .progress-container .label-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .progress-container .label {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .progress-container .label i {
+            margin-right: 6px;
+            font-size: 1rem;
+        }
+        
+        .progress-container .count {
+            font-weight: bold;
+            background-color: #f8f9fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+        
+        .progress-bar-aguardando {
+            background-color: #FFA500; /* Laranja */
+        }
+        
+        .progress-bar-caminho {
+            background-color: #0d6efd; /* Azul */
+        }
+        
+        .progress-bar-coletado {
+            background-color: #198754; /* Verde */
+        }
+        
+        .progress-bar-distribuicao {
+            background-color: #6C63FF; /* Roxo/Indigo */
+        }
+        
+        .progress-bar-entregue {
+            background-color: #4CAF50; /* Verde sucesso */
+        }
+        
+        .progress-bar-rota {
+            background-color: #FFA500; /* Laranja/Ambar */
+        }
+        
+        /* Estilos para lista de entregas recentes */
+        .entrega-recente {
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .entrega-recente:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .entrega-recente .numero {
+            font-weight: bold;
+            color: #6c757d;
+            margin-right: 8px;
+        }
+        
+        .entrega-recente .status-icon {
+            margin-right: 8px;
+            padding: 6px;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .entrega-recente .status-icon.aguardando {
+            background-color: #fff3cd;
+            color: #FFA500;
+        }
+        
+        .entrega-recente .status-icon.caminho {
+            background-color: #cfe2ff;
+            color: #0d6efd;
+        }
+        
+        .entrega-recente .status-icon.rota {
+            background-color: #fff3cd;
+            color: #FFA500;
+        }
+        
+        .entrega-recente .status-icon.entregue {
+            background-color: #d1e7dd;
+            color: #20c997;
+        }
+
+        .entrega-recente .status-icon.cancelado {
+            background-color: #f8d7da;
+            color: #DC3545;
+        }
+        
+        .entrega-recente .rota {
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+        }
+        
+        .entrega-recente .cidade {
+            display: flex;
+            align-items: center;
+            margin-right: 8px;
+        }
+        
+        .entrega-recente .cidade i {
+            margin-right: 4px;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .entrega-recente .cidade-nome {
+            font-size: 0.9rem;
+        }
+        
+        .entrega-recente .data {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .entrega-recente .data i {
+            margin-right: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* Estilos para dispositivos móveis */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: var(--sidebar-width);
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1000;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .main-content.expanded {
+                margin-left: 0;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .user-info {
+                display: flex;
+                align-items: center;
+            }
+            
+            .user-info p {
+                font-size: 0.9rem;
+            }
+            
+            .user-info small {
+                font-size: 0.7rem;
+            }
+            
+            .colored-card {
+                text-align: center;
+            }
+            
+            .row.mb-4 {
+                margin-right: -5px;
+                margin-left: -5px;
+            }
+            
+            .row.mb-4 > div {
+                padding-right: 5px;
+                padding-left: 5px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .top-bar {
+                padding: 1rem;
+            }
+            
+            .user-info {
+                margin-top: 0;
+            }
+
+            /* Ajustes para ocupar quase toda a largura em mobile */
+            .main-content {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+            
+            .container, .container-fluid, .container-sm, .container-md, .container-lg, .container-xl {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+            
+            .row {
+                margin-left: -0.25rem;
+                margin-right: -0.25rem;
+            }
+            
+            .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12, 
+            .col-sm, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12,
+            .col-md, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+                padding-left: 0.25rem;
+                padding-right: 0.25rem;
+            }
+            
+            .card {
+                margin-bottom: 0.75rem;
+            }
+            
+            .card-body {
+                padding: 0.75rem;
+            }
+        }
+        
+        #statusChart {
+            display: none;
+        }
+        
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        .whatsapp-btn img {
+            width: 50px;
+            height: 50px;
+        }
+        
+        /* Estilos para a timeline de entregas */
+        .delivery-timeline {
+            position: relative;
+            padding: 0.5rem 0;
+            perspective: 1000px;
+        }
+        
+        .status-item {
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        
+        .status-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .status-icon-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .status-icon-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-icon-circle::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .status-icon-circle:hover {
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+        
+        .status-icon-circle:hover::after {
+            opacity: 1;
+        }
+        
+        .status-icon-circle i {
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .status-icon-circle:hover i {
+            transform: scale(1.2);
+        }
+        
+        .status-line {
+            position: absolute;
+            top: 45px;
+            bottom: -20px;
+            left: 50%;
+            width: 3px;
+            background: linear-gradient(to bottom, #e9ecef 0%, rgba(233, 236, 239, 0.5) 100%);
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        
+        .status-item:last-child .status-line {
+            display: none;
+        }
+        
+        .status-content {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 12px 18px;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 3px solid transparent;
+        }
+        
+        .status-content:hover {
+            background-color: #ffffff;
+            transform: translateY(-3px) translateX(3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .status-content.active-aguardando {
+            border-left-color: #FFA500;
+        }
+        
+        .status-content.active-caminho {
+            border-left-color: #0d6efd;
+        }
+        
+        .status-content.active-coletado {
+            border-left-color: #198754;
+        }
+        
+        .status-content.active-distribuicao {
+            border-left-color: #6C63FF;
+        }
+        
+        .status-content.active-rota {
+            border-left-color: #FFA500;
+        }
+        
+        .status-content.active-entregue {
+            border-left-color: #20c997;
+        }
+        
+        .status-badge {
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-badge::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            transition: all 0.5s;
+        }
+        
+        .status-badge:hover::before {
+            transform: scale(3);
+            opacity: 0;
+        }
+        
+        .status-item h6 {
+            transition: all 0.3s;
+        }
+        
+        .status-item:hover h6 {
+            transform: translateX(3px);
+            color: var(--secondary-color);
+        }
+        
+        .status-item small {
+            transition: all 0.3s;
+        }
+        
+        .status-item:hover small {
+            opacity: 0.8;
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 165, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 165, 0, 0);
+            }
+        }
+        
+        /* Animação do caminhão no final do card */
+        .truck-animation {
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            font-size: 2rem;
+            color: #0d6efd;
+            animation: truckPulse 2s infinite;
+        }
+
+        @keyframes truckPulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+        }
+
+        /* Animação do caminhão nos status */
+        .truck-animation {
+            position: relative;
+            font-size: 1.1rem;
+            animation: truckPulse 2s infinite;
+        }
+
+        @keyframes truckPulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Posicionamento responsivo dos caminhões */
+        @media (min-width: 1400px) {
+            .status-item .truck-animation {
+                right: 80px !important;
+            }
+        }
+        
+        @media (min-width: 1200px) and (max-width: 1399px) {
+            .status-item .truck-animation {
+                right: 70px !important;
+            }
+        }
+        
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .status-item .truck-animation {
+                right: 60px !important;
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 991px) {
+            .status-item .truck-animation {
+                right: 55px !important;
+            }
+        }
+        
+        @media (min-width: 576px) and (max-width: 767px) {
+            .status-item .truck-animation {
+                right: 50px !important;
+            }
+        }
+        
+        @media (max-width: 575px) {
+            .status-item .truck-animation {
+                right: 45px !important;
+                font-size: 1.3rem !important;
+            }
+        }
+        
+        /* Estilos para dispositivos móveis */
+        @media (max-width: 768px) {
+            .status-content {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+            
+            .status-badge {
+                margin-top: 5px;
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+<body data-tipo-usuario="cliente" data-usuario-id="">
+    <!-- Sidebar / Menu Lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                                    <img src="" alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                                <h3> </h3>
+                            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+        </div>
+        
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link active">
+                    <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="solicitar_coleta.html" class="nav-link">
+                    <i class="bi bi-box-seam"></i> <span>Solicitar Coleta</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="entregas.html" class="nav-link">
+                    <i class="bi bi-truck"></i> <span>Minhas Entregas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="notificacoes.html" class="nav-link">
+                    <i class="bi bi-bell"></i> <span>Notificações</span>
+                                            <span class="badge bg-danger ms-2"></span>
+                                    </a>
+            </li>
+            <li class="nav-item">
+                <a href="perfil.html" class="nav-link">
+                    <i class="bi bi-person"></i> <span>Meu Perfil</span>
+                </a>
+            </li>
+            <li class="nav-item mt-5">
+                <a href="../login.html" class="nav-link">
+                    <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Conteúdo Principal -->
+    <div class="main-content" id="mainContent">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <div class="d-flex align-items-center">
+                <button id="mobileToggle" class="mobile-toggle me-3">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+                <h1 class="h4 mb-0">Painel do Cliente</h1>
+            </div>
+            
+            <div class="user-info">
+                <div class="notification-badge me-3">
+                    <a href="notificacoes.html" class="text-dark">
+                        <i class="bi bi-bell fs-4"></i>
+                                                    <span class="badge rounded-pill"></span>
+                                            </a>
+                </div>
+                
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Cliente</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Informações Financeiras do Cliente -->
+        <div class="row mb-4">
+            <div class="col-md-4 col-6 mb-3">
+                <div class="colored-card blue-card h-100" style="border-radius: 15px; overflow: hidden; box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);">
+                    <div class="text-center py-4">
+                        <div class="mb-3">
+                            <i class="bi bi-currency-dollar fs-1"></i>
+                        </div>
+                    <h3>R$ </h3>
+                    <p>Valor base para suas coletas</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 col-6 mb-3">
+                <div class="colored-card orange-card h-100" style="border-radius: 15px; overflow: hidden; box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);">
+                    <div class="text-center py-4">
+                        <div class="mb-3">
+                            <i class="bi bi-graph-up fs-1"></i>
+                        </div>
+                    <h3>R$ </h3>
+                    <p>Total gasto em entregas</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Precisa enviar um pacote? -->
+            <div class="col-md-4 mb-3">
+                <div class="card h-100" style="background-color: var(--green-card); color: white; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);">
+                    <div class="card-body text-center py-4">
+                        <div class="mb-3">
+                            <i class="bi bi-box-seam fs-1"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-3" style="font-size: 1.4rem;">Precisa enviar um pacote?</h5>
+                        <p class="card-text mb-4">Faça sua solicitação de coleta aqui</p>
+                        <a href="solicitar_coleta.html" class="btn btn-light btn-lg fw-bold text-success w-100 mb-3" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transition: all 0.3s;">
+                            <i class="bi bi-box-seam me-2"></i> Solicitar Coleta
+                        </a>
+                        <div>
+                            <a href="cidades_atendidas.html" class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-geo-alt"></i> Ver Cidades Atendidas
+                        </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Novas seções com layout semelhante à referência -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100" style="border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                    <div class="card-header d-flex align-items-center justify-content-between" style="background-color: var(--secondary-color); color: white; border-bottom: none;">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-truck me-2"></i> 
+                            <span class="fw-bold">Minhas Entregas</span>
+                    </div>
+                        <a href="entregas.html" class="btn btn-sm btn-outline-light">
+                            <i class="bi bi-eye"></i> Ver todas
+                        </a>
+                                </div>
+                    <div class="card-body p-4">
+                        <div class="delivery-timeline">
+                            <!-- Status 1: Aguardando Coleta -->
+                            <div class="status-item d-flex mb-3" style="position: relative;">
+                                <div class="status-icon-container me-3">
+                                    <div class="status-icon-circle " style="background-color: ;">
+                                        <i class="bi bi-clock-history" style="color: white;"></i>
+                            </div>
+                                </div>
+                                <div class="status-content d-flex justify-content-between align-items-center w-100 ">
+                                    <div class="d-flex flex-column align-items-start">
+                                        <h6 class="mb-0 fw-bold">Aguardando Coleta</h6>
+                                        <small class="text-muted">Pacotes aguardando retirada</small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                                                                    <div class="truck-animation">
+                                                <i class="bi bi-truck" style="color: #FFA500; font-size: 1.5rem;"></i>
+                                            </div>
+                                                                                <div class="status-badge" style="background-color: ; color: white; border-radius: 20px; padding: 5px 12px; font-weight: bold;">
+                                                                                    </div>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                            <!-- Status 2: A Caminho -->
+                            <div class="status-item d-flex mb-3" style="position: relative;">
+                                <div class="status-icon-container me-3">
+                                    <div class="status-icon-circle " style="background-color: ;">
+                                        <i class="bi bi-truck" style="color: white;"></i>
+                                </div>
+                            </div>
+                                <div class="status-content d-flex justify-content-between align-items-center w-100 ">
+                                    <div class="d-flex flex-column align-items-start">
+                                        <h6 class="mb-0 fw-bold">A Caminho</h6>
+                                        <small class="text-muted">Motoboy a caminho para coleta</small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                                                                    <div class="truck-animation">
+                                                <i class="bi bi-truck" style="color: #0d6efd; font-size: 1.5rem;"></i>
+                                            </div>
+                                                                                <div class="status-badge" style="background-color: ; color: white; border-radius: 20px; padding: 5px 12px; font-weight: bold;">
+                                                                                    </div>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                            <!-- Status 3: Coletado -->
+                            <div class="status-item d-flex mb-3" style="position: relative;">
+                                <div class="status-icon-container me-3">
+                                    <div class="status-icon-circle " style="background-color: ;">
+                                        <i class="bi bi-box-seam" style="color: white;"></i>
+                                </div>
+                            </div>
+                                <div class="status-content d-flex justify-content-between align-items-center w-100 ">
+                                    <div class="d-flex flex-column align-items-start">
+                                        <h6 class="mb-0 fw-bold">Coletado</h6>
+                                        <small class="text-muted">Pacotes já retirados</small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                                                                    <div class="truck-animation">
+                                                <i class="bi bi-truck" style="color: #198754; font-size: 1.5rem;"></i>
+                                            </div>
+                                                                                <div class="status-badge" style="background-color: ; color: white; border-radius: 20px; padding: 5px 12px; font-weight: bold;">
+                                                                                    </div>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                            <!-- Status 4: Centro Distribuição -->
+                            <div class="status-item d-flex mb-3" style="position: relative;">
+                                <div class="status-icon-container me-3">
+                                    <div class="status-icon-circle " style="background-color: ;">
+                                        <i class="bi bi-building" style="color: white;"></i>
+                                </div>
+                            </div>
+                                <div class="status-content d-flex justify-content-between align-items-center w-100 ">
+                                    <div class="d-flex flex-column align-items-start">
+                                        <h6 class="mb-0 fw-bold">Centro Distribuição</h6>
+                                        <small class="text-muted">Pacotes em processamento</small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                                                                    <div class="truck-animation">
+                                                <i class="bi bi-truck" style="color: #6C63FF; font-size: 1.5rem;"></i>
+                                            </div>
+                                                                                <div class="status-badge" style="background-color: ; color: white; border-radius: 20px; padding: 5px 12px; font-weight: bold;">
+                                                                                    </div>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                            <!-- Status 5: Em Rota de entrega -->
+                            <div class="status-item d-flex mb-3" style="position: relative;">
+                                <div class="status-icon-container me-3">
+                                    <div class="status-icon-circle " style="background-color: ;">
+                                        <i class="bi bi-truck" style="color: white;"></i>
+                                </div>
+                            </div>
+                                <div class="status-content d-flex justify-content-between align-items-center w-100 ">
+                                    <div class="d-flex flex-column align-items-start">
+                                        <h6 class="mb-0 fw-bold">Em Rota de Entrega</h6>
+                                        <small class="text-muted">Pacotes a caminho do destino</small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                                                                    <div class="truck-animation">
+                                                <i class="bi bi-truck" style="color: #FFA500; font-size: 1.5rem;"></i>
+                                            </div>
+                                                                                <div class="status-badge" style="background-color: ; color: white; border-radius: 20px; padding: 5px 12px; font-weight: bold;">
+                                                                                    </div>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                            <!-- Status 6: Entregue -->
+                            <div class="status-item d-flex mb-3" style="position: relative;">
+                                <div class="status-icon-container me-3">
+                                    <div class="status-icon-circle " style="background-color: ;">
+                                        <i class="bi bi-check-circle" style="color: white;"></i>
+                                </div>
+                            </div>
+                                <div class="status-content d-flex justify-content-between align-items-center w-100 ">
+                                    <div class="d-flex flex-column align-items-start">
+                                        <h6 class="mb-0 fw-bold">Entregue</h6>
+                                        <small class="text-muted">Pacotes entregues com sucesso</small>
+                            </div>
+                                    <div class="d-flex align-items-center">
+                                                                                    <div class="truck-animation">
+                                                <i class="bi bi-truck" style="color: #20c997; font-size: 1.5rem;"></i>
+                                            </div>
+                                                                                <div class="status-badge" style="background-color: ; color: white; border-radius: 20px; padding: 5px 12px; font-weight: bold;">
+                                                                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Status 7: Cancelado -->
+                                                        <div class="status-item d-flex mt-2" style="position: relative;">
+                                <div class="status-icon-container me-3">
+                                    <div class="status-icon-circle" style="background-color: #DC3545;">
+                                        <i class="bi bi-x-circle" style="color: white;"></i>
+                                    </div>
+                                </div>
+                                <div class="status-content d-flex justify-content-between align-items-center w-100" style="border-left: 3px solid #DC3545;">
+                                    <div class="d-flex flex-column align-items-start">
+                                        <h6 class="mb-0 fw-bold">Cancelado</h6>
+                                        <small class="text-muted">Coletas canceladas</small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="status-badge" style="background-color: #DC3545; color: white; border-radius: 20px; padding: 5px 12px; font-weight: bold;">
+                                                                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card h-100" style="border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                    <div class="card-header d-flex align-items-center justify-content-between" style="background-color: var(--secondary-color); color: white; border-bottom: none;">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-clock-history me-2"></i>
+                            <span class="fw-bold">Entregas Recentes</span>
+                        </div>
+                        <button class="btn btn-sm btn-outline-light" onclick="location.href='entregas.php'">
+                            Ver todas
+                        </button>
+                    </div>
+                    <div class="card-body p-3">
+                                                                    <div class="entregas-lista" id="entregas-container">
+                                                                <div class="entrega-recente">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <span class="numero">#</span>
+                                            <div class="status-icon ">
+                                                <i class="bi "></i>
+                                                </div>
+                                            <span class="status-text"></span>
+                                                </div>
+                                        <a href="entrega_detalhes.html" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                            </div>
+                                    <div class="rota">
+                                        <div class="cidade">
+                                            <i class="bi bi-geo-alt"></i>
+                                            <span class="cidade-nome"></span>
+                                        </div>
+                                        <i class="bi bi-arrow-right mx-2"></i>
+                                        <div class="cidade">
+                                            <i class="bi bi-geo"></i>
+                                            <span class="cidade-nome"></span>
+                                        </div>
+                                    </div>
+                                    <div class="data">
+                                        <i class="bi bi-calendar3"></i>
+                                                                                </div>
+                                    </div>
+                                                                        </div>
+                            <div class="text-end mt-3">
+                                <a href="entregas.html" class="text-decoration-none">Ver todas</a>
+                            </div>
+                                                                    <div class="text-center py-4">
+                                    <i class="bi bi-inbox fs-2 text-muted"></i>
+                                    <p class="mt-2">Nenhuma entrega encontrada.</p>
+                                </div>
+                                                            </div>
+                    </div>
+            </div>
+        </div>
+        
+        <!-- Seção de Faturas -->
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="card" style="border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                    <div class="card-header d-flex align-items-center justify-content-between" style="background-color: var(--secondary-color); color: white; border-bottom: none;">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-receipt me-2"></i>
+                            <span class="fw-bold">Minhas Faturas</span>
+                        </div>
+                        <a href="faturas.html" class="btn btn-sm btn-outline-light">
+                            <i class="bi bi-eye"></i> Ver todas
+                        </a>
+                    </div>
+                    <div class="card-body p-4">
+                                                
+                                                    <div class="text-center py-4">
+                                <i class="bi bi-file-earmark-text fs-2 text-muted"></i>
+                                <p class="mt-2">Nenhuma fatura disponível no momento.</p>
+                            </div>
+                                                    <div class="row">
+                                                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100" style="border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    <i class="bi bi-receipt me-2 text-primary"></i>
+                                                    Fatura                                                 </h5>
+                                                <div class="mt-3">
+                                                    <p class="mb-1"><strong>Total de Entregas:</strong> </p>
+                                                    <p class="mb-1"><strong>Valor Total:</strong> R$ </p>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <a href="#" class="btn btn-primary btn-sm w-100">
+                                                        <i class="bi bi-download me-2"></i> Baixar CSV
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                            </div>
+                                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- PWA Scripts -->
+    <script src="../assets/js/pwa.js"></script>
+    <!-- Notificações Scripts -->
+    <script src="../assets/js/notificacoes.js"></script>
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* Estilos para a timeline de status */
+        .status-item {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 8px;
+        }
+        
+        .status-item:hover {
+            background-color: rgba(0,0,0,0.03);
+        }
+        
+        .status-icon-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .status-content {
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .status-content h6 {
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+        
+        .status-content small {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .pulse-animation {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 165, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 165, 0, 0);
+            }
+        }
+        
+        .truck-animation {
+            animation: truck-pulse 1.5s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            top: 4px; /* Ajuste fino para alinhar verticalmente com o badge */
+            margin-right: -35px; /* Margem negativa para aproximar do badge */
+        }
+        
+        @keyframes truck-pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        /* Estilos para cards ativos */
+        .active-aguardando {
+            border-left: 4px solid #FFA500;
+        }
+        
+        .active-caminho {
+            border-left: 4px solid #0d6efd;
+        }
+        
+        .active-coletado {
+            border-left: 4px solid #198754;
+        }
+        
+        .active-distribuicao {
+            border-left: 4px solid #6C63FF;
+        }
+        
+        .active-rota {
+            border-left: 4px solid #FFA500;
+        }
+        
+        .active-entregue {
+            border-left: 4px solid #20c997;
+        }
+        
+        /* Responsividade para mobile */
+        @media (max-width: 767px) {
+            .status-content {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .status-content > div:first-child {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .status-content h6 {
+                margin-bottom: 0;
+                font-size: 0.9rem;
+            }
+            
+            .status-content small {
+                font-size: 0.75rem;
+            }
+            
+            .status-badge {
+                padding: 3px 8px !important;
+                font-size: 0.8rem;
+            }
+            
+            .truck-animation {
+                font-size: 1.2rem !important;
+            }
+        }
+    </style>
+    
+    <script>
+        // Timeline interativa
+        document.addEventListener('DOMContentLoaded', function() {
+            // Armazenar contagens de status para uso global
+            window.statusCounts = {
+                'aguardando_coleta': ,
+                'a_caminho': ,
+                'coletado': ,
+                'centro_distribuicao': ,
+                'Em_Rota_de_entrega': ,
+                'entregue':             };
+            
+            // Adicionar interatividade à timeline
+            const statusItems = document.querySelectorAll('.status-item');
+            
+            statusItems.forEach(item => {
+                const statusContent = item.querySelector('.status-content');
+                const statusBadge = item.querySelector('.status-badge');
+                const statusCount = parseInt(statusBadge?.textContent?.trim() || '0');
+                
+                if (statusCount > 0) {
+                    // Adicionar tooltip com a contagem
+                    const statusName = item.querySelector('h6').textContent;
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'status-tooltip';
+                    tooltip.innerHTML = `<strong>${statusCount}</strong> ${statusCount === 1 ? 'pacote' : 'pacotes'} neste status`;
+                    tooltip.style.display = 'none';
+                    tooltip.style.position = 'absolute';
+                    tooltip.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                    tooltip.style.color = 'white';
+                    tooltip.style.padding = '5px 10px';
+                    tooltip.style.borderRadius = '5px';
+                    tooltip.style.fontSize = '0.8rem';
+                    tooltip.style.zIndex = '1000';
+                    tooltip.style.transform = 'translateY(-30px)';
+                    tooltip.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+                    
+                    item.style.position = 'relative';
+                    item.appendChild(tooltip);
+                    
+                    // Mostrar tooltip ao passar o mouse
+                    item.addEventListener('mouseenter', function() {
+                        tooltip.style.display = 'block';
+                        tooltip.style.opacity = '0';
+                        setTimeout(() => {
+                            tooltip.style.transition = 'opacity 0.3s ease';
+                            tooltip.style.opacity = '1';
+                        }, 10);
+                    });
+                    
+                    item.addEventListener('mouseleave', function() {
+                        tooltip.style.opacity = '0';
+                        setTimeout(() => {
+                            tooltip.style.display = 'none';
+                        }, 300);
+                    });
+                    
+                    // Adicionar efeito de clique
+                    item.addEventListener('click', function() {
+                        // Verificar se há entregas neste status
+                        if (statusCount > 0) {
+                            // Efeito visual de clique
+                            statusContent.style.transform = 'scale(0.98)';
+                            setTimeout(() => {
+                                statusContent.style.transform = 'translateY(-3px) translateX(3px)';
+                            }, 150);
+                            
+                            // Redirecionar para a página de entregas com filtro
+                            const statusKey = getStatusKeyFromTitle(statusName);
+                            if (statusKey) {
+                                window.location.href = `entregas.php?status=${statusKey}`;
+                            }
+                        }
+                    });
+                    
+                    // Adicionar cursor pointer para indicar que é clicável
+                    item.style.cursor = 'pointer';
+                }
+            });
+            
+            // Função para obter a chave do status a partir do título
+            function getStatusKeyFromTitle(title) {
+                const statusMap = {
+                    'Aguardando Coleta': 'aguardando_coleta',
+                    'A Caminho': 'a_caminho',
+                    'Coletado': 'coletado',
+                    'Centro Distribuição': 'centro_distribuicao',
+                    'Em Rota de Entrega': 'Em_Rota_de_entrega',
+                    'Entregue': 'entregue'
+                };
+                
+                return statusMap[title.trim()];
+            }
+            
+            // Adicionar animação de entrada
+            setTimeout(() => {
+                statusItems.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateY(20px)';
+                        item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'translateY(0)';
+                        }, 50);
+                    }, index * 100);
+                });
+                
+                // Inicializar animação do caminhão
+                setTimeout(() => {
+                    const truckAnimation = document.querySelector('.truck-animation');
+                    if (truckAnimation) {
+                        // Determinar a cor do caminhão baseado no status mais avançado com pacotes
+                        const statusColors = {
+                            'entregue': '#20c997',
+                            'Em_Rota_de_entrega': '#FFA500',
+                            'centro_distribuicao': '#6C63FF',
+                            'coletado': '#198754',
+                            'a_caminho': '#0d6efd',
+                            'aguardando_coleta': '#FFA500'
+                        };
+                        
+                        // Verificar qual é o status mais avançado com pacotes
+                        let activeColor = '#0d6efd'; // cor padrão
+                        
+                        if (window.statusCounts.entregue > 0) {
+                            activeColor = statusColors.entregue;
+                        } else if (window.statusCounts.Em_Rota_de_entrega > 0) {
+                            activeColor = statusColors.Em_Rota_de_entrega;
+                        } else if (window.statusCounts.centro_distribuicao > 0) {
+                            activeColor = statusColors.centro_distribuicao;
+                        } else if (window.statusCounts.coletado > 0) {
+                            activeColor = statusColors.coletado;
+                        } else if (window.statusCounts.a_caminho > 0) {
+                            activeColor = statusColors.a_caminho;
+                        } else if (window.statusCounts.aguardando_coleta > 0) {
+                            activeColor = statusColors.aguardando_coleta;
+                        }
+                        
+                        // Aplicar a cor ao caminhão
+                        truckAnimation.querySelector('i').style.color = activeColor;
+                    }
+                }, 1000);
+            }, 300);
+        });
+        
+        // Dados para o gráfico de status
+    </script>
+    <script>
+        // Menu lateral no celular
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mobileToggle = document.getElementById('mobileToggle');
+            if (!sidebar || !mobileToggle) return;
+
+            mobileToggle.addEventListener('click', function(event) {
+                event.stopPropagation();
+                sidebar.classList.toggle('show');
+            });
+
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 768 && sidebar.classList.contains('show')
+                    && !sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
+                    sidebar.classList.remove('show');
+                }
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) sidebar.classList.remove('show');
+            });
+        });
+    </script>
+</body>
+</html>

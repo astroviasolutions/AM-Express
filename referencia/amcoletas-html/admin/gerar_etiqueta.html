@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etiqueta de Envio - Entrega #</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        
+        .etiqueta {
+            width: 100%;
+            max-width: 10cm;
+            height: 15cm;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 2px solid #000;
+            padding: 10px;
+            overflow: hidden;
+        }
+        
+        .etiqueta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+            margin-bottom: 8px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 800;
+        }
+        
+        .logo img {
+            max-height: 30px;
+            margin-right: 5px;
+        }
+        
+        .codigo {
+            font-size: 14px;
+            font-weight: 800;
+        }
+        
+        .etiqueta-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .secao {
+            border: 1px solid #ddd;
+            padding: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .secao-titulo {
+            font-weight: 800;
+            margin-bottom: 2px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 2px;
+            font-size: 12px;
+        }
+        
+        .secao-conteudo {
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .destaque {
+            font-weight: 800;
+            font-size: 13px;
+        }
+        
+        /* Estilos específicos para remetente e destinatário */
+        .remetente .secao-conteudo {
+            font-size: 10px;
+            font-weight: 500;
+        }
+        
+        .remetente .destaque {
+            font-size: 12px;
+        }
+        
+        .destinatario .secao-conteudo {
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .rota {
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            padding: 3px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+        }
+        
+        .qrcode {
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        .qrcode img {
+            max-width: 100px;
+        }
+        
+        .qrcode .mt-2 {
+            margin-top: 3px !important;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .codigo-rastreio {
+            font-family: monospace;
+            letter-spacing: 1px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .barcode {
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        .barcode img {
+            max-width: 80%;
+        }
+        
+        .data-entrega {
+            text-align: right;
+            margin-top: 5px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+        
+        .row {
+            margin-left: -5px;
+            margin-right: -5px;
+        }
+        
+        .col-md-6 {
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+        
+        .mt-2 {
+            margin-top: 5px !important;
+        }
+        
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            body {
+                padding: 0;
+                margin: 0;
+                background-color: #fff;
+            }
+            
+            .etiqueta {
+                border: 1px solid #000;
+                width: 10cm;
+                height: 15cm;
+                max-width: 10cm;
+                box-shadow: none;
+                page-break-inside: avoid;
+                padding: 8px;
+                margin-bottom: 20px !important;
+            }
+            
+            /* Adicionar quebra de página entre etiquetas */
+            .etiqueta:not(:last-child) {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="mb-4 no-print">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>Etiqueta de Envio - #                                            <span class="text-danger">( volumes)</span>
+                                    </h1>
+                <div>
+                    <a href="entregas/index.html" class="btn btn-outline-secondary me-2">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                    <button class="btn btn-primary" onclick="window.print();">
+                        <i class="bi bi-printer"></i> Imprimir Etiqueta                    </button>
+                </div>
+            </div>
+            <p class="text-muted">
+                                    Etiquetas para identificação dos  volumes do envio. 
+                    Imprima e cole cada etiqueta no seu respectivo pacote.
+                                    Etiqueta para identificação do envio. Imprima e cole no pacote.
+                            </p>
+            
+            <!-- Formulário para gerar múltiplas etiquetas -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h6 class="card-title">Gerar Múltiplas Etiquetas</h6>
+                    <form method="get" class="row g-3">
+                        <input type="hidden" name="id" value="">
+                        <div class="col-auto">
+                            <label for="volumes" class="visually-hidden">Quantidade de Volumes</label>
+                            <input type="number" class="form-control form-control-sm" id="volumes" name="volumes" 
+                                   value="" min="1" max="20" 
+                                   placeholder="Qtde volumes (1-20)">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-arrow-repeat"></i> Atualizar
+                            </button>
+                        </div>
+                    </form>
+                    <small class="text-muted">Máximo: 20 volumes por entrega</small>
+                </div>
+            </div>
+        </div>
+        
+                <div class="etiqueta mb-4">
+            <div class="etiqueta-header">
+                <div class="logo">
+                                            <img src="" alt="Logo">
+                                                        </div>
+                <div class="codigo">
+                    Código de Rastreio: <span class="codigo-rastreio"></span>
+                                            <br><span style="font-size: 16px; color: red; font-weight: bold;">VOLUME /</span>
+                                    </div>
+            </div>
+            
+            <div class="etiqueta-body">
+                <div class="rota">
+                     → 
+                                    </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="secao remetente">
+                            <div class="secao-titulo">REMETENTE</div>
+                            <div class="secao-conteudo">
+                                <div class="destaque"></div>
+                                <div></div>
+                                <div></div>
+                                                                <div>Tel: </div>
+                                                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="secao destinatario">
+                            <div class="secao-titulo">DESTINATÁRIO</div>
+                            <div class="secao-conteudo">
+                                <div class="destaque"></div>
+                                <div></div>
+                                <div></div>
+                                                                <div>Tel: </div>
+                                                                                                <div>Email: </div>
+                                                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div class="secao">
+                            <div class="secao-titulo">DESCRIÇÃO DO CONTEÚDO</div>
+                            <div class="secao-conteudo">
+                                                                                                                                        <em>Sem descrição fornecida</em>
+                                                                                                    <br><strong style="color: red;">Este é o volume  de </strong>
+                                                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <div class="qrcode">
+                            <img src="" alt="QR Code">
+                            <div class="mt-2">
+                                <strong>Escaneie para rastrear</strong>
+                                                                    <br><small style="color: red;">Vol. /</small>
+                                                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- Seção de detalhes do envio removida conforme solicitado -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="data-entrega">
+                Gerado em:                                     - Volume /                            </div>
+        </div>
+            </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

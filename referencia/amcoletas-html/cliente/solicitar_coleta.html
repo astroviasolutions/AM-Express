@@ -1,0 +1,1178 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitar Coleta - </title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Estilos personalizados -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 70px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            overflow-x: hidden;
+        }
+        
+        .sidebar {
+            background-color: var(--secondary-color);
+            height: 100vh;
+            color: white;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: var(--sidebar-width);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .sidebar.collapsed {
+            width: var(--sidebar-width-collapsed);
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            background-color: rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .sidebar-header h3 {
+            display: none;
+        }
+        
+        .sidebar.collapsed .sidebar-header img {
+            margin-right: 0 !important;
+        }
+        
+        .sidebar-header span {
+            color: var(--primary-color);
+        }
+        
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            min-width: 24px;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .main-content.expanded {
+            margin-left: var(--sidebar-width-collapsed);
+        }
+        
+        .top-bar {
+            background-color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+            padding: 1.2rem 1.5rem;
+        }
+        
+        .section-title {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 12px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            border: 1px solid #e0e6ed;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(250, 84, 48, 0.15);
+        }
+        
+        .btn {
+            border-radius: 10px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #e64a2a;
+            border-color: #e64a2a;
+        }
+        
+        .btn-outline-secondary {
+            color: #6c757d;
+            border-color: #dee2e6;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border-left: 4px solid;
+            padding: 1rem 1.5rem;
+        }
+        
+        .alert-info {
+            background-color: #e8f4f8;
+            border-color: #4dabf7;
+            color: #0c5460;
+        }
+        
+        .alert-success {
+            background-color: #e8f6e8;
+            border-color: #28a745;
+        }
+        
+        .alert-danger {
+            background-color: #fbeaea;
+            border-color: #dc3545;
+        }
+        
+        .alert-warning {
+            background-color: #fff8e6;
+            border-color: #ffc107;
+        }
+        
+        .peso-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .peso-option {
+            border: 1px solid #e0e6ed;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            flex: 1;
+            min-width: 100px;
+            transition: all 0.3s;
+            background-color: white;
+        }
+        
+        .peso-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .peso-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(250, 84, 48, 0.05);
+            box-shadow: 0 5px 15px rgba(250, 84, 48, 0.1);
+        }
+        
+        .peso-option i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #6c757d;
+        }
+        
+        .peso-option.selected i {
+            color: var(--primary-color);
+        }
+        
+        .peso-option p {
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+        
+        /* Estilos específicos para as opções de tamanho */
+        .tamanho-option small {
+            display: block;
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .tamanho-option.selected small {
+            color: var(--primary-color);
+        }
+        
+        .valor-estimado {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            height: calc(100% - 20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .valor-estimado h6 {
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .valor-estimado .fs-4 {
+            font-size: 2rem !important;
+            font-weight: 700 !important;
+            color: var(--primary-color);
+        }
+        
+        /* Media queries para responsividade */
+        @media (max-width: 992px) {
+            :root {
+                --sidebar-width: 200px;
+            }
+            
+            .sidebar-toggle {
+                display: block;
+            }
+            
+            .sidebar-header h3 {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 0px;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                width: 100%;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .top-bar {
+                margin-top: 0;
+                padding: 0.8rem 1rem;
+            }
+            
+            .top-bar h1 {
+                font-size: 1.2rem;
+            }
+            
+            .user-info p {
+                font-size: 0.9rem;
+            }
+            
+            .user-info small {
+                font-size: 0.7rem;
+            }
+            
+            .card-body {
+                padding: 1.25rem;
+            }
+            
+            .peso-container {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                margin-bottom: 15px;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
+            }
+            
+            .peso-option {
+                min-width: 110px;
+                flex: 0 0 auto;
+                scroll-snap-align: start;
+            }
+            
+            .valor-estimado {
+                margin-top: 10px;
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 0.5rem 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-info {
+                margin-top: 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .card-header {
+                padding: 1rem;
+            }
+            
+            .top-bar {
+                padding: 0.8rem;
+                margin-bottom: 1rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            .d-grid.gap-2.d-md-flex.justify-content-md-end .btn {
+                margin-right: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar / Menu Lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                                    <img src="" alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                                <h3></h3>
+                            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+        </div>
+        
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="solicitar_coleta.html" class="nav-link active">
+                    <i class="bi bi-box-seam"></i> <span>Solicitar Coleta</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="entregas.html" class="nav-link">
+                    <i class="bi bi-truck"></i> <span>Minhas Entregas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="notificacoes.html" class="nav-link">
+                    <i class="bi bi-bell"></i> <span>Notificações</span>
+                                            <span class="badge bg-danger ms-2"></span>
+                                    </a>
+            </li>
+            <li class="nav-item">
+                <a href="perfil.html" class="nav-link">
+                    <i class="bi bi-person"></i> <span>Meu Perfil</span>
+                </a>
+            </li>
+            <li class="nav-item mt-5">
+                <a href="../login.html" class="nav-link">
+                    <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Conteúdo Principal -->
+    <div class="main-content" id="mainContent">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <div class="d-flex align-items-center">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+            <h1 class="h4 mb-0">Solicitar Coleta</h1>
+            </div>
+            
+            <div class="user-info">
+                <div class="notification-badge me-3">
+                    <a href="notificacoes.html" class="text-dark">
+                        <i class="bi bi-bell fs-4"></i>
+                                                    <span class="badge rounded-pill"></span>
+                                            </a>
+                </div>
+                
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Cliente</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mensagens de Erro e Sucesso -->
+                    <div class="alert alert-danger"></div>
+                
+                    <div class="alert alert-success"></div>
+            
+            <!-- Trigger para abrir o modal após sucesso na entrega -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var etiquetaModal = new bootstrap.Modal(document.getElementById('etiquetaModal'));
+                    etiquetaModal.show();
+                });
+            </script>
+                
+                    <!-- Mensagem quando o cliente está desativado -->
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Conta Desativada
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-lock-fill text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="text-center mb-3">Sua conta está temporariamente desativada</h5>
+                    <p class="text-center mb-4">Para voltar a solicitar coletas, entre em contato com  para regularizar sua situação.</p>
+                    
+                    <div class="d-grid gap-2 col-md-6 mx-auto">
+                                                <a href="" target="_blank" class="btn btn-success">
+                            <i class="bi bi-whatsapp me-2"></i> Contatar via WhatsApp
+                        </a>
+                        <a href="dashboard.html" class="btn btn-outline-secondary">
+                            <i class="bi bi-house me-2"></i> Voltar para Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+                    <!-- Mensagem quando o cliente não tem valor base configurado -->
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Valor Base Não Configurado
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-cash-coin text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="text-center mb-3">Não é possível solicitar coletas no momento</h5>
+                    <p class="text-center mb-4">Para solicitar coletas, entre em contato com a  para configurar seu valor base.</p>
+                    
+                    <div class="d-grid gap-2 col-md-6 mx-auto">
+                                                <a href="" target="_blank" class="btn btn-success">
+                            <i class="bi bi-whatsapp me-2"></i> Contatar via WhatsApp
+                        </a>
+                        <a href="dashboard.html" class="btn btn-outline-secondary">
+                            <i class="bi bi-house me-2"></i> Voltar para Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+                <!-- Formulário de Solicitação de Coleta -->
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <i class="bi bi-box-seam me-2 text-primary"></i> 
+                <span>Nova Solicitação de Coleta</span>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-info-circle-fill me-3 fs-4"></i>
+                        <div>
+                            <strong>IMPORTANTE!</strong> Preencha os dados corretamente para garantir uma coleta rápida e sem problemas.
+                        </div>
+                    </div>
+                </div>
+                
+                <form method="post" action="">
+                    <!-- Endereço de Coleta -->
+                    <div class="mb-4">
+                        <h5 class="section-title">
+                            <i class="bi bi-geo-alt me-2"></i> Endereço de Coleta
+                        </h5>
+                        
+                        <div class="card bg-light border-0 mb-3">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="usar_endereco_perfil" name="usar_endereco_perfil" value="1" checked onchange="toggleEnderecoColeta()">
+                                        <label class="form-check-label" for="usar_endereco_perfil">
+                                            Usar o endereço do meu perfil
+                                        </label>
+                                    </div>
+                                </div>
+                        
+                                <div class="row" id="endereco_coleta_container">
+                            <div class="col-md-8 mb-3">
+                                <label for="endereco_coleta" class="form-label">Endereço Completo</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white"><i class="bi bi-house"></i></span>
+                                            <textarea class="form-control" id="endereco_coleta" name="endereco_coleta" rows="3" required></textarea>
+                                        </div>
+                                        <div class="form-text">
+                                            <i class="bi bi-info-circle me-1"></i> Informe o endereço completo para coleta
+                                        </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="cidade_origem_id" class="form-label">Cidade</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white"><i class="bi bi-geo-alt-fill"></i></span>
+                                            <select class="form-select" id="cidade_origem_id" name="cidade_origem_id" required>
+                                    <option value="">Selecione a cidade</option>
+                                                                            <option value="" >
+                                                                                    </option>
+                                                                    </select>
+                                        </div>
+                                        <div class="form-text">
+                                            <i class="bi bi-geo me-1"></i> Selecione a cidade de origem da coleta
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Endereço de Entrega -->
+                    <div class="mb-4">
+                        <h5 class="section-title">
+                            <i class="bi bi-truck me-2"></i> Endereço de Entrega
+                        </h5>
+                        
+                        <div class="card bg-light border-0 mb-3">
+                            <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="nome_destinatario" class="form-label">Nome do Destinatário</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control" id="nome_destinatario" name="nome_destinatario" required>
+                                        </div>
+                            </div>
+                            
+                            <div class="col-md-8 mb-3">
+                                <label for="endereco_entrega" class="form-label">Endereço Completo</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white"><i class="bi bi-house-door"></i></span>
+                                <textarea class="form-control" id="endereco_entrega" name="endereco_entrega" rows="3" required></textarea>
+                                        </div>
+                                        <div class="form-text">
+                                            <i class="bi bi-exclamation-circle me-1"></i> <strong>Importante!</strong> Rua, Número, Complemento (se houver), Bairro, CEP.
+                                        </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="estado_destino_id" class="form-label">Estado</label>
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text bg-white"><i class="bi bi-map"></i></span>
+                                <select class="form-select" id="estado_destino_id" required onchange="atualizarCidadesDestino()">
+                                    <option value="">Selecione o estado</option>
+                                                                            <option value="">
+                                                                                    </option>
+                                                                    </select>
+                            </div>
+                            
+                                <label for="cidade_destino_id" class="form-label">Cidade</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white"><i class="bi bi-geo-alt-fill"></i></span>
+                                <select class="form-select" id="cidade_destino_id" name="cidade_destino_id" required>
+                                    <option value="">Selecione primeiro o estado</option>
+                                </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Peso do Produto -->
+                    <div class="mb-4">
+                        <h5 class="section-title">
+                            <i class="bi bi-box2-heart me-2"></i> Peso do Produto
+                        </h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label mb-3">Selecione o peso aproximado:</label>
+                                <div class="peso-container">
+                                    <div class="peso-option" data-peso="1" onclick="selecionarPeso(this, 1)">
+                                        <i class="bi bi-box"></i>
+                                        <p class="mb-0">Até 1kg</p>
+                                    </div>
+                                    <div class="peso-option" data-peso="5" onclick="selecionarPeso(this, 5)">
+                                        <i class="bi bi-box"></i>
+                                        <p class="mb-0">Até 5kg</p>
+                                    </div>
+                                    <div class="peso-option" data-peso="10" onclick="selecionarPeso(this, 10)">
+                                        <i class="bi bi-box"></i>
+                                        <p class="mb-0">Até 10kg</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="peso" class="form-label">Peso específico (kg)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white"><i class="bi bi-speedometer2"></i></span>
+                                        <input type="number" class="form-control" id="peso" name="peso" step="0.1" min="0.1" inputmode="decimal" placeholder="Ex.: 12,5" required>
+                                        <span class="input-group-text bg-white">kg</span>
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i> Escolha uma opção acima ou digite o peso exato. Acima do peso limite, é cobrado o valor por kg excedente.
+                                    </div>
+                                </div>
+                                    
+                                                                        <div class="mb-3">
+                                        <label for="peso_personalizado_id" class="form-label">Ou selecione um peso personalizado:</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white"><i class="bi bi-tags"></i></span>
+                                        <select class="form-select" id="peso_personalizado_id" name="peso_personalizado_id" onchange="selecionarPesoPersonalizado(this)">
+                                            <option value="">Não utilizar peso personalizado</option>
+                                                                                        <option value="" data-peso="">
+                                                até  kg
+                                            </option>
+                                                                                    </select>
+                                        </div>
+                                        <div class="form-text text-primary">
+                                            <i class="bi bi-info-circle-fill me-1"></i> 
+                                            Ultilize o peso personalizado para casos acima de 10kg.
+                                        </div>
+                                    </div>
+                                                                        
+                                    <!-- Tamanho do Pacote -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Tamanho do Pacote:</label>
+                                        <div class="peso-container">
+                                            <div class="peso-option tamanho-option" data-tamanho="pequeno" onclick="selecionarTamanho(this, 'pequeno')">
+                                                <i class="bi bi-box-seam"></i>
+                                                <p class="mb-0">Pequeno</p>
+                                                <small>Menor que 1,00 x 1,00m</small>
+                                            </div>
+                                            <div class="peso-option tamanho-option" data-tamanho="grande" onclick="selecionarTamanho(this, 'grande')">
+                                                <i class="bi bi-box-seam-fill"></i>
+                                                <p class="mb-0">Grande</p>
+                                                <small>Maior que 1,00 x 1,00m</small>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="tamanho_pacote" name="tamanho_pacote" value="">
+                                        <div id="alerta-tamanho" class="alert alert-warning mt-2 d-none">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                                    <strong>Atenção!</strong> Pacotes maiores que 1,00 x 1,00m não são aceitos para coleta regular.
+                                                    Por favor, entre em contato conosco para verificar a possibilidade de entrega especial.
+                                                </div>
+                                                <a href="javascript:void(0)" id="btn-whatsapp" class="btn btn-success btn-sm ms-2" style="white-space: nowrap;">
+                                                    <i class="bi bi-whatsapp me-1"></i> Solicitar cotação
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="valor-estimado">
+                                    <h6 class="mb-3"><i class="bi bi-cash-coin me-2"></i> Valor estimado da entrega:</h6>
+                                    <p class="fs-4 fw-bold text-center mb-2" id="valor-entrega">R$ 0,00</p>
+                                    <p class="text-muted text-center mb-0"><small><i class="bi bi-info-circle me-1"></i> O valor pode variar conforme a distância</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Observações -->
+                    <div class="mb-4">
+                        <h5 class="section-title">
+                            <i class="bi bi-chat-left-text me-2"></i> Observação (opcional)
+                        </h5>
+                        
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="bi bi-pencil"></i></span>
+                            <textarea class="form-control" id="observacoes" name="observacoes" rows="2" placeholder="Informações adicionais sobre o produto ou instruções para o entregador"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="dashboard.html" class="btn btn-outline-secondary me-md-2">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-1"></i> Solicitar Coleta
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+            </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script para seleção de peso e cálculo de valor -->
+    <script>
+        // Dados das cidades agrupadas por estado
+        const cidadesPorEstado = null;
+        
+        // Função para atualizar o select de cidades do destino
+        function atualizarCidadesDestino() {
+            const estadoId = document.getElementById('estado_destino_id').value;
+            const cidadeSelect = document.getElementById('cidade_destino_id');
+            
+            // Limpar o select de cidades
+            cidadeSelect.innerHTML = '';
+            
+            // Adicionar opção padrão
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = estadoId ? 'Selecione a cidade' : 'Selecione primeiro o estado';
+            cidadeSelect.appendChild(defaultOption);
+            
+            // Se um estado foi selecionado, adicionar suas cidades
+            if (estadoId && cidadesPorEstado[estadoId]) {
+                const cidades = cidadesPorEstado[estadoId].cidades;
+                cidades.forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade.id;
+                    option.textContent = cidade.nome;
+                    cidadeSelect.appendChild(option);
+                });
+            }
+            
+            // Recalcular o valor estimado
+            calcularValorEstimado();
+        }
+        
+        function selecionarPeso(elemento, peso) {
+            // Remove a classe 'selected' de todos os elementos
+            document.querySelectorAll('.peso-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Adiciona a classe 'selected' ao elemento clicado
+            elemento.classList.add('selected');
+            
+            // Define o valor no campo de peso
+            document.getElementById('peso').value = peso;
+            
+            // Atualiza o valor estimado
+            calcularValorEstimado();
+        }
+        
+        function selecionarPesoPersonalizado(select) {
+            // Se um peso personalizado foi selecionado
+            if (select.value) {
+                const option = select.options[select.selectedIndex];
+                const peso = parseFloat(option.getAttribute('data-peso')) || 0;
+                
+                // Atualizar o campo de peso
+                document.getElementById('peso').value = peso;
+                
+                // Remover a seleção das opções de peso
+                document.querySelectorAll('.peso-option').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                
+                // Desabilitar a edição do campo de peso
+                document.getElementById('peso').readOnly = true;
+                
+                // Calcular valor de acordo com a nova ordem de prioridade
+                calcularValorEstimado();
+            } else {
+                // Habilitar a edição do campo de peso
+                document.getElementById('peso').readOnly = false;
+                
+                // Recalcular o valor
+                calcularValorEstimado();
+            }
+        }
+        
+        // Função para selecionar o tamanho do pacote
+        function selecionarTamanho(elemento, tamanho) {
+            // Remove a classe 'selected' de todos os elementos de tamanho
+            document.querySelectorAll('.tamanho-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Adiciona a classe 'selected' ao elemento clicado
+            elemento.classList.add('selected');
+            
+            // Define o valor no campo oculto
+            document.getElementById('tamanho_pacote').value = tamanho;
+            
+            // Mostra ou esconde o alerta de tamanho grande
+            const alertaTamanho = document.getElementById('alerta-tamanho');
+            const submitButton = document.querySelector('button[type="submit"]');
+            
+            if (tamanho === 'grande') {
+                // Mostrar alerta e desabilitar o botão de envio
+                alertaTamanho.classList.remove('d-none');
+                submitButton.disabled = true;
+            } else {
+                // Esconder alerta e habilitar o botão de envio
+                alertaTamanho.classList.add('d-none');
+                submitButton.disabled = false;
+            }
+        }
+        
+        // Função para calcular o valor estimado
+        function calcularValorEstimado() {
+            const pesoPersonalizadoSelect = document.getElementById('peso_personalizado_id');
+            
+            const pesoCampo = document.getElementById('peso');
+            const peso = parseFloat(String(pesoCampo.value).replace(',', '.')) || 0;
+            const cidadeOrigem = document.getElementById('cidade_origem_id').value;
+            const cidadeDestino = document.getElementById('cidade_destino_id').value;
+            const clienteId = '';
+            const pesoPersonalizadoId = pesoPersonalizadoSelect ? pesoPersonalizadoSelect.value : '';
+            const valorEl = document.getElementById('valor-entrega');
+            
+            // Mostrar o que falta preencher
+            if (!cidadeOrigem) { valorEl.textContent = 'Selecione a cidade de origem'; return; }
+            if (!cidadeDestino) { valorEl.textContent = 'Selecione a cidade de destino'; return; }
+            if (peso <= 0) {
+                valorEl.textContent = (pesoCampo.validity && pesoCampo.validity.badInput) ? 'Peso inválido' : 'Informe o peso';
+                return;
+            }
+            
+            // Mostrar indicador de carregamento
+            document.getElementById('valor-entrega').textContent = 'Calculando...';
+            
+            // Fazer requisição AJAX para calcular o valor
+            const formData = new FormData();
+            formData.append('cliente_id', clienteId);
+            formData.append('cidade_origem_id', cidadeOrigem);
+            formData.append('cidade_destino_id', cidadeDestino);
+            formData.append('peso', peso);
+            formData.append('peso_personalizado_id', pesoPersonalizadoId);
+            
+            fetch('calcular_valor_entrega.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.erro) {
+                    console.error('Erro ao calcular valor:', data.erro);
+                    document.getElementById('valor-entrega').textContent = 'Erro no cálculo';
+                } else {
+                    // Atualiza o valor na tela
+                    document.getElementById('valor-entrega').textContent = data.valor_formatado;
+                }
+            })
+            .catch(error => {
+                console.error('Erro na requisição:', error);
+                document.getElementById('valor-entrega').textContent = 'Erro no cálculo';
+            });
+        }
+        
+        // Adiciona eventos para calcular o valor quando os campos mudam
+        ['input', 'change', 'keyup', 'blur'].forEach(function(ev) {
+            document.getElementById('peso').addEventListener(ev, calcularValorEstimado);
+        });
+        document.getElementById('cidade_origem_id').addEventListener('change', calcularValorEstimado);
+        document.getElementById('cidade_destino_id').addEventListener('change', calcularValorEstimado);
+        document.getElementById('estado_destino_id').addEventListener('change', calcularValorEstimado);
+        
+        // Validar o formulário antes do envio
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const tamanho = document.getElementById('tamanho_pacote').value;
+            
+            // Verificar se o tamanho do pacote foi selecionado
+            if (!tamanho) {
+                event.preventDefault();
+                alert('Por favor, selecione o tamanho do pacote.');
+                return false;
+            }
+            
+            // Verificar se o tamanho é grande
+            if (tamanho === 'grande') {
+                event.preventDefault();
+                alert('Pacotes maiores que 1,00 x 1,00m não são aceitos para coleta regular. Por favor, entre em contato conosco.');
+                return false;
+            }
+            
+            return true;
+        });
+        
+        // Inicializar o formulário
+        document.addEventListener('DOMContentLoaded', function() {
+            // Calcula o valor inicial
+            calcularValorEstimado();
+            
+            // Inicializa o select de cidades do destino
+            atualizarCidadesDestino();
+            
+            // Selecionar tamanho pequeno por padrão
+            const tamanhoPequeno = document.querySelector('.tamanho-option[data-tamanho="pequeno"]');
+            if (tamanhoPequeno) {
+                selecionarTamanho(tamanhoPequeno, 'pequeno');
+            }
+            
+            // Configurar o botão de WhatsApp
+            const btnWhatsApp = document.getElementById('btn-whatsapp');
+            if (btnWhatsApp) {
+                btnWhatsApp.addEventListener('click', function() {
+                    // Obter o telefone do sistema das configurações
+                    const telefone = '';
+                    
+                    // Verificar se há um telefone configurado
+                    if (!telefone) {
+                        alert('Não foi possível encontrar o número de contato do sistema.');
+                        return;
+                    }
+                    
+                    // Criar a mensagem personalizada
+                    const mensagem = encodeURIComponent('Olá! Gostaria de solicitar uma cotação para um pacote grande (acima de 1,00 x 1,00m).');
+                    
+                    // Criar o link do WhatsApp
+                    const whatsappUrl = `https://wa.me/${telefone}?text=${mensagem}`;
+                    
+                    // Abrir o link em uma nova aba
+                    window.open(whatsappUrl, '_blank');
+                });
+            }
+        });
+        
+        // Funcionalidade para o menu lateral recolhível
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const mainContent = document.getElementById('mainContent');
+            const mobileToggle = document.getElementById('mobileToggle');
+            
+            // Função para alternar o menu lateral em desktop
+            if(sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    mainContent.classList.toggle('expanded');
+                    
+                    // Alterna o ícone do botão
+                    const icon = sidebarToggle.querySelector('i');
+                    if (icon.classList.contains('bi-chevron-left')) {
+                        icon.classList.replace('bi-chevron-left', 'bi-chevron-right');
+                    } else {
+                        icon.classList.replace('bi-chevron-right', 'bi-chevron-left');
+                    }
+                });
+            }
+            
+            // Função para alternar o menu lateral em dispositivos móveis
+            if(mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                });
+            }
+            
+            // Fechar o menu ao clicar fora dele em dispositivos móveis
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnMobileToggle = mobileToggle.contains(event.target);
+                
+                if (window.innerWidth <= 768 && !isClickInsideSidebar && !isClickOnMobileToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+            
+            // Ajustar em caso de redimensionamento da tela
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        });
+
+        // Função para alternar os campos de endereço de coleta
+        function toggleEnderecoColeta() {
+            const usarEnderecoPerfil = document.getElementById('usar_endereco_perfil').checked;
+            const enderecoColeta = document.getElementById('endereco_coleta');
+            const cidadeOrigemId = document.getElementById('cidade_origem_id');
+            
+            // Dados do cliente
+            const clienteEndereco = ``;
+            const clienteCidadeId = '';
+            
+            if (usarEnderecoPerfil) {
+                // Preencher com os dados do perfil
+                enderecoColeta.value = clienteEndereco;
+                cidadeOrigemId.value = clienteCidadeId;
+                
+                // Adicionar classe para indicar que está usando o endereço do perfil
+                enderecoColeta.classList.add('bg-light');
+                cidadeOrigemId.classList.add('bg-light');
+            } else {
+                // Limpar os campos para permitir edição
+                enderecoColeta.value = '';
+                cidadeOrigemId.value = '';
+                
+                // Remover classe de fundo
+                enderecoColeta.classList.remove('bg-light');
+                cidadeOrigemId.classList.remove('bg-light');
+            }
+            calcularValorEstimado();
+        }
+
+        // Inicializar o estado dos campos de endereço de coleta
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleEnderecoColeta();
+            calcularValorEstimado();
+        });
+    </script>
+</body>
+</html>
+
+<!-- Modal de Etiqueta -->
+<div class="modal fade" id="etiquetaModal" tabindex="-1" aria-labelledby="etiquetaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="etiquetaModalLabel">
+                    <i class="bi bi-tag-fill me-2"></i> Etiqueta de Envio
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="text-center mb-4">
+                    <div class="bg-light rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="bi bi-tag-fill text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+            </div>
+                <h4 class="text-center mb-3">Solicitação registrada com sucesso!</h4>
+                <p class="text-center mb-4">Deseja gerar a etiqueta de envio agora?</p>
+                <div class="alert alert-light border mb-4">
+                    <div class="d-flex">
+                        <i class="bi bi-info-circle text-primary me-3 fs-4"></i>
+                        <p class="mb-0 small">Caso não queira gerar agora, você poderá gerar posteriormente em "Minhas Entregas". Seu código de rastreio já está disponível!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 justify-content-center gap-2">
+                <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i> Agora não
+                </button>
+                <a href="entrega_detalhes.html" class="btn btn-primary px-4">
+                    <i class="bi bi-printer me-2"></i> Gerar etiqueta agora
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,797 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Entrega # - Administrador</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Estilos personalizados -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+        }
+        
+        .sidebar {
+            background-color: var(--secondary-color);
+            min-height: 100vh;
+            color: white;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: var(--sidebar-width);
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .sidebar-header span {
+            color: var(--primary-color);
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+        
+        .top-bar {
+            background-color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .status-aguardando {
+            background-color: #B0B0B0; /* Cinza Claro */
+            color: #ffffff;
+        }
+        
+        .status-caminho {
+            background-color: #4DA6FF; /* Azul Claro */
+            color: #ffffff;
+        }
+        
+        .status-coletado {
+            background-color: #007BFF; /* Azul Escuro */
+            color: #ffffff;
+        }
+        
+        .status-distribuicao {
+            background-color: #6C63FF; /* Roxo/Indigo */
+            color: #ffffff;
+        }
+        
+        .status-rota-entrega {
+            background-color: #FFA500; /* Laranja/Ambar */
+            color: #ffffff;
+        }
+        
+        .status-entregue {
+            background-color: #4CAF50; /* Verde Sucesso */
+            color: #ffffff;
+        }
+        
+        .status-cancelado {
+            background-color: #DC3545; /* Vermelho */
+            color: #ffffff;
+        }
+        
+        .status-atual {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-atual i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        
+        .timeline-status-icon.status-finalizado {
+            background-color: #28a745;
+        }
+        
+        .timeline-status-icon.status-aguardando {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .motoboy-info {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+        }
+        
+        .motoboy-info i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin-top: 15px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background-color: var(--secondary-color);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2.5rem;
+            padding-left: 15px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border: 3px solid white;
+            z-index: 1;
+        }
+        
+        .timeline-date {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .timeline-content {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .timeline-content h5 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .timeline-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .timeline-status-icon {
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 14px;
+        }
+        
+        .timeline-motoboy {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .status-finalizado {
+            color: #155724;
+            background-color: #d4edda;
+        }
+
+        .status-aguardando {
+            color: #856404;
+            background-color: #fff3cd;
+        }
+
+        .timeline-status-icon.status-cancelado-icon {
+            background-color: #DC3545;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #e64a2a;
+            border-color: #e64a2a;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                min-height: auto;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            
+            .top-bar {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+    <!-- Layout padrao do painel admin (igual em todas as telas) -->
+        <style>:where(:root){--primary-color: #0d6efd;--secondary-color: #6c757d;}</style>
+    <link rel="stylesheet" href="../../assets/css/admin-padrao.css">
+</head>
+<body>
+    <!-- Sidebar / Menu Lateral -->
+    <div class="sidebar col-md-3 col-lg-2">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                                    <img src="../.." alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                                <h3></h3>
+                            </div>
+        </div>
+        
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="../dashboard.html" class="nav-link">
+                    <i class="bi bi-speedometer2"></i> <span>Painel de Controle</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                                <a href="../notificacoes.html" class="nav-link">
+                    <i class="bi bi-bell"></i> <span>Notificações</span>
+                                            <span class="badge bg-danger ms-auto rounded-pill"></span>
+                                    </a>
+            </li>
+            <li class="nav-item">
+                <a href="../regioes/index.html" class="nav-link">
+                    <i class="bi bi-geo-alt"></i> <span>Regiões</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../tarifas/index.html" class="nav-link">
+                    <i class="bi bi-cash-coin"></i> <span>Tarifas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../clientes/index.html" class="nav-link">
+                    <i class="bi bi-people"></i> <span>Clientes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../motoboys/index.html" class="nav-link">
+                    <i class="bi bi-bicycle"></i> <span>Motoboys</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="index.html" class="nav-link active">
+                    <i class="bi bi-box-seam"></i> <span>Entregas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../configuracoes/index.html" class="nav-link">
+                    <i class="bi bi-gear"></i> <span>Configurações</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../perfil.html" class="nav-link">
+                    <i class="bi bi-key"></i> <span>Alterar Senha</span>
+                </a>
+            </li>
+            <li class="nav-item mt-5">
+                <a href="../../login.html" class="nav-link">
+                    <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <h1 class="h4 mb-0">Detalhes da Entrega #</h1>
+            
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Administrador</small>
+                </div>
+            </div>
+        </div>
+        
+                    <div class="alert alert-danger"></div>
+                
+        <div class="row mb-3">
+            <div class="col-12">
+                <a href="index.html" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Voltar para Lista
+                </a>
+                <a href="atualizar_status.html" class="btn btn-primary">
+                    <i class="bi bi-arrow-clockwise"></i> Atualizar Status
+                </a>
+                                    <a href="atribuir_motoboy.html" class="btn btn-secondary">
+                        <i class="bi bi-bicycle"></i> Atribuir Motoboy
+                    </a>
+                                    <a href="atribuir_motoboy.html" class="btn btn-outline-secondary">
+                        <i class="bi bi-bicycle"></i> Alterar Motoboy
+                    </a>
+                                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCancelar">
+                        <i class="bi bi-x-circle"></i> Cancelar Entrega
+                    </button>
+                            </div>
+        </div>
+        
+        <!-- Informações Gerais -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="bi bi-info-circle"></i> Informações Gerais
+                </div>
+                                <span class="status-badge ">
+                                    </span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Código de Rastreio:</strong> </p>
+                        <p><strong>Data de Solicitação:</strong> </p>
+                        <p><strong>Tipo de Entrega:</strong> </p>
+                        <p><strong>Valor Total:</strong> R$ </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Peso:</strong>  kg</p>
+                        <p><strong>Dimensões:</strong> </p>
+                        <p><strong>Observações:</strong> </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Informações do Cliente -->
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-person"></i> Informações do Cliente
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Nome:</strong> </p>
+                        <p><strong>Email:</strong> </p>
+                        <p><strong>Telefone:</strong> </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Informações do Motoboy -->
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-bicycle"></i> Informações do Motoboy
+            </div>
+            <div class="card-body">
+                                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Nome:</strong> </p>
+                            <p><strong>Email:</strong> </p>
+                            <p><strong>Telefone:</strong> </p>
+                        </div>
+                    </div>
+                                    <p class="text-muted">Nenhum motoboy atribuído a esta entrega.</p>
+                            </div>
+        </div>
+        
+        <!-- Informações da Coleta -->
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-box"></i> Detalhes da Coleta
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                                                    <p><strong>Descrição:</strong> </p>
+                                                    <p><strong>Descrição:</strong> <span class="text-muted">Nenhuma descrição fornecida</span></p>
+                                                
+                                                    <p><strong>Instruções para coleta:</strong> </p>
+                                                
+                                                    <p><strong>Instruções para entrega:</strong> </p>
+                                                
+                                                    <div class="alert alert-info mt-2">
+                                <i class="bi bi-snow"></i> Esta entrega requer refrigeração
+                            </div>
+                                                
+                                                    <div class="alert alert-warning mt-2">
+                                <i class="bi bi-shield-check"></i> Esta entrega possui seguro
+                            </div>
+                                            </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Endereços -->
+        <div class="row">
+            <!-- Endereço de Origem -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-geo-alt"></i> Endereço de Origem
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Cidade:</strong> </p>
+                        <p><strong>Endereço completo:</strong> </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Endereço de Destino -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-geo-alt"></i> Endereço de Destino
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Cidade:</strong> </p>
+                        <p><strong>Endereço completo:</strong> </p>
+                                                    <p><strong>Destinatário:</strong> </p>
+                                            </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <!-- Status Atual -->
+                <div class="card mb-4">
+            <div class="card-body status-atual ">
+                <i class="bi "></i>
+                <div>
+                    <h5 class="mb-1">Status atual da entrega</h5>
+                                        
+                                            <div class="motoboy-info mt-2">
+                            <i class="bi bi-bicycle"></i> Motoboy:                                                             <span class="ms-2">(Tel: )</span>
+                                                    </div>
+                                    </div>
+            </div>
+        </div>
+                
+        <!-- Histórico de Status -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="bi bi-clock-history"></i> Histórico Detalhado da Entrega
+                </div>
+                                    <span class="badge  px-3 py-2">
+                        Status atual:                     </span>
+                            </div>
+            <div class="card-body">
+                <div class="timeline">
+                                            <div class="timeline-item">
+                            <div class="timeline-date">
+                                                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">
+                                    <div class="timeline-status-icon status-aguardando">
+                                        <i class="bi bi-hourglass-split"></i>
+                                    </div>
+                                    <strong>Coleta Solicitada</strong>
+                                </div>
+                                <p class="mb-0">Solicitação de coleta registrada no sistema.</p>
+                            </div>
+                        </div>
+                                        
+                                            <div class="timeline-item">
+                            <div class="timeline-date">
+                                                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">
+                                    <div class="timeline-status-icon">
+                                        <i class="bi bi-hourglass-split"></i>
+                                    </div>
+                                    <strong>Coleta Solicitada</strong>
+                                </div>
+                                <p class="mb-0">Solicitação de coleta registrada no sistema.</p>
+                            </div>
+                        </div>
+
+                                                <div class="timeline-item">
+                            <div class="timeline-date">
+                                                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">
+                                    <div class="timeline-status-icon">
+                                        <i class="bi bi-bicycle"></i>
+                                    </div>
+                                    <strong>Motoboy Designado</strong>
+                                </div>
+                                <p class="mb-0">Um motoboy foi designado para realizar a coleta.</p>
+                                                                    <div class="timeline-motoboy">
+                                        <i class="bi bi-bicycle me-2"></i>
+                                        <div>
+                                            <strong>Motoboy: </strong>                                                                                            <div><small class="text-muted">(Tel: )</small></div>
+                                                                                    </div>
+                                    </div>
+                                                            </div>
+                        </div>
+                                            
+                                            <div class="timeline-item">
+                            <div class="timeline-date">
+                                                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">
+                                    <div class="timeline-status-icon">
+                                        <i class="bi bi-box-seam"></i>
+                                    </div>
+                                    <strong>Pacote Coletado</strong>
+                                </div>
+                                <p class="mb-0">O pacote foi coletado com sucesso.</p>
+                            </div>
+                        </div>
+                    
+                                            <div class="timeline-item">
+                            <div class="timeline-date">
+                                                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">
+                                    <div class="timeline-status-icon">
+                                        <i class="bi bi-building"></i>
+                                    </div>
+                                    <strong>Centro de Distribuição</strong>
+                                </div>
+                                <p class="mb-0">O pacote chegou ao centro de distribuição.</p>
+                            </div>
+                        </div>
+                    
+                                            <div class="timeline-item">
+                            <div class="timeline-date">
+                                                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">
+                                    <div class="timeline-status-icon">
+                                        <i class="bi bi-truck"></i>
+                                    </div>
+                                    <strong>Em Rota de Entrega</strong>
+                                </div>
+                                <p class="mb-0">O pacote está em rota para entrega ao destinatário.</p>
+                                                                    <div class="timeline-motoboy">
+                                        <i class="bi bi-bicycle me-2"></i>
+                                        <div><strong>Motoboy de entrega: </strong></div>
+                                    </div>
+                                                            </div>
+                        </div>
+                    
+                                            <div class="timeline-item">
+                            <div class="timeline-date">
+                                                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">
+                                    <div class="timeline-status-icon status-finalizado">
+                                        <i class="bi bi-check-circle"></i>
+                                    </div>
+                                    <strong>Entrega Realizada</strong>
+                                </div>
+                                <p class="mb-0">O pacote foi entregue com sucesso ao destinatário.</p>
+                                                                <p class="mb-0 mt-2 text-success fw-bold">Recebido por: </p>
+                                                                                                <div class="mt-3">
+                                    <p class="mb-1 fw-bold"><i class="bi bi-camera me-1"></i> Foto do comprovante:</p>
+                                    <a href="../.." target="_blank">
+                                        <img src="../.."
+                                             alt="Comprovante de entrega"
+                                             class="img-fluid rounded border"
+                                             style="max-height: 250px; cursor: pointer;"
+                                             title="Clique para ampliar">
+                                    </a>
+                                </div>
+                                                            </div>
+                        </div>
+                    
+                                            <div class="timeline-item">
+                            <div class="timeline-date">
+                                                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">
+                                    <div class="timeline-status-icon status-cancelado-icon">
+                                        <i class="bi bi-x-circle"></i>
+                                    </div>
+                                    <strong>Entrega Cancelada</strong>
+                                </div>
+                                <p class="mb-0">Esta entrega foi cancelada.</p>
+                            </div>
+                        </div>
+                                        
+                </div>
+
+                                <div class="mt-4 pt-3 border-top">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#registroCompleto" aria-expanded="false" aria-controls="registroCompleto">
+                        <i class="bi bi-list-ul me-1"></i> Ver registro completo de ações ()
+                    </button>
+                    <div class="collapse" id="registroCompleto">
+                    <div class="timeline mt-3">
+                                                    <div class="timeline-item">
+                                <div class="timeline-date">
+                                                                    </div>
+                                <div class="timeline-content">
+                                    <div class="timeline-status">
+                                                                                <div class="timeline-status-icon ">
+                                            <i class="bi "></i>
+                                        </div>
+                                        <strong></strong>
+                                    </div>
+                                    
+                                                                            <p class="mb-2"></p>
+                                                                            <p class="mb-2 text-muted">Status atualizado no sistema</p>
+                                                                        
+                                                                            <div class="timeline-motoboy">
+                                            <i class="bi bi-bicycle me-2"></i>
+                                            <div>
+                                                <strong>Motoboy: </strong>                                                                                                    <div><small class="text-muted">(Tel: )</small></div>
+                                                                                            </div>
+                                        </div>
+                                                                        
+                                                                            <div class="mt-2">
+                                            <a href="../.." target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-image"></i> Visualizar Comprovante
+                                            </a>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                            </div>
+                    </div>
+                </div>
+                            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmação de Cancelamento -->
+    <div class="modal fade" id="modalCancelar" tabindex="-1" aria-labelledby="modalCancelarLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalCancelarLabel">
+                        <i class="bi bi-exclamation-triangle me-2"></i> Confirmar Cancelamento
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja <strong>cancelar</strong> a entrega <strong>#</strong>?</p>
+                    <p class="text-muted mb-0">Esta ação não pode ser desfeita.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarCancelamento">
+                        <i class="bi bi-x-circle"></i> Confirmar Cancelamento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('btnConfirmarCancelamento').addEventListener('click', function () {
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Cancelando...';
+
+            fetch('cancelar_entrega.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'id='
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.sucesso) {
+                    window.location.reload();
+                } else {
+                    alert('Erro ao cancelar: ' + (data.mensagem || 'Tente novamente.'));
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-x-circle"></i> Confirmar Cancelamento';
+                }
+            })
+            .catch(() => {
+                alert('Erro de comunicação com o servidor.');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-x-circle"></i> Confirmar Cancelamento';
+            });
+        });
+    </script>
+</body>
+</html>

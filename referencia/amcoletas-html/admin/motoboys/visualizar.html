@@ -1,0 +1,568 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizar Motoboy - Administrador</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Estilos personalizados -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+        }
+        
+        .sidebar {
+            background-color: var(--secondary-color);
+            min-height: 100vh;
+            color: white;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: var(--sidebar-width);
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            background-color: rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            white-space: nowrap;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+        
+        .top-bar {
+            background-color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #e64a2a;
+            border-color: #e64a2a;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #152c6b;
+            border-color: #152c6b;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #6c757d;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-ativo {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+        
+        .status-inativo {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+        
+        .status-disponivel {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+        
+        .status-indisponivel {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+        
+        .status-aguardando {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+        
+        .status-caminho {
+            background-color: #b8daff;
+            color: #004085;
+        }
+        
+        .status-coletado {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .status-distribuicao {
+            background-color: #d6d8db;
+            color: #383d41;
+        }
+        
+        .status-entregue {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 1.5rem;
+            background-color: var(--secondary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        
+        .profile-info h2 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        
+        .profile-info p {
+            margin: 0;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                width: 100%;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .top-bar {
+                margin-top: 0;
+                padding: 0.8rem 1rem;
+            }
+        }
+    </style>
+    <!-- Layout padrao do painel admin (igual em todas as telas) -->
+        <style>:where(:root){--primary-color: #0d6efd;--secondary-color: #6c757d;}</style>
+    <link rel="stylesheet" href="../../assets/css/admin-padrao.css">
+</head>
+<body>
+    <!-- Sidebar / Menu Lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                                    <img src="../.." alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                                <h3></h3>
+                            </div>
+        </div>
+        
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="../dashboard.html" class="nav-link">
+                    <i class="bi bi-speedometer2"></i> <span>Painel de Controle</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                                <a href="../notificacoes.html" class="nav-link">
+                    <i class="bi bi-bell"></i> <span>Notificações</span>
+                                            <span class="badge bg-danger ms-auto rounded-pill"></span>
+                                    </a>
+            </li>
+            <li class="nav-item">
+                <a href="../regioes/index.html" class="nav-link">
+                    <i class="bi bi-geo-alt"></i> <span>Regiões</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../tarifas/index.html" class="nav-link">
+                    <i class="bi bi-cash-coin"></i> <span>Tarifas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../clientes/index.html" class="nav-link">
+                    <i class="bi bi-people"></i> <span>Clientes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="index.html" class="nav-link active">
+                    <i class="bi bi-bicycle"></i> <span>Motoboys</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../entregas/index.html" class="nav-link">
+                    <i class="bi bi-box-seam"></i> <span>Entregas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../configuracoes/index.html" class="nav-link">
+                    <i class="bi bi-gear"></i> <span>Configurações</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../perfil.html" class="nav-link">
+                    <i class="bi bi-key"></i> <span>Alterar Senha</span>
+                </a>
+            </li>
+            <li class="nav-item mt-5">
+                <a href="../../login.html" class="nav-link">
+                    <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <h1 class="h4 mb-0">Detalhes do Motoboy</h1>
+            
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Administrador</small>
+                </div>
+            </div>
+        </div>
+        
+                    <div class="alert alert- alert-dismissible fade show" role="alert">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+                
+        <!-- Cabeçalho do Perfil -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                            </div>
+            <div class="profile-info">
+                <h2></h2>
+                <p>
+                    <i class="bi bi-bicycle"></i> Motoboy
+                </p>
+                <div class="mt-2">
+                                            <span class="status-badge status-ativo">Ativo</span>
+                                            <span class="status-badge status-inativo">Inativo</span>
+                                        
+                                            <span class="status-badge status-disponivel ms-2">Disponível</span>
+                                            <span class="status-badge status-indisponivel ms-2">Indisponível</span>
+                                    </div>
+            </div>
+        </div>
+        
+        <!-- Ações -->
+        <div class="d-flex mb-4">
+            <a href="editar.html" class="btn btn-primary me-2">
+                <i class="bi bi-pencil"></i> Editar Motoboy
+            </a>
+            <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#excluirModal">
+                <i class="bi bi-trash"></i> Excluir Motoboy
+            </a>
+            <a href="index.html" class="btn btn-secondary ms-auto">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+        
+        <!-- Informações do Motoboy -->
+        <div class="row">
+            <!-- Dados Pessoais -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-person"></i> Dados Pessoais
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <p class="info-label">Nome</p>
+                            </div>
+                            <div class="col-md-8">
+                                <p></p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <p class="info-label">E-mail</p>
+                            </div>
+                            <div class="col-md-8">
+                                <p></p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <p class="info-label">Telefone</p>
+                            </div>
+                            <div class="col-md-8">
+                                <p></p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <p class="info-label">Data de Cadastro</p>
+                            </div>
+                            <div class="col-md-8">
+                                <p></p>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p class="info-label">Status</p>
+                            </div>
+                            <div class="col-md-8">
+                                                                    <span class="status-badge status-ativo">Ativo</span>
+                                                                    <span class="status-badge status-inativo">Inativo</span>
+                                                                
+                                                                    <span class="status-badge status-disponivel ms-2">Disponível</span>
+                                                                    <span class="status-badge status-indisponivel ms-2">Indisponível</span>
+                                                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dados do Veículo -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-bicycle"></i> Dados do Veículo e Região
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <p class="info-label">CNH</p>
+                            </div>
+                            <div class="col-md-8">
+                                <p></p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <p class="info-label">Placa do Veículo</p>
+                            </div>
+                            <div class="col-md-8">
+                                <p></p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <p class="info-label">Modelo do Veículo</p>
+                            </div>
+                            <div class="col-md-8">
+                                <p></p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <p class="info-label">Cidade/Estado</p>
+                            </div>
+                            <div class="col-md-8">
+                                <p>
+                                     -                                 </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Últimas Entregas -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <i class="bi bi-box-seam"></i> Últimas Entregas
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Rota</th>
+                                <th>Data Solicitação</th>
+                                <th>Data Entrega</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                                                                                <tr>
+                                        <td>#</td>
+                                        <td>
+                                            <a href="../clientes/visualizar.html">
+                                                                                            </a>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                                                                                                                                                                        -
+                                                                                    </td>
+                                        <td>R$ </td>
+                                        <td>
+                                                                                        <span class="status-badge "></span>
+                                        </td>
+                                        <td>
+                                            <a href="../entregas/visualizar.html" class="btn btn-sm btn-info text-white" title="Visualizar">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                                                                            <tr>
+                                    <td colspan="8" class="text-center">Nenhuma entrega encontrada para este motoboy.</td>
+                                </tr>
+                                                    </tbody>
+                    </table>
+                </div>
+                
+                                    <div class="mt-3">
+                        <a href="../entregas/index.html" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-list"></i> Ver Todas as Entregas
+                        </a>
+                    </div>
+                            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal fade" id="excluirModal" tabindex="-1" aria-labelledby="excluirModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="excluirModalLabel">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja excluir o motoboy <strong></strong>?</p>
+                    <p class="text-danger"><small>Esta ação não poderá ser desfeita e todos os dados relacionados a este motoboy serão excluídos.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a href="index.html" class="btn btn-danger">Excluir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

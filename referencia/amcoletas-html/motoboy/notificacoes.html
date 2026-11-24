@@ -1,0 +1,337 @@
+
+
+
+<!DOCTYPE html>
+
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Notificações - </title>
+
+    
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" href="../assets/css/style.css"> 
+
+    
+
+    <style>
+
+        /* Ajuste para o layout com Sidebar */
+
+        body { background-color: #f8f9fa; display: flex; min-height: 100vh; }
+
+        .main-content { flex: 1; padding: 20px; transition: all 0.3s; margin-left: 250px; } /* Ajuste o margin conforme a largura da sua sidebar */
+
+        
+
+        @media (max-width: 768px) {
+
+            .main-content { margin-left: 0; padding: 15px; }
+
+        }
+
+
+
+        .notif-card {
+
+            border: none;
+
+            border-radius: 10px;
+
+            margin-bottom: 12px;
+
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+            border-left: 5px solid #dee2e6;
+
+            cursor: pointer;
+
+        }
+
+        
+
+        .notif-card.nao-lida { border-left-color: #0d6efd; background-color: #fff; font-weight: bold; }
+
+        .notif-card.lida { opacity: 0.7; background-color: #fdfdfd; }
+
+        
+
+        /* Cores por tipo ENUM */
+
+        .tipo-nova_coleta { border-left-color: #198754 !important; }
+
+        .tipo-coleta_cancelada { border-left-color: #dc3545 !important; }
+
+        .tipo-nova_entrega { border-left-color: #ffc107 !important; }
+
+
+
+        .notif-icon-box {
+
+            width: 45px; height: 45px;
+
+            display: flex; align-items: center; justify-content: center;
+
+            border-radius: 8px; background: #f0f2f5; margin-right: 15px;
+
+            font-size: 1.2rem;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <!-- Sidebar / Menu Lateral -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                            <img src="" alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                        <h3> </h3>
+                    </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+    </div>
+    
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a href="dashboard.html" class="nav-link ">
+                <i class="bi bi-speedometer2"></i>
+                <span>Painel de Controle</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="notificacoes.html" class="nav-link ">
+                <i class="bi bi-bell"></i> <span>Notificações</span>
+                                    <span id="notificacoesBadge" class="badge rounded-pill bg-danger ms-auto"></span>
+                                    <span id="notificacoesBadge" class="badge rounded-pill bg-danger ms-auto" style="display: none;">0</span>
+                            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="finalizar_entrega.html" class="nav-link ">
+                <i class="bi bi-check-circle"></i>
+                <span>Finalizar uma Entrega</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="indicacoes.html" class="nav-link ">
+                <i class="bi bi-people-fill"></i>
+                <span>Minhas Indicações</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="perfil.html" class="nav-link ">
+                <i class="bi bi-person"></i>
+                <span>Meu Perfil</span>
+            </a>
+        </li>
+
+        <li class="nav-item mt-5">
+            <a href="../login.html" class="nav-link">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sair</span>
+            </a>
+        </li>
+    </ul>
+</div>
+  <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Motoboy] - </title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="">
+    <meta name="description" content="Painel do Motoboy - Sistema de Logística Intermunicipal">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../pwa-icons/icon-192x192.png">
+    <link rel="stylesheet" href="../assets/css/atualizacao-automatica.css">
+    <script src="../assets/js/pwa.js" defer></script>
+
+    <style type='text/css'>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 70px;
+        }
+    </style>
+    <link rel="stylesheet" href="../assets/css/motoboy.css">
+</head>    
+  
+
+
+
+    <main class="main-content">
+
+        <div class="container-fluid">
+
+            
+        <div class="top-bar">
+            <div class="d-flex align-items-center">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+            <h1 class="h4 mb-0">Notificações</h1>
+                </div>
+                
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Motoboy - </small>
+                </div>
+            </div>
+        </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                
+                    <a href="?ler_todas=1" class="btn btn-sm btn-outline-primary rounded-pill">
+
+                        Marcar todas como lidas
+
+                    </a>
+
+                
+            </div>
+
+
+
+            <div class="row justify-content-center">
+
+                <div class="col-lg-9">
+
+                    
+                        <div class="card border-0 shadow-sm text-center py-5">
+
+                            <i class="bi bi-bell-slash text-muted mb-3" style="font-size: 3rem;"></i>
+
+                            <p class="text-muted">Nenhuma notificação por aqui.</p>
+
+                        </div>
+
+                    
+                        
+                            <div class="card notif-card " 
+
+                                 onclick="location.href='ler_notificacao.php?id=&ref='">
+
+                                <div class="card-body d-flex align-items-center">
+
+                                    <div class="notif-icon-box">
+
+                                        <i class="bi "></i>
+
+                                    </div>
+
+                                    <div class="flex-grow-1">
+
+                                        <div class="d-flex justify-content-between">
+
+                                            <span class="d-block text-dark"></span>
+
+                                            <small class="text-muted"></small>
+
+                                        </div>
+
+                                        <p class="mb-0 text-muted small"></p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../assets/js/main.js"></script>
+  
+  <script>
+        // Funcionalidade para o menu lateral recolhível
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const mainContent = document.getElementById('mainContent');
+            const mobileToggle = document.getElementById('mobileToggle');
+            
+            // Função para alternar o menu lateral em desktop
+            if(sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    mainContent.classList.toggle('expanded');
+                    
+                    // Alterna o ícone do botão
+                    const icon = sidebarToggle.querySelector('i');
+                    if (icon.classList.contains('bi-chevron-left')) {
+                        icon.classList.replace('bi-chevron-left', 'bi-chevron-right');
+                    } else {
+                        icon.classList.replace('bi-chevron-right', 'bi-chevron-left');
+                    }
+                });
+            }
+            
+            // Função para alternar o menu lateral em dispositivos móveis
+            if(mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                });
+            }
+            
+            // Fechar o menu ao clicar fora dele em dispositivos móveis
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnMobileToggle = mobileToggle.contains(event.target);
+                
+                if (window.innerWidth <= 768 && !isClickInsideSidebar && !isClickOnMobileToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+            
+            // Ajustar em caso de redimensionamento da tela
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

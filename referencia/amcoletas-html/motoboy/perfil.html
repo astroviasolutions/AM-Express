@@ -1,0 +1,238 @@
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Motoboy] - </title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="">
+    <meta name="description" content="Painel do Motoboy - Sistema de Logística Intermunicipal">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../pwa-icons/icon-192x192.png">
+    <link rel="stylesheet" href="../assets/css/atualizacao-automatica.css">
+    <script src="../assets/js/pwa.js" defer></script>
+
+    <style type='text/css'>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 70px;
+        }
+    </style>
+    <link rel="stylesheet" href="../assets/css/motoboy.css">
+</head>    
+<body>
+  <!-- Sidebar / Menu Lateral -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                            <img src="" alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                        <h3> </h3>
+                    </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+    </div>
+    
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a href="dashboard.html" class="nav-link ">
+                <i class="bi bi-speedometer2"></i>
+                <span>Painel de Controle</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="notificacoes.html" class="nav-link ">
+                <i class="bi bi-bell"></i> <span>Notificações</span>
+                                    <span id="notificacoesBadge" class="badge rounded-pill bg-danger ms-auto"></span>
+                                    <span id="notificacoesBadge" class="badge rounded-pill bg-danger ms-auto" style="display: none;">0</span>
+                            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="finalizar_entrega.html" class="nav-link ">
+                <i class="bi bi-check-circle"></i>
+                <span>Finalizar uma Entrega</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="indicacoes.html" class="nav-link ">
+                <i class="bi bi-people-fill"></i>
+                <span>Minhas Indicações</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="perfil.html" class="nav-link ">
+                <i class="bi bi-person"></i>
+                <span>Meu Perfil</span>
+            </a>
+        </li>
+
+        <li class="nav-item mt-5">
+            <a href="../login.html" class="nav-link">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sair</span>
+            </a>
+        </li>
+    </ul>
+</div>    
+    <!-- Conteúdo Principal -->
+    <div class="main-content" id="mainContent">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <div class="d-flex align-items-center">
+                <button class="mobile-toggle me-3 d-md-none" id="mobileToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h1 class="h4 mb-0">Meu Perfil</h1>
+            </div>
+            
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Motoboy - </small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mensagem de sucesso ou erro -->
+                    <div class="alert alert- alert-dismissible fade show" role="alert">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+                
+        <!-- Cabeçalho do Perfil -->
+        <div class="profile-header">
+            <img src="https://ui-avatars.com/api/?name=&background=random&size=200" alt="Perfil" class="profile-image">
+            <div>
+                <h2></h2>
+                <p class="text-muted mb-0">Motoboy -  / </p>
+                <p class="mb-0">
+                    <span class="badge ">
+                                            </span>
+                </p>
+            </div>
+        </div>
+        
+        <!-- Formulário de Perfil -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-person-gear"></i> Editar Informações
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="nome" class="form-label">Nome Completo</label>
+                                    <input type="text" class="form-control" id="nome" name="nome" value="" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" id="email" name="email" value="" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="telefone" class="form-label">Telefone</label>
+                                    <input type="text" class="form-control" id="telefone" name="telefone" value="" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="cidade" class="form-label">Cidade/Estado</label>
+                                    <input type="text" class="form-control" id="cidade" value="" readonly>
+                                    <small class="text-muted">Para alterar sua cidade, entre em contato com o administrador.</small>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="placa_moto" class="form-label">Placa da Moto</label>
+                                    <input type="text" class="form-control" id="placa_moto" name="placa_moto" value="">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="modelo_moto" class="form-label">Modelo da Moto</label>
+                                    <input type="text" class="form-control" id="modelo_moto" name="modelo_moto" value="">
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            <h5>Alterar Senha</h5>
+                            <p class="text-muted">Preencha apenas se desejar alterar sua senha atual.</p>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="senha_atual" class="form-label">Senha Atual</label>
+                                    <input type="password" class="form-control" id="senha_atual" name="senha_atual">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="nova_senha" class="form-label">Nova Senha</label>
+                                    <input type="password" class="form-control" id="nova_senha" name="nova_senha">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="confirmar_senha" class="form-label">Confirmar Nova Senha</label>
+                                    <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha">
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="submit" name="atualizar_perfil" class="btn btn-primary">
+                                    <i class="bi bi-save"></i> Salvar Alterações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Funcionalidade para o menu lateral responsivo
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mobileToggle = document.getElementById('mobileToggle');
+            
+            // Função para alternar o menu lateral em dispositivos móveis
+            if(mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                });
+            }
+            
+            // Fechar o menu ao clicar fora dele em dispositivos móveis
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnMobileToggle = mobileToggle.contains(event.target);
+                
+                if (window.innerWidth <= 768 && !isClickInsideSidebar && !isClickOnMobileToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+            
+            // Ajustar em caso de redimensionamento da tela
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

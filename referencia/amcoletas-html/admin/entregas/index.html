@@ -1,0 +1,931 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Entregas - Administrador</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <!-- Estilos personalizados -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            overflow-x: hidden;
+        }
+        
+        .sidebar {
+            background-color: var(--secondary-color);
+            height: 100vh;
+            color: white;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: var(--sidebar-width);
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            background-color: rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            white-space: nowrap;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+        
+        .top-bar {
+            background-color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #e64a2a;
+            border-color: #e64a2a;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #152c6b;
+            border-color: #152c6b;
+        }
+        
+        .status-badge {
+            padding: 0.35rem 0.7rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #fff;
+            display: inline-block;
+        }
+
+        .status-aguardando  { background-color: #B0B0B0; }
+        .status-caminho     { background-color: #4DA6FF; }
+        .status-coletado    { background-color: #007BFF; }
+        .status-distribuicao { background-color: #6C63FF; }
+        .status-rota-entrega { background-color: #FFA500; }
+        .status-entregue    { background-color: #4CAF50; }
+        .status-cancelado   { background-color: #DC3545; }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                width: 100%;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .top-bar {
+                margin-top: 0;
+                padding: 0.8rem 1rem;
+            }
+        }
+    </style>
+    <!-- Layout padrao do painel admin (igual em todas as telas) -->
+        <style>:where(:root){--primary-color: #0d6efd;--secondary-color: #6c757d;}</style>
+    <link rel="stylesheet" href="../../assets/css/admin-padrao.css">
+</head>
+<body>
+    <!-- Sidebar / Menu Lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                                    <img src="../.." alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                                <h3></h3>
+                            </div>
+        </div>
+        
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="../dashboard.html" class="nav-link">
+                    <i class="bi bi-speedometer2"></i> <span>Painel de Controle</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                                <a href="../notificacoes.html" class="nav-link">
+                    <i class="bi bi-bell"></i> <span>Notificações</span>
+                                            <span class="badge bg-danger ms-auto rounded-pill"></span>
+                                    </a>
+            </li>
+            <li class="nav-item">
+                <a href="../regioes/index.html" class="nav-link">
+                    <i class="bi bi-geo-alt"></i> <span>Regiões</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../tarifas/index.html" class="nav-link">
+                    <i class="bi bi-cash-coin"></i> <span>Tarifas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../clientes/index.html" class="nav-link">
+                    <i class="bi bi-people"></i> <span>Clientes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../motoboys/index.html" class="nav-link">
+                    <i class="bi bi-bicycle"></i> <span>Motoboys</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="index.html" class="nav-link active">
+                    <i class="bi bi-box-seam"></i> <span>Entregas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../configuracoes/index.html" class="nav-link">
+                    <i class="bi bi-gear"></i> <span>Configurações</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../perfil.html" class="nav-link">
+                    <i class="bi bi-key"></i> <span>Alterar Senha</span>
+                </a>
+            </li>
+            <li class="nav-item mt-5">
+                <a href="../../login.html" class="nav-link">
+                    <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Conteúdo Principal -->
+    <div class="main-content" id="mainContent">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <div class="d-flex align-items-center">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+            <h1 class="h4 mb-0">Gerenciamento de Entregas</h1>
+            </div>
+            
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Administrador</small>
+                </div>
+            </div>
+        </div>
+        
+                    <div class="alert alert-danger"></div>
+                
+        <!-- Filtros -->
+        <div class="card filter-card">
+            <div class="card-header">
+                <i class="bi bi-funnel"></i> Filtros
+            </div>
+            <div class="card-body">
+                <form method="GET" action="index.html" class="row g-3">
+                    <div class="col-md-2">
+                        <label for="status" class="form-label">Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">Todos</option>
+                            <option value="aguardando_coleta" >Aguardando Coleta</option>
+                            <option value="a_caminho" >A Caminho</option>
+                            <option value="coletado" >Coletado</option>
+                            <option value="centro_distribuicao" >Centro de Distribuição</option>
+                            <option value="Em_Rota_de_entrega" >Em Rota de Entrega</option>
+                            <option value="entregue" >Entregue</option>
+                            <option value="cancelado" >Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="cliente_id" class="form-label">Cliente</label>
+                        <select name="cliente_id" id="cliente_id" class="form-select">
+                            <option value="">Todos</option>
+                                                            <option value="" >
+                                                                    </option>
+                                                    </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="motoboy_id" class="form-label">Motoboy</label>
+                        <select name="motoboy_id" id="motoboy_id" class="form-select">
+                            <option value="">Todos</option>
+                                                            <option value="" >
+                                                                    </option>
+                                                    </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="cidade_id" class="form-label">Cidade</label>
+                        <select name="cidade_id" id="cidade_id" class="form-select">
+                            <option value="">Todas</option>
+                                                            <option value="" >
+                                                                    </option>
+                                                    </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="data_inicio" class="form-label">Data Início</label>
+                        <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="data_fim" class="form-label">Data Fim</label>
+                        <input type="date" class="form-control" id="data_fim" name="data_fim" value="">
+                    </div>
+                    <div class="col-md-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="bi bi-search"></i> Filtrar
+                        </button>
+                        <a href="index.html" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Limpar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Escanear Pacotes -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-qr-code-scan"></i> Escanear Pacotes
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group mb-3">
+                            <input type="text" id="codigo_rastreio" class="form-control" placeholder="Escaneie o QR Code ou digite o código de rastreio">
+                            <button class="btn btn-primary" type="button" id="buscar_pacote">
+                                <i class="bi bi-search"></i> Buscar
+                            </button>
+                        </div>
+                        <div class="form-text mb-3">
+                            Escaneie o QR Code do pacote ou digite o código de rastreio para visualizar e atualizar o status.
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button id="iniciar_camera" class="btn btn-secondary">
+                            <i class="bi bi-camera"></i> Iniciar Câmera
+                        </button>
+                        <div id="qr-reader" style="width: 100%; max-width: 400px; margin: 0 auto; display: none;"></div>
+                    </div>
+                </div>
+                
+                <div id="info_pacote" style="display: none;" class="mt-4">
+                    <h5>Informações do Pacote</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6>Dados Gerais</h6>
+                                    <table class="table table-sm table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <th width="150">ID:</th>
+                                                <td id="pacote_id"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Código de Rastreio:</th>
+                                                <td id="pacote_codigo"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Cliente:</th>
+                                                <td id="pacote_cliente"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Origem:</th>
+                                                <td id="pacote_origem"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Destino:</th>
+                                                <td id="pacote_destino"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Endereço Destino:</th>
+                                                <td id="pacote_endereco"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Motoboy:</th>
+                                                <td id="pacote_motoboy"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status Atual:</th>
+                                                <td><span id="pacote_status" class="status-badge"></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6>Atualizar Status</h6>
+                                    <form id="form_atualizar_status">
+                                        <input type="hidden" id="entrega_id" name="entrega_id">
+                                        
+                                        <div class="mb-3">
+                                            <label for="novo_status" class="form-label">Novo Status:</label>
+                                            <select id="novo_status" name="novo_status" class="form-select">
+                                                <option value="">Selecione o próximo status</option>
+                                                <option value="aguardando_coleta">Aguardando Coleta</option>
+                                                <option value="a_caminho">A Caminho</option>
+                                                <option value="coletado">Coletado</option>
+                                                <option value="centro_distribuicao">Centro de Distribuição</option>
+                                                <option value="Em_Rota_de_entrega">Em Rota de entrega para o Destinatário</option>
+                                                <option value="entregue">Entregue</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="observacao" class="form-label">Observação:</label>
+                                            <textarea id="observacao" name="observacao" class="form-control" rows="3"></textarea>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="bi bi-arrow-clockwise"></i> Atualizar Status
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="erro_pacote" class="alert alert-danger mt-3" style="display: none;">
+                    Pacote não encontrado ou código inválido.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lista de Entregas -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="bi bi-box-seam"></i> Entregas
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="tabelaEntregas">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Nome Loja</th>
+                                <th>Origem → Destino</th>
+                                <th>Motoboy (Coleta)</th>
+                                <th>Motoboy (Entrega)</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th>Etiqueta</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                                                                                <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                             → 
+                                                                                    </td>
+                                        <td>
+                                                                                                                                                                                        <span class="text-muted">Não atribuído</span>
+                                                                                    </td>
+                                        <td>
+                                                                                                                                                                                        <span class="text-muted">Pendente</span>
+                                                                                    </td>
+                                        <td></td>
+                                        <td>
+                                                                                        <span class="status-badge ">
+                                                                                            </span>
+                                        </td>
+                                        <td>
+                                                                                                                                            <a href="../gerar_etiqueta.html" class="btn btn-sm btn-outline-secondary ms-1" title="Gerar Etiqueta">
+                                                    <i class="bi bi-tag"></i>
+                                                </a>
+                                                                                            -
+                                                                                    </td>
+                                        <td>
+                                            <a href="visualizar.html" class="btn btn-sm btn-info" title="Visualizar">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="atualizar_status.html" class="btn btn-sm btn-primary" title="Atualizar Status">
+                                                <i class="bi bi-arrow-clockwise"></i>
+                                            </a>
+                                            <a href="atribuir_motoboy.html" class="btn btn-sm btn-secondary" title="Atribuir Motoboy">
+                                                <i class="bi bi-bicycle"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                                                                            <tr>
+                                    <td colspan="10" class="text-center">Nenhuma entrega encontrada.</td>
+                                </tr>
+                                                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $('#tabelaEntregas').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+                },
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                order: [[0, 'desc']]
+            });
+        });
+        
+        // Funcionalidade para o menu lateral recolhível
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const mainContent = document.getElementById('mainContent');
+            const mobileToggle = document.getElementById('mobileToggle');
+            
+            // Função para alternar o menu lateral em desktop
+            if(sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    mainContent.classList.toggle('expanded');
+                    
+                    // Alterna o ícone do botão
+                    const icon = sidebarToggle.querySelector('i');
+                    if (icon.classList.contains('bi-chevron-left')) {
+                        icon.classList.replace('bi-chevron-left', 'bi-chevron-right');
+                    } else {
+                        icon.classList.replace('bi-chevron-right', 'bi-chevron-left');
+                    }
+                });
+            }
+            
+            // Função para alternar o menu lateral em dispositivos móveis
+            if(mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                });
+            }
+            
+            // Fechar o menu ao clicar fora dele em dispositivos móveis
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnMobileToggle = mobileToggle.contains(event.target);
+                
+                if (window.innerWidth <= 768 && !isClickInsideSidebar && !isClickOnMobileToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+            
+            // Ajustar em caso de redimensionamento da tela
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        });
+    </script>
+    
+    <!-- HTML5 QR Code Scanner -->
+    <script src="https://unpkg.com/html5-qrcode@2.2.1/html5-qrcode.min.js"></script>
+    
+    <script>
+        // Função para buscar informações do pacote por código de rastreio
+        function buscarPacote() {
+            // Obter o valor do input
+            let codigoCompleto = document.getElementById('codigo_rastreio').value.trim();
+            let codigo = codigoCompleto;
+            
+            // Se for um objeto JSON, tenta extrair o código ou ID
+            if (codigoCompleto.includes('"codigo_rastreio"') || codigoCompleto.includes('"entrega_id"')) {
+                try {
+                    const dadosObj = JSON.parse(codigoCompleto.replace(/'/g, '"'));
+                    codigo = dadosObj.codigo_rastreio || dadosObj.entrega_id || codigo;
+                } catch (e) {
+                    // Se falhar ao parsear JSON, tenta extrair o ID ou código de rastreio por regex
+                    const matchId = codigoCompleto.match(/"entrega_id"\s*:\s*"?(\d+)"?/);
+                    const matchCodigo = codigoCompleto.match(/"codigo_rastreio"\s*:\s*"([^"]+)"/);
+                    
+                    if (matchId && matchId[1]) {
+                        codigo = matchId[1];
+                    } else if (matchCodigo && matchCodigo[1]) {
+                        codigo = matchCodigo[1];
+                    }
+                }
+            }
+            
+            if (!codigo) {
+                alert('Por favor, insira um código de rastreio válido.');
+                return;
+            }
+            
+            // Mostrar indicador de carregamento
+            document.getElementById('buscar_pacote').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Buscando...';
+            document.getElementById('buscar_pacote').disabled = true;
+            
+            // Fazer requisição AJAX
+            fetch('obter_pacote.php?codigo=' + encodeURIComponent(codigo))
+                .then(response => response.json())
+                .then(data => {
+                    // Restaurar botão
+                    document.getElementById('buscar_pacote').innerHTML = '<i class="bi bi-search"></i> Buscar';
+                    document.getElementById('buscar_pacote').disabled = false;
+                    
+                    if (data.success) {
+                        // Exibir informações do pacote
+                        document.getElementById('info_pacote').style.display = 'block';
+                        document.getElementById('erro_pacote').style.display = 'none';
+                        
+                        // Preencher dados
+                        document.getElementById('pacote_id').textContent = data.entrega.id;
+                        document.getElementById('pacote_codigo').textContent = data.entrega.codigo_rastreio;
+                        document.getElementById('pacote_cliente').textContent = data.entrega.cliente_nome;
+                        document.getElementById('pacote_origem').textContent = data.entrega.cidade_origem;
+                        document.getElementById('pacote_destino').textContent = data.entrega.cidade_destino;
+                        document.getElementById('pacote_endereco').textContent = data.entrega.cidade_destino || 'Não informado';
+                        document.getElementById('pacote_motoboy').textContent = data.entrega.motoboy_nome || 'Não atribuído';
+                        
+                        // Status
+                        const pacoteStatus = document.getElementById('pacote_status');
+                        pacoteStatus.textContent = getStatusText(data.entrega.status);
+                        pacoteStatus.className = 'status-badge ' + getStatusClass(data.entrega.status);
+                        
+                        // Form
+                        document.getElementById('entrega_id').value = data.entrega.id;
+                        
+                        // Selecionar próximo status no dropdown
+                        const novoStatus = document.getElementById('novo_status');
+                        novoStatus.innerHTML = '';
+                        
+                        const statusOption = document.createElement('option');
+                        statusOption.value = '';
+                        statusOption.textContent = 'Selecione o próximo status';
+                        novoStatus.appendChild(statusOption);
+                        
+                        // Adicionar opções de status considerando o fluxo
+                        const statusAtual = data.entrega.status;
+                        const proximosStatus = getProximosStatus(statusAtual);
+                        
+                        proximosStatus.forEach(status => {
+                            const option = document.createElement('option');
+                            option.value = status.value;
+                            option.textContent = status.text;
+                            
+                            // Pré-selecionar o próximo status recomendado
+                            if (status.recomendado) {
+                                option.selected = true;
+                            }
+                            
+                            novoStatus.appendChild(option);
+                        });
+                    } else {
+                        // Exibir mensagem de erro
+                        document.getElementById('info_pacote').style.display = 'none';
+                        document.getElementById('erro_pacote').style.display = 'block';
+                        document.getElementById('erro_pacote').textContent = data.message || 'Pacote não encontrado ou código inválido.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar pacote:', error);
+                    document.getElementById('buscar_pacote').innerHTML = '<i class="bi bi-search"></i> Buscar';
+                    document.getElementById('buscar_pacote').disabled = false;
+                    document.getElementById('info_pacote').style.display = 'none';
+                    document.getElementById('erro_pacote').style.display = 'block';
+                    document.getElementById('erro_pacote').textContent = 'Erro ao buscar informações do pacote. Por favor, tente novamente.';
+                });
+        }
+        
+        // Função para obter texto de status formatado
+        function getStatusText(status) {
+            const statusMap = {
+                'aguardando_coleta': 'Aguardando Coleta',
+                'a_caminho': 'A Caminho',
+                'coletado': 'Coletado',
+                'centro_distribuicao': 'Centro de Distribuição',
+                'Em_Rota_de_entrega': 'Em Rota de entrega para o Destinatário',
+                'entregue': 'Entregue',
+                'cancelado': 'Cancelado'
+            };
+
+            return statusMap[status] || ucfirst(status.replace(/_/g, ' '));
+        }
+
+        // Função para obter classe CSS de status
+        function getStatusClass(status) {
+            const classMap = {
+                'aguardando_coleta': 'status-aguardando',
+                'a_caminho': 'status-caminho',
+                'coletado': 'status-coletado',
+                'centro_distribuicao': 'status-distribuicao',
+                'Em_Rota_de_entrega': 'status-rota-entrega',
+                'entregue': 'status-entregue',
+                'cancelado': 'status-cancelado'
+            };
+
+            return classMap[status] || '';
+        }
+        
+        // Função para capitalizar primeira letra
+        function ucfirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+        
+        // Função para obter próximos status possíveis com base no status atual
+        function getProximosStatus(statusAtual) {
+            const fluxoStatus = {
+                'aguardando_coleta': [
+                    { value: 'a_caminho', text: 'A Caminho', recomendado: true },
+                    { value: 'coletado', text: 'Coletado', recomendado: false }
+                ],
+                'a_caminho': [
+                    { value: 'aguardando_coleta', text: 'Aguardando Coleta', recomendado: false },
+                    { value: 'coletado', text: 'Coletado', recomendado: true }
+                ],
+                'coletado': [
+                    { value: 'aguardando_coleta', text: 'Aguardando Coleta', recomendado: false },
+                    { value: 'centro_distribuicao', text: 'Centro de Distribuição', recomendado: true }
+                ],
+                'centro_distribuicao': [
+                    { value: 'coletado', text: 'Coletado', recomendado: false },
+                    { value: 'Em_Rota_de_entrega', text: 'Em Rota de entrega para o Destinatário', recomendado: true }
+                ],
+                'Em_Rota_de_entrega': [
+                    { value: 'centro_distribuicao', text: 'Centro de Distribuição', recomendado: false },
+                    { value: 'entregue', text: 'Entregue', recomendado: true }
+                ],
+                'entregue': [
+                    { value: 'Em_Rota_de_entrega', text: 'Em Rota de entrega para o Destinatário', recomendado: false }
+                ],
+                'cancelado': []
+            };
+
+            return fluxoStatus[statusAtual] || [
+                { value: 'aguardando_coleta', text: 'Aguardando Coleta', recomendado: false },
+                { value: 'a_caminho', text: 'A Caminho', recomendado: false },
+                { value: 'coletado', text: 'Coletado', recomendado: false },
+                { value: 'centro_distribuicao', text: 'Centro de Distribuição', recomendado: false },
+                { value: 'Em_Rota_de_entrega', text: 'Em Rota de entrega para o Destinatário', recomendado: false },
+                { value: 'entregue', text: 'Entregue', recomendado: false }
+            ];
+        }
+        
+        // Configuração do Scanner de QR Code
+        let html5QrCode;
+        
+        document.getElementById('iniciar_camera').addEventListener('click', function() {
+            const qrDiv = document.getElementById('qr-reader');
+            
+            if (qrDiv.style.display === 'none') {
+                // Mostrar o scanner
+                qrDiv.style.display = 'block';
+                this.innerHTML = '<i class="bi bi-camera-video-off"></i> Parar Câmera';
+                
+                // Iniciar o scanner
+                html5QrCode = new Html5Qrcode("qr-reader");
+                html5QrCode.start(
+                    { facingMode: "environment" },
+                    {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 }
+                    },
+                    (decodedText) => {
+                        // QR Code detectado com sucesso
+                        document.getElementById('codigo_rastreio').value = decodedText;
+                        
+                        // Parar o scanner
+                        html5QrCode.stop().then(() => {
+                            qrDiv.style.display = 'none';
+                            document.getElementById('iniciar_camera').innerHTML = '<i class="bi bi-camera"></i> Iniciar Câmera';
+                            
+                            // Buscar o pacote automaticamente
+                            buscarPacote();
+                        }).catch(err => {
+                            console.error("Erro ao parar câmera:", err);
+                        });
+                    },
+                    (errorMessage) => {
+                        // Console de erros para debug
+                        console.log(errorMessage);
+                    }
+                ).catch(err => {
+                    alert("Erro ao acessar a câmera: " + err);
+                    qrDiv.style.display = 'none';
+                    this.innerHTML = '<i class="bi bi-camera"></i> Iniciar Câmera';
+                });
+            } else {
+                // Parar e esconder o scanner
+                if (html5QrCode) {
+                    html5QrCode.stop().then(() => {
+                        qrDiv.style.display = 'none';
+                        this.innerHTML = '<i class="bi bi-camera"></i> Iniciar Câmera';
+                    }).catch(err => {
+                        console.error("Erro ao parar câmera:", err);
+                    });
+                }
+            }
+        });
+        
+        // Event listener para o botão de busca
+        document.getElementById('buscar_pacote').addEventListener('click', buscarPacote);
+        
+        // Event listener para o campo de input (permitir busca ao pressionar Enter)
+        document.getElementById('codigo_rastreio').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                buscarPacote();
+            }
+        });
+        
+        // Event listener para o formulário de atualização de status
+        document.getElementById('form_atualizar_status').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const entregaId = document.getElementById('entrega_id').value;
+            const novoStatus = document.getElementById('novo_status').value;
+            const observacao = document.getElementById('observacao').value;
+            
+            if (!novoStatus) {
+                alert('Por favor, selecione um novo status.');
+                return;
+            }
+            
+            // Mostrar indicador de carregamento na submissão
+            const btnSubmit = this.querySelector('button[type="submit"]');
+            const btnOriginalText = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Atualizando...';
+            btnSubmit.disabled = true;
+            
+            // Preparar dados para envio
+            const formData = new FormData();
+            formData.append('entrega_id', entregaId);
+            formData.append('novo_status', novoStatus);
+            formData.append('observacao', observacao);
+            formData.append('origem', 'scanner_admin'); // Identifica que a atualização veio do scanner do admin
+            
+            // Enviar requisição
+            fetch('atualizar_status_ajax.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Restaurar botão
+                btnSubmit.innerHTML = btnOriginalText;
+                btnSubmit.disabled = false;
+                
+                if (data.success) {
+                    // Mostrar mensagem de sucesso
+                    alert(data.message);
+                    
+                    // Atualizar exibição
+                    const pacoteStatus = document.getElementById('pacote_status');
+                    pacoteStatus.textContent = getStatusText(novoStatus);
+                    pacoteStatus.className = 'status-badge ' + getStatusClass(novoStatus);
+                    
+                    // Limpar observação
+                    document.getElementById('observacao').value = '';
+                    
+                    // Atualizar dropdown de status
+                    const statusDropdown = document.getElementById('novo_status');
+                    statusDropdown.innerHTML = '';
+                    
+                    const statusOption = document.createElement('option');
+                    statusOption.value = '';
+                    statusOption.textContent = 'Selecione o próximo status';
+                    statusDropdown.appendChild(statusOption);
+                    
+                    // Adicionar novos status baseados no fluxo
+                    const proximosStatus = getProximosStatus(novoStatus);
+                    
+                    proximosStatus.forEach(status => {
+                        const option = document.createElement('option');
+                        option.value = status.value;
+                        option.textContent = status.text;
+                        
+                        if (status.recomendado) {
+                            option.selected = true;
+                        }
+                        
+                        statusDropdown.appendChild(option);
+                    });
+                    
+                    // Recarregar a página após 1 segundo para atualizar a lista de entregas
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    // Mostrar mensagem de erro
+                    alert('Erro ao atualizar status: ' + (data.message || 'Ocorreu um erro desconhecido.'));
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar status:', error);
+                btnSubmit.innerHTML = btnOriginalText;
+                btnSubmit.disabled = false;
+                alert('Erro ao processar a solicitação. Por favor, tente novamente.');
+            });
+        });
+    </script>
+</body>
+</html>

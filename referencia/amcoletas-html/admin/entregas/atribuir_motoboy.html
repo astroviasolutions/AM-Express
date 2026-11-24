@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atribuir Motoboy - Entrega # - Administrador</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Estilos personalizados -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+        }
+        
+        .sidebar {
+            background-color: var(--secondary-color);
+            min-height: 100vh;
+            color: white;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: var(--sidebar-width);
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .sidebar-header span {
+            color: var(--primary-color);
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+        
+        .top-bar {
+            background-color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-aguardando {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+        
+        .status-caminho {
+            background-color: #b8daff;
+            color: #004085;
+        }
+        
+        .status-coletado {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .status-distribuicao {
+            background-color: #d6d8db;
+            color: #383d41;
+        }
+        
+        .status-entregue {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #e64a2a;
+            border-color: #e64a2a;
+        }
+        
+        .motoboy-card {
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .motoboy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .motoboy-card.selected {
+            border-color: var(--primary-color);
+        }
+        
+        .motoboy-atende {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                min-height: auto;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            
+            .top-bar {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+    <!-- Layout padrao do painel admin (igual em todas as telas) -->
+        <style>:where(:root){--primary-color: #0d6efd;--secondary-color: #6c757d;}</style>
+    <link rel="stylesheet" href="../../assets/css/admin-padrao.css">
+</head>
+<body>
+    <!-- Sidebar / Menu Lateral -->
+    <div class="sidebar col-md-3 col-lg-2">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                                    <img src="../.." alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                                <h3></h3>
+                            </div>
+        </div>
+        
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="../dashboard.html" class="nav-link">
+                    <i class="bi bi-speedometer2"></i> <span>Painel de Controle</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                                <a href="../notificacoes.html" class="nav-link">
+                    <i class="bi bi-bell"></i> <span>Notificações</span>
+                                            <span class="badge bg-danger ms-auto rounded-pill"></span>
+                                    </a>
+            </li>
+            <li class="nav-item">
+                <a href="../regioes/index.html" class="nav-link">
+                    <i class="bi bi-geo-alt"></i> <span>Regiões</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../tarifas/index.html" class="nav-link">
+                    <i class="bi bi-cash-coin"></i> <span>Tarifas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../clientes/index.html" class="nav-link">
+                    <i class="bi bi-people"></i> <span>Clientes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../motoboys/index.html" class="nav-link">
+                    <i class="bi bi-bicycle"></i> <span>Motoboys</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="index.html" class="nav-link active">
+                    <i class="bi bi-box-seam"></i> <span>Entregas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../configuracoes/index.html" class="nav-link">
+                    <i class="bi bi-gear"></i> <span>Configurações</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../perfil.html" class="nav-link">
+                    <i class="bi bi-key"></i> <span>Alterar Senha</span>
+                </a>
+            </li>
+            <li class="nav-item mt-5">
+                <a href="../../login.html" class="nav-link">
+                    <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <h1 class="h4 mb-0">Atribuir Motoboy de Coleta - Entrega #</h1>
+            
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Administrador</small>
+                </div>
+            </div>
+        </div>
+        
+                    <div class="alert alert-"></div>
+                
+        <div class="row mb-3">
+    <div class="col-12 d-flex gap-2 flex-wrap">
+        <a href="visualizar.html" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar para Detalhes
+        </a>
+
+        <a href="atribuir_motoboy_entrega.html" class="btn btn-outline-primary">
+            <i class="bi bi-truck"></i> Atribuir Motoboy de Entrega
+        </a>
+    </div>
+</div>
+        
+        <!-- Informações da Entrega -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-info-circle"></i> Informações da Entrega
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Código de Rastreio:</strong> </p>
+                        <p><strong>Cliente:</strong> </p>
+                        <p><strong>Rota:</strong>  → </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Data de Solicitação:</strong> </p>
+                        <p><strong>Motoboy Atual:</strong> 
+                                                                                                                        <span class="text-muted">Não atribuído</span>
+                                                    </p>
+                        <p>
+                            <strong>Status:</strong>
+                                                        <span class="status-badge ">
+                                                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Formulário de Atribuição de Motoboy -->
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-bicycle"></i> Selecionar Motoboy de Coleta
+            </div>
+            <div class="card-body">
+                <form method="POST" action="">
+                    <div class="mb-4">
+                        <label class="form-label">Motoboys Disponíveis</label>
+                        <div class="row">
+                                                                                                <div class="col-md-4 mb-3">
+                                        <div class="card motoboy-card " onclick="selectMotoboy()">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <img src="https://ui-avatars.com/api/?name=&background=random" alt="Motoboy" class="rounded-circle" width="40" height="40">
+                                                    <h5 class="ms-2 mb-0"></h5>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="motoboy_id" id="motoboy_" value="" >
+                                                        <label class="form-check-label" for="motoboy_">
+                                                            Selecionar
+                                                        </label>
+                                                    </div>
+                                                                                                            <span class="motoboy-atende">Atende região</span>
+                                                                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                                            <div class="col-12">
+                                    <p class="text-muted">Nenhum motoboy disponível no momento.</p>
+                                </div>
+                                                    </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="observacao" class="form-label">Observações</label>
+                        <textarea name="observacao" id="observacao" class="form-control" rows="3" placeholder="Adicione observações sobre a atribuição do motoboy (opcional)"></textarea>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Confirmar Atribuição
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function selectMotoboy(id) {
+            // Remover seleção anterior
+            document.querySelectorAll('.motoboy-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Selecionar o card e o radio button
+            const card = document.querySelector(`.motoboy-card:has(#motoboy_${id})`);
+            if (card) {
+                card.classList.add('selected');
+            }
+            
+            const radio = document.getElementById(`motoboy_${id}`);
+            if (radio) {
+                radio.checked = true;
+            }
+        }
+    </script>
+</body>
+</html>

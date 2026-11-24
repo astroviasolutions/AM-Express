@@ -1,0 +1,110 @@
+/*
+ * Layout padrao do painel administrativo
+ * Carregado por ultimo em todas as telas do admin para que o menu lateral,
+ * as fontes e os espacamentos fiquem iguais em todas as paginas.
+ * Vale so para telas de computador (acima de 992px); no celular cada tela
+ * mantem o seu proprio comportamento responsivo.
+ */
+@media (min-width: 993px) {
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        overflow-x: hidden;
+    }
+
+    /* Menu lateral */
+    .sidebar {
+        background-color: var(--secondary-color);
+        height: 100vh;
+        color: #fff;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 100;
+        padding: 0;
+        width: 250px;
+        overflow-y: auto;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+    }
+    .sidebar.collapsed {
+        width: 70px;
+    }
+    .sidebar-header {
+        padding: 1.5rem 1rem;
+        margin: 0;
+        border-bottom: 0;
+        background-color: rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .sidebar-header h3 {
+        margin: 0;
+        font-size: 1.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .sidebar .nav {
+        padding: 0;
+        margin: 0;
+    }
+    .sidebar .nav-link {
+        color: rgba(255, 255, 255, 0.8);
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+        font-weight: 400;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        transition: all 0.3s;
+    }
+    .sidebar .nav-link:hover,
+    .sidebar .nav-link.active {
+        color: #fff;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    .sidebar .nav-link i {
+        margin-right: 10px;
+        font-size: 1.1rem;
+        min-width: 24px;
+        text-align: center;
+    }
+
+    /* Area de conteudo */
+    .main-content {
+        margin-left: 250px;
+        padding: 2rem;
+        transition: all 0.3s ease-in-out;
+    }
+    .main-content.expanded {
+        margin-left: 70px;
+    }
+    .top-bar {
+        background-color: #fff;
+        padding: 1rem 2rem;
+        border-radius: 0.5rem;
+        border-bottom: 0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .top-bar h1 {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    .user-info {
+        display: flex;
+        align-items: center;
+    }
+    .user-info img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+}

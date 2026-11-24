@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0F1E3D" />
+    <script>
+      /* aplica o tema antes de desenhar a página, para não piscar */
+      try {
+        var t = localStorage.getItem('am-tema');
+        if (t !== 'claro' && t !== 'escuro') t = matchMedia('(prefers-color-scheme: light)').matches ? 'claro' : 'escuro';
+        document.documentElement.dataset.tema = t;
+      } catch (e) { document.documentElement.dataset.tema = 'escuro'; }
+    </script>
+    <title>AM Express · Sistema de gestão</title>
+    <link rel="icon" href="/logo-cor.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@1,100..125,600..900&family=IBM+Plex+Mono:wght@400;500;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

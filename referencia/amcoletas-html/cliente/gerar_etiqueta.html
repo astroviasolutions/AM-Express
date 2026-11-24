@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etiqueta de Envio - Entrega #</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        
+        .etiqueta {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 2px solid #000;
+            padding: 15px;
+        }
+        
+        .etiqueta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .logo img {
+            max-height: 50px;
+            margin-right: 10px;
+        }
+        
+        .codigo {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .etiqueta-body {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .secao {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        
+        .secao-titulo {
+            font-weight: bold;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        
+        .secao-conteudo {
+            font-size: 14px;
+        }
+        
+        .destaque {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        /* Estilos específicos para remetente e destinatário */
+        .remetente .secao-conteudo {
+            font-size: 12px;
+        }
+        
+        .remetente .destaque {
+            font-size: 14px;
+        }
+        
+        .destinatario .secao-conteudo {
+            font-size: 15px;
+        }
+        
+        .destinatario .destaque {
+            font-size: 18px;
+        }
+        
+        .codigo-barras {
+            text-align: center;
+            padding: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+        
+        .codigo-rastreio {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .instrucoes {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 15px;
+            font-style: italic;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            font-weight: bold;
+            border-radius: 4px;
+            text-transform: uppercase;
+            color: #fff;
+        }
+        
+        .status-aguardando {
+            background-color: #FFA500; /* Laranja */
+        }
+        
+        .status-caminho {
+            background-color: #1E90FF; /* Azul vibrante */
+        }
+        
+        .status-coletado {
+            background-color: #17A2B8; /* Ciano / Azul claro */
+        }
+        
+        .status-distribuicao {
+            background-color: #6F42C1; /* Roxo */
+        }
+        
+        .status-entregue {
+            background-color: #28A745; /* Verde */
+        }
+        
+        .rota {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px 0;
+        }
+        
+        .qrcode-container {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .qrcode-img {
+            max-width: 120px;
+            max-height: 120px;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+                background-color: #fff;
+            }
+            
+            .no-print {
+                display: none;
+            }
+            
+            .etiqueta {
+                border: 2px solid #000;
+                max-width: 100%;
+                width: 100%;
+                box-shadow: none;
+            }
+            
+            .btn-voltar {
+                display: none;
+            }
+        }
+
+        /* Adicionando media query para mobile */
+        @media (max-width: 576px) {
+            .etiqueta {
+                padding: 10px;
+            }
+            
+            .etiqueta-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .codigo {
+                margin-top: 10px;
+            }
+            
+            .rota {
+                font-size: 16px;
+            }
+            
+            .secao {
+                margin-bottom: 10px;
+            }
+            
+            .qrcode-img {
+                max-width: 100px;
+                max-height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="mb-4 no-print">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>Etiqueta de Envio - #</h1>
+                <div>
+                    <a href="entregas.html" class="btn btn-outline-secondary me-2">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                    <button class="btn btn-primary" onclick="window.print();">
+                        <i class="bi bi-printer"></i> Imprimir Etiqueta
+                    </button>
+                </div>
+            </div>
+            <p class="text-muted">Use esta etiqueta para identificar o seu envio. Imprima e cole no pacote.</p>
+        </div>
+        
+        <div class="etiqueta mb-4">
+            <div class="etiqueta-header">
+                <div class="logo">
+                                            <img src="" alt="Logo">
+                                                        </div>
+                <div class="codigo">
+                    Código de Rastreio: <span class="codigo-rastreio"></span>
+                </div>
+            </div>
+            
+            <div class="etiqueta-body">
+                <div class="rota">
+                     → 
+                                    </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="secao remetente">
+                            <div class="secao-titulo">REMETENTE</div>
+                            <div class="secao-conteudo">
+                                <div class="destaque"></div>
+                                <div></div>
+                                <div></div>
+                                                                <div>Tel: </div>
+                                                                <div>Email: </div>
+                                                                <div>CNPJ/CPF: </div>
+                                                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="secao destinatario">
+                            <div class="secao-titulo">DESTINATÁRIO</div>
+                            <div class="secao-conteudo">
+                                <div class="destaque"></div>
+                                <div></div>
+                                <div></div>
+                                                                <div>Tel: </div>
+                                                                                                <div>Email: </div>
+                                                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div class="secao">
+                            <div class="secao-titulo">DESCRIÇÃO DO CONTEÚDO</div>
+                            <div class="secao-conteudo">
+                                                                                                                                        <em>Sem descrição fornecida</em>
+                                                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="qrcode-container">
+                    <img src="../temp" class="qrcode-img" alt="QR Code">
+                    <div class="mt-2">
+                        <small>Escaneie este QR Code com o aplicativo para finalizar a entrega</small>
+                    </div>
+                </div>
+                
+                <div class="codigo-barras">
+                    **
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

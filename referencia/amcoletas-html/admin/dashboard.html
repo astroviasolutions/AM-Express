@@ -1,0 +1,1238 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle - Administrador</title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="">
+    <meta name="description" content="Painel do Administrador - Sistema de Logística Intermunicipal">
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../pwa-icons/icon-192x192.png">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Estilos personalizados -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 70px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            overflow-x: hidden; /* Evita barra de rolagem horizontal */
+        }
+        
+        .sidebar {
+            background-color: var(--secondary-color);
+            height: 100vh;
+            color: white;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: var(--sidebar-width);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .sidebar.collapsed {
+            width: var(--sidebar-width-collapsed);
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            background-color: rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .sidebar-header h3 {
+            display: none;
+        }
+        
+        .sidebar.collapsed .sidebar-header img {
+            margin-right: 0 !important;
+        }
+        
+        .sidebar-header span {
+            color: var(--primary-color);
+        }
+        
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            min-width: 24px;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .main-content.expanded {
+            margin-left: var(--sidebar-width-collapsed);
+        }
+        
+        .top-bar {
+            background-color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+        }
+        
+        .stat-card {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        .stat-icon.bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+        
+        .stat-icon.bg-secondary {
+            background-color: var(--secondary-color) !important;
+        }
+        
+        .stat-info h3 {
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: bold;
+        }
+        
+        .stat-info p {
+            margin: 0;
+            color: #6c757d;
+        }
+        
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-aguardando {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+        
+        .status-caminho {
+            background-color: #b8daff;
+            color: #004085;
+        }
+        
+        .status-coletado {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .status-distribuicao {
+            background-color: #d6d8db;
+            color: #383d41;
+        }
+        
+        .status-entregue {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        /* Media queries para responsividade */
+        @media (max-width: 992px) {
+            :root {
+                --sidebar-width: 200px;
+            }
+            
+            .sidebar-toggle {
+                display: block;
+            }
+            
+            .sidebar-header h3 {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 0px;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                width: 100%;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .top-bar {
+                margin-top: 0;
+                padding: 0.8rem 1rem;
+            }
+            
+            .top-bar h1 {
+                font-size: 1.2rem;
+            }
+            
+            .user-info p {
+                font-size: 0.9rem;
+            }
+            
+            .user-info small {
+                font-size: 0.7rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-info {
+                margin-top: 1rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.4rem;
+            }
+            
+            .stat-info h3 {
+                font-size: 1.4rem;
+            }
+            
+            .stat-info p {
+                font-size: 0.8rem;
+            }
+            
+            .card-header {
+                padding: 0.75rem;
+            }
+            
+            .table {
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* Botão discreto para acesso financeiro */
+        .finance-access-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .finance-access-btn:hover {
+            background-color: rgba(0,0,0,0.2);
+        }
+        
+        .finance-access-btn i {
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+    </style>
+    <!-- Layout padrao do painel admin (igual em todas as telas) -->
+        <style>:where(:root){--primary-color: #0d6efd;--secondary-color: #6c757d;}</style>
+    <link rel="stylesheet" href="../assets/css/admin-padrao.css">
+</head>
+<body>
+    <!-- Sidebar / Menu Lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                                    <img src="" alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                                <h3> </h3>
+                            </div>
+        </div>
+        
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link active">
+                    <i class="bi bi-speedometer2"></i> <span>Painel de Controle</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                                <a href="notificacoes.html" class="nav-link">
+                    <i class="bi bi-bell"></i> <span>Notificações</span>
+                                            <span class="badge bg-danger ms-auto rounded-pill"></span>
+                                    </a>
+            </li>
+            <li class="nav-item">
+                <a href="regioes/index.html" class="nav-link">
+                    <i class="bi bi-geo-alt"></i> <span>Regiões</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="tarifas/index.html" class="nav-link">
+                    <i class="bi bi-cash-coin"></i> <span>Tarifas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="clientes/index.html" class="nav-link">
+                    <i class="bi bi-people"></i> <span>Clientes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="motoboys/index.html" class="nav-link">
+                    <i class="bi bi-bicycle"></i> <span>Motoboys</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="entregas/index.html" class="nav-link">
+                    <i class="bi bi-box-seam"></i> <span>Entregas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="configuracoes/index.html" class="nav-link">
+                    <i class="bi bi-gear"></i> <span>Configurações</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="perfil.html" class="nav-link">
+                    <i class="bi bi-key"></i> <span>Alterar Senha</span>
+                </a>
+            </li>
+            <li class="nav-item mt-5">
+                <a href="../login.html" class="nav-link">
+                    <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Conteúdo Principal -->
+    <div class="main-content" id="mainContent">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <div class="d-flex align-items-center">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+            <h1 class="h4 mb-0">Painel de Controle</h1>
+            </div>
+            
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Administrador</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Removendo o formulário visível e substituindo por um botão discreto -->
+                <div class="finance-access-btn" data-bs-toggle="modal" data-bs-target="#financeAccessModal">
+            <i class="bi bi-gear-fill"></i>
+        </div>
+                
+        <!-- Estatísticas -->
+        <div class="row">
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-primary text-white">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3></h3>
+                            <p>Total de Clientes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-secondary text-white">
+                            <i class="bi bi-bicycle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3></h3>
+                            <p>Total de Motoboys</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-info text-white">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3></h3>
+                            <p>Total de Entregas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+                        <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-danger text-white">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>R$ </h3>
+                            <p>Faturamento Total</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-danger text-white">
+                            <i class="bi bi-lock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>***</h3>
+                            <p>Faturamento Total</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                    </div>
+        
+        <!-- Estatísticas Financeiras -->
+        <div class="row mt-4">
+                        <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-primary text-white">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>R$ </h3>
+                            <p>Faturamento do Mês</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-primary text-white">
+                            <i class="bi bi-lock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>***</h3>
+                            <p>Faturamento do Mês</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-success text-white">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                                                        <h3></h3>
+                            <p>Entregas Concluídas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+                        <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-success text-white">
+                            <i class="bi bi-truck"></i>
+                        </div>
+                        <div class="stat-info">
+                                                        <h3>R$ </h3>
+                            <p>Valor Entregas Concluídas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-success text-white">
+                            <i class="bi bi-lock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>***</h3>
+                            <p>Valor Entregas Concluídas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        
+                        <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-warning text-white">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <div class="stat-info">
+                                                        <h3>R$ </h3>
+                            <p>Valor Entregas Pendentes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-warning text-white">
+                            <i class="bi bi-lock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>***</h3>
+                            <p>Valor Entregas Pendentes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                    </div>
+        
+        <!-- Monitoramento de Pacotes por Status -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-clipboard-check"></i> Monitoramento de Pacotes por Status
+                    </div>
+                    <div class="card-body">
+                        <div class="row justify-content-center">
+                                                        <div class="col-6 col-md-2 mb-3">
+                                <div class="card h-100">
+                                    <a href="entregas/index.html" class="text-decoration-none">
+                                        <div class="card-body text-center">
+                                            <div class="d-flex justify-content-center mb-3">
+                                                <div class="rounded-circle bg- d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                    <i class="bi  text-white fs-4"></i>
+                                                </div>
+                                            </div>
+                                            <h2 class="mb-0 fs-3 fs-md-2"></h2>
+                                            <p class="text-muted mb-0 small"></p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+                <!-- Entregas por Status e Financeiro -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-bar-chart-line"></i> Faturamento Mensal
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 300px;">
+                        <canvas id="monthlyFinanceChart"></canvas>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-trophy"></i> Top Clientes por Faturamento
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cliente</th>
+                                        <th class="text-end">Faturamento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                                                                                                        <tr>
+                                                <td></td>
+                                                <td class="text-end">R$ </td>
+                                            </tr>
+                                                                                                                    <tr>
+                                            <td colspan="2" class="text-center">Nenhum cliente com faturamento encontrado.</td>
+                                        </tr>
+                                                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-graph-up"></i> Comparativo mensal
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary toggle-chart" data-chart="comparativoChart">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 300px;">
+                            <canvas id="comparativoChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                
+        <!-- Coletas Diárias -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-calendar-check"></i> Coletas Diárias
+                        </div>
+                        <div>
+                            <select id="mesReferencia" class="form-select form-select-sm" style="width: auto;">
+                                                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="text-center">
+                                <h2 class="mb-0"></h2>
+                                <p class="text-muted">Coletas hoje</p>
+                            </div>
+                            <div class="text-center">
+                                <h4 class="mb-0" id="totalMes">0</h4>
+                                <p class="text-muted">Total no mês</p>
+                            </div>
+                        </div>
+                        <div style="height: 300px;">
+                            <canvas id="coletasChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Entregas Recentes -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-clock-history"></i> Entregas Recentes
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Cliente</th>
+                                        <th class="d-none d-md-table-cell">Nome Loja</th>
+                                        <th class="d-none d-md-table-cell">Rota</th>
+                                        <th>Status</th>
+                                        <th class="d-none d-sm-table-cell">Etiqueta</th>
+                                        <th class="d-none d-md-table-cell">Valor</th>
+                                        <th>Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                                                                                                        <tr>
+                                                <td>#</td>
+                                                <td></td>
+                                                <td class="d-none d-md-table-cell"></td>
+                                                <td class="d-none d-md-table-cell"></td>
+                                                <td>
+                                                                                                        <span class="status-badge "></span>
+                                                </td>
+                                                <td class="d-none d-sm-table-cell">
+                                                                                                                                                                    <a href="gerar_etiqueta.html" class="btn btn-sm btn-outline-secondary ms-1" title="Gerar Etiqueta">
+                                                            <i class="bi bi-tag"></i>
+                                                        </a>
+                                                                                                            -
+                                                                                                    </td>
+                                                <td class="d-none d-md-table-cell">R$ </td>
+                                                <td></td>
+                                            </tr>
+                                                                                                                    <tr>
+                                            <td colspan="8" class="text-center">Nenhuma entrega recente encontrada.</td>
+                                        </tr>
+                                                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para acesso financeiro -->
+        <div class="modal fade" id="financeAccessModal" tabindex="-1" aria-labelledby="financeAccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="financeAccessModalLabel">Configurações Avançadas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="">
+                        <div class="mb-3">
+                            <label for="codigo_acesso" class="form-label">Código de acesso:</label>
+                            <input type="password" class="form-control" id="codigo_acesso" name="codigo_acesso" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Confirmar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+                // Buscar dados de faturamento de todos os meses do ano atual
+                
+        // Dados para o gráfico de faturamento mensal
+        const monthlyData = {
+            labels: ,
+            datasets: [{
+                label: 'Faturamento Mensal (R$)',
+                data: ,
+                backgroundColor: 'rgba(250, 84, 48, 0.7)',
+                borderColor: 'rgb(250, 84, 48)',
+                borderWidth: 2,
+                tension: 0.3,
+                fill: false
+            }]
+        };
+
+        // Configuração do gráfico de faturamento mensal
+        const monthlyFinanceChart = new Chart(
+            document.getElementById('monthlyFinanceChart'),
+            {
+                type: 'bar',
+                data: monthlyData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                            right: 10,
+                            bottom: 10,
+                            left: 10
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return 'R$ ' + value.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            }
+        );
+        
+        // Dados para o gráfico financeiro
+        const financialData = {
+            labels: [
+                'Aguardando Coleta',
+                'A Caminho',
+                'Coletado',
+                'Centro de Distribuição',
+                'Em Rota de entrega',
+                'Entregue'
+            ],
+            datasets: [{
+                label: 'Faturamento (R$)',
+                data: [
+                                    ],
+                backgroundColor: [
+                    'rgba(176, 176, 176, 0.8)', // cinza claro
+                    'rgba(77, 166, 255, 0.8)', // azul claro
+                    'rgba(0, 123, 255, 0.8)', // azul escuro
+                    'rgba(108, 99, 255, 0.8)', // roxo/indigo
+                    'rgba(255, 165, 0, 0.8)', // laranja/ambar
+                    'rgba(76, 175, 80, 0.8)' // verde sucesso
+                ],
+                borderColor: [
+                    'rgb(176, 176, 176)', // cinza claro
+                    'rgb(77, 166, 255)', // azul claro
+                    'rgb(0, 123, 255)', // azul escuro
+                    'rgb(108, 99, 255)', // roxo/indigo
+                    'rgb(255, 165, 0)', // laranja/ambar
+                    'rgb(76, 175, 80)' // verde sucesso
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Configuração do gráfico financeiro
+        const financialChart = new Chart(
+            document.getElementById('financialChart'),
+            {
+                type: 'doughnut',
+                data: financialData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total ? Math.round((value / total) * 100) : 0;
+                                    return label + ': R$ ' + value.toLocaleString('pt-BR', {minimumFractionDigits: 2}) + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        );
+        
+        // Dados para o gráfico comparativo mensal
+                
+        // Configuração do gráfico comparativo mensal
+        const comparativoData = {
+            labels: ,
+            datasets: [{
+                label: 'Variação em relação ao mês do ano anterior (%)',
+                data: ,
+                backgroundColor: function(context) {
+                    const value = context.dataset.data[context.dataIndex];
+                    return value >= 0 ? 'rgba(40, 167, 69, 0.7)' : 'rgba(220, 53, 69, 0.7)';
+                },
+                borderColor: function(context) {
+                    const value = context.dataset.data[context.dataIndex];
+                    return value >= 0 ? 'rgb(40, 167, 69)' : 'rgb(220, 53, 69)';
+                },
+                borderWidth: 2
+            }]
+        };
+        
+        // Inicializar gráfico comparativo mensal
+        const comparativoChart = new Chart(
+            document.getElementById('comparativoChart'),
+            {
+                type: 'bar',
+                data: comparativoData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw || 0;
+                                    return (value >= 0 ? '+' : '') + value + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            }
+        );
+                
+        // Dados para o gráfico de coletas diárias
+                
+        // Configuração do gráfico de coletas diárias
+        const coletasData = {
+            labels: ,
+            datasets: [{
+                label: 'Coletas por Dia',
+                data: ,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgb(54, 162, 235)',
+                borderWidth: 2,
+                tension: 0.3
+            }]
+        };
+        
+        const coletasConfig = {
+            type: 'bar',
+            data: coletasData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                layout: {
+                    padding: {
+                        top: 10,
+                        right: 10,
+                        bottom: 10,
+                        left: 10
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            autoSkip: true,
+                            maxTicksLimit: 30,
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                }
+            }
+        };
+        
+        // Inicializar gráfico de coletas diárias
+        const coletasChart = new Chart(
+            document.getElementById('coletasChart'),
+            coletasConfig
+        );
+        
+        // Definir o total do mês atual
+        document.getElementById('totalMes').textContent = null;
+        
+        // Função para atualizar o gráfico quando o mês for alterado
+        document.getElementById('mesReferencia').addEventListener('change', function() {
+            const mesIndex = parseInt(this.value);
+            const mesNome = this.options[this.selectedIndex].text;
+            
+            // Aqui você pode implementar uma chamada AJAX para buscar os dados do mês selecionado
+            // Por enquanto, apenas mostraremos uma mensagem
+            alert('Funcionalidade para mostrar dados de ' + mesNome + ' será implementada em breve.');
+        });
+        
+        // Funcionalidade para ocultar/mostrar gráficos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Botões para ocultar/mostrar gráficos
+            const toggleButtons = document.querySelectorAll('.toggle-chart');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const chartId = this.getAttribute('data-chart');
+                    const chartCanvas = document.getElementById(chartId);
+                    const chartParent = chartCanvas.parentElement;
+                    
+                    if (chartParent.style.display === 'none') {
+                        // Mostrar gráfico
+                        chartParent.style.display = 'block';
+                        this.innerHTML = '<i class="bi bi-eye-slash"></i>';
+                    } else {
+                        // Ocultar gráfico
+                        chartParent.style.display = 'none';
+                        this.innerHTML = '<i class="bi bi-eye"></i>';
+                    }
+                });
+            });
+        });
+        
+        // Funcionalidade para o menu lateral recolhível
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const mainContent = document.getElementById('mainContent');
+            const mobileToggle = document.getElementById('mobileToggle');
+            
+            // Função para alternar o menu lateral em desktop
+            if(sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    mainContent.classList.toggle('expanded');
+                    
+                    // Alterna o ícone do botão
+                    const icon = sidebarToggle.querySelector('i');
+                    if (icon.classList.contains('bi-chevron-left')) {
+                        icon.classList.replace('bi-chevron-left', 'bi-chevron-right');
+                    } else {
+                        icon.classList.replace('bi-chevron-right', 'bi-chevron-left');
+                    }
+                });
+            }
+            
+            // Função para alternar o menu lateral em dispositivos móveis
+            if(mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                });
+            }
+            
+            // Fechar o menu ao clicar fora dele em dispositivos móveis
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnMobileToggle = mobileToggle.contains(event.target);
+                
+                if (window.innerWidth <= 768 && !isClickInsideSidebar && !isClickOnMobileToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+            
+            // Ajustar em caso de redimensionamento da tela
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        });
+    </script>
+
+    <div id="install-banner" class="install-banner" style="display: none;">
+    <div class="install-content">
+        <div class="banner-logo">
+                            <img src="pwa-icons/icon-192x192.png" alt="Logo do Aplicativo" height="40">
+                            <img src="../pwa-icons/icon-192x192.png" alt="Logo do Aplicativo" height="40">
+                    </div>
+        <p>Baixe nosso app</p>
+        <div class="install-actions">
+            <button id="install-button" class="btn btn-primary">Instalar</button>
+            <button id="close-install-banner" class="btn btn-outline-secondary">Não, obrigado</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .install-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #fff;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        z-index: 1000;
+    }
+    
+    .install-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .banner-logo {
+        margin-right: 15px;
+    }
+    
+    .install-content p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    
+    .install-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .install-content {
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+        }
+        
+        .banner-logo {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+    }
+</style>     
+    <!-- PWA Script -->
+    <script src="../assets/js/pwa.js"></script>
+</body>
+</html>

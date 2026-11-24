@@ -1,0 +1,1318 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Motoboy] - </title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="">
+    <meta name="description" content="Painel do Motoboy - Sistema de Logística Intermunicipal">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../pwa-icons/icon-192x192.png">
+    <link rel="stylesheet" href="../assets/css/atualizacao-automatica.css">
+    <script src="../assets/js/pwa.js" defer></script>
+
+    <style type='text/css'>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --sidebar-width: 250px;
+            --sidebar-width-collapsed: 70px;
+        }
+    </style>
+    <link rel="stylesheet" href="../assets/css/motoboy.css">
+</head>    
+<body>
+  <!-- Sidebar / Menu Lateral -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="d-flex align-items-center flex-grow-1" style="min-width:0;">
+                            <img src="" alt="" style="display:block;width:100%;max-width:210px;height:auto;max-height:56px;object-fit:contain;background:#fff;padding:6px 10px;border-radius:8px;">
+                        <h3> </h3>
+                    </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+    </div>
+    
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a href="dashboard.html" class="nav-link ">
+                <i class="bi bi-speedometer2"></i>
+                <span>Painel de Controle</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="notificacoes.html" class="nav-link ">
+                <i class="bi bi-bell"></i> <span>Notificações</span>
+                                    <span id="notificacoesBadge" class="badge rounded-pill bg-danger ms-auto"></span>
+                                    <span id="notificacoesBadge" class="badge rounded-pill bg-danger ms-auto" style="display: none;">0</span>
+                            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="finalizar_entrega.html" class="nav-link ">
+                <i class="bi bi-check-circle"></i>
+                <span>Finalizar uma Entrega</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="indicacoes.html" class="nav-link ">
+                <i class="bi bi-people-fill"></i>
+                <span>Minhas Indicações</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="perfil.html" class="nav-link ">
+                <i class="bi bi-person"></i>
+                <span>Meu Perfil</span>
+            </a>
+        </li>
+
+        <li class="nav-item mt-5">
+            <a href="../login.html" class="nav-link">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sair</span>
+            </a>
+        </li>
+    </ul>
+</div>
+    <!-- Conteúdo Principal -->
+    <div class="main-content" id="mainContent">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <div class="d-flex align-items-center">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h1 class="h4 mb-0">Finalizar uma Entrega</h1>
+            </div>
+
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=&background=random" alt="Perfil">
+                <div>
+                    <p class="mb-0 fw-bold"></p>
+                    <small class="text-muted">Motoboy - </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagem de sucesso ou erro -->
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+        
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+        
+        <!-- Resultado da Busca -->
+                    <div class="card mb-4">
+                <div class="card-header d-flex align-items-center">
+                    <i class="bi bi-box-seam me-2 text-primary"></i> 
+                    <span class="fw-bold">Pacote Encontrado</span>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Card para visualização mobile -->
+                    <div class="pacote-card">
+                        <!-- Cabeçalho do card com status -->
+                        <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                            <div>
+                                <h5 class="mb-0">#</h5>
+                                <span class="codigo-rastreio"></span>
+                            </div>
+                            <span class="status-badge status-distribuicao">Centro de Distribuição</span>
+                        </div>
+
+                        <!-- Corpo do card com informações -->
+                        <div class="p-3">
+                            <div class="mb-3">
+                                <div class="d-flex mb-2">
+                                    <div class="icon-container me-2">
+                                        <i class="bi bi-person-circle text-secondary"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted d-block">Cliente</small>
+                                        <strong></strong>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex mb-2">
+                                    <div class="icon-container me-2">
+                                        <i class="bi bi-person text-secondary"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted d-block">Destinatário</small>
+                                        <strong></strong>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex mb-2">
+                                    <div class="icon-container me-2">
+                                        <i class="bi bi-geo-alt text-secondary"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted d-block">Destino</small>
+                                        <strong></strong>
+                                    </div>
+                                </div>
+
+                                                                <div class="d-flex mb-2">
+                                    <div class="icon-container me-2">
+                                        <i class="bi bi-house text-secondary"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted d-block">Endereço</small>
+                                        <strong></strong>
+                                    </div>
+                                </div>
+                                                            </div>
+
+                            <!-- Botão de ação -->
+                            <div class="d-grid gap-2">
+                                                                    <button type="button" class="btn btn-primary btn-lg py-3" data-bs-toggle="modal" data-bs-target="#finalizarEntregaModal">
+                                        <i class="bi bi-check-circle me-2"></i> Finalizar Entrega
+                                    </button>
+                                                                    <div class="alert alert-warning mb-0">
+                                        <i class="bi bi-exclamation-triangle me-2"></i>
+                                        <strong>Atenção:</strong> Apenas motoboys de  ou com acesso especial podem finalizar esta entrega.
+                                    </div>
+                                                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <!-- Resumo da entrega finalizada -->
+                    <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-check-circle-fill me-2"></i> Entrega Finalizada com Sucesso
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Detalhes da entrega finalizada:</h5>
+                            <p><strong>ID da Entrega:</strong> #</p>
+                            <p><strong>Cliente:</strong> </p>
+                            <p><strong>Destinatário:</strong> </p>
+                            <p><strong>Endereço:</strong> </p>
+                            <p><strong>Destino:</strong> </p>
+                            <p><strong>Código de Rastreio:</strong> <span class="codigo-rastreio"></span></p>
+                            <p><strong>Recebido por:</strong> </p>
+                            <p><strong>Documento:</strong> </p>
+                            <p><strong>Data/Hora da Finalização:</strong> </p>
+                        </div>
+                        <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
+                            <div class="text-center mb-4">
+                                                                    <img src=".."
+                                         alt="Comprovante de entrega"
+                                         class="img-fluid rounded border mb-3"
+                                         style="max-height: 220px;">
+                                    <p class="text-success fw-bold"><i class="bi bi-check-circle me-1"></i> Foto do comprovante salva</p>
+                                                                    <i class="bi bi-check-circle text-success" style="font-size: 5rem;"></i>
+                                    <h4 class="mt-3">Entrega concluída!</h4>
+                                                                <p class="text-muted">O cliente foi notificado sobre a finalização.</p>
+                            </div>
+                            <div class="d-grid gap-2 col-12 col-md-8">
+                                <a href="dashboard.html" class="btn btn-outline-secondary">
+                                    <i class="bi bi-speedometer2 me-2"></i> Ir para Dashboard
+                                </a>
+                                <a href="finalizar_entrega.html" class="btn btn-primary">
+                                    <i class="bi bi-search me-2"></i> Buscar Outro Pacote
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <!-- Formulário de Busca -->
+        <div class="search-box">
+            <h5 class="mb-3"><i class="bi bi-search me-2"></i> Buscar pacote para finalizar entrega</h5>
+
+            <div class="metodo-alternador mb-4" role="tablist">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <button class="btn btn-lg btn-alternador active w-100 h-100 py-3" id="digitar-tab" data-bs-toggle="tab" data-bs-target="#digitar" type="button" role="tab" aria-selected="true">
+                            <i class="bi bi-keyboard fs-3 d-block mb-2"></i>
+                            <span class="fs-5">Digitar código</span>
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-lg btn-alternador w-100 h-100 py-3" id="escanear-tab" data-bs-toggle="tab" data-bs-target="#escanear" type="button" role="tab" aria-selected="false">
+                            <i class="bi bi-camera fs-3 d-block mb-2"></i>
+                            <span class="fs-5">Escanear QR Code</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="buscarPacoteTabContent">
+                <!-- Aba para digitar código -->
+                <div class="tab-pane fade show active" id="digitar" role="tabpanel" aria-labelledby="digitar-tab">
+                    <form method="post" action="">
+                        <input type="hidden" name="buscar_pacote" value="1">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-8">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control form-control-lg" id="codigo_rastreio" name="codigo_rastreio" placeholder="Digite o código" required>
+                                    <label for="codigo_rastreio">Digite o código de rastreio</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary btn-lg h-100 w-100 fs-5">
+                                    <i class="bi bi-search me-2"></i> Buscar Pacote
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-text mt-2">
+                            Digite o código de rastreio exatamente como aparece na etiqueta do pacote (exemplo: AM1234567 ou AM-1234-567)
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Aba para escanear QR code -->
+                <div class="tab-pane fade" id="escanear" role="tabpanel" aria-labelledby="escanear-tab">
+                    <div class="row">
+                        <div class="col-12 col-md-6 mb-4">
+                            <div class="camera-container mb-3 text-center">
+                                <div id="camera-placeholder" class="p-4 border rounded bg-light d-flex flex-column align-items-center justify-content-center">
+                                    <i class="bi bi-camera fs-1 mb-3 text-muted"></i>
+                                    <p class="mb-0">A câmera será ativada ao clicar no botão abaixo</p>
+                                </div>
+                                <video id="camera-preview" class="rounded w-100 d-none"></video>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-primary btn-lg py-3 fs-5" id="activate-camera">
+                                    <i class="bi bi-camera-video-fill me-2"></i> Ativar Câmera
+                                </button>
+                                <button type="button" class="btn btn-success btn-lg py-3 fs-5 d-none" id="capture-qr">
+                                    <i class="bi bi-upc-scan me-2"></i> Capturar QR Code
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary mt-2" id="upload-qr">
+                                    <i class="bi bi-upload me-2"></i> Ou faça upload de uma imagem
+                                </button>
+                                <input type="file" class="d-none" id="qr-file-input" accept="image/*">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div id="qr-result" class="alert alert-info d-none">
+                                <div class="d-flex align-items-center">
+                                    <div class="spinner-border spinner-border-sm me-2 d-none" id="qr-loading" role="status">
+                                        <span class="visually-hidden">Processando...</span>
+                                    </div>
+                                    <div id="qr-data" class="w-100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <canvas id="qr-canvas" style="display: none;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instruções -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <i class="bi bi-info-circle me-2"></i> Instruções
+            </div>
+            <div class="card-body">
+                <div class="alert alert-primary mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-qr-code-scan fs-1 me-3"></i>
+                        <div>
+                            <h5 class="mb-1">Dica: Use o Scanner de QR Code!</h5>
+                            <p class="mb-0">Escaneie o QR Code da etiqueta para buscar o pacote mais rapidamente e evitar erros de digitação. Clique na aba "Escanear QR Code" acima.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <ol>
+                    <li>Digite o código de rastreio ou escaneie o QR Code da etiqueta para buscar o pacote.</li>
+                    <li>Clique em "Buscar Pacote" para verificar se o pacote existe no sistema.</li>
+                    <li>Se o pacote for encontrado e você for um motoboy da cidade de destino, poderá finalizá-lo.</li>
+                    <li>Clique em "Finalizar Entrega" e informe o nome e o documento de quem recebeu o pacote.</li>
+                    <li>Após confirmar, o status será atualizado para "Entregue" e o cliente será notificado.</li>
+                </ol>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle-fill me-2"></i> <strong>Importante:</strong> Apenas motoboys da cidade de destino ou com acesso especial podem finalizar uma entrega.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Finalizar Entrega -->
+        <div class="modal fade" id="finalizarEntregaModal" tabindex="-1" aria-labelledby="finalizarEntregaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="finalizarEntregaModalLabel">Finalizar Entrega</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formFinalizarEntrega" method="post" action="" enctype="multipart/form-data">
+                        <!-- ✅ ALERTA ESTILIZADO (substitui alert() do navegador) -->
+                        <div id="alert-validacao-recebedor" class="alert alert-danger d-none" role="alert"></div>
+
+                        <input type="hidden" name="entrega_id" value="">
+                        <input type="hidden" name="finalizar_entrega" value="1">
+
+                        <div class="mb-3">
+                            <h6>Detalhes da Entrega:</h6>
+                            <p><strong>Destinatário:</strong> </p>
+                            <p><strong>Endereço:</strong> </p>
+                            <p><strong>Destino:</strong> </p>
+                        </div>
+
+                        <label for="recebedor_nome" class="form-label">Nome completo de quem recebeu</label>
+                        <input type="text" class="form-control" id="recebedor_nome" name="recebedor_nome" required
+                            placeholder="Digite nome e sobrenome">
+                        <div class="form-text">Obrigatório. Ex: Maria Silva</div>
+
+                        <label for="recebedor_doc" class="form-label mt-3">CPF ou RG de quem recebeu</label>
+                        <input type="text" class="form-control" id="recebedor_doc" name="recebedor_doc" required
+                             placeholder="Digite CPF (11) ou RG (7-9)">
+                        <div class="form-text">Obrigatório. Apenas números. CPF (11 dígitos) ou RG (7 a 9 dígitos).</div>
+
+                        <input type="hidden" name="codigo_rastreio" value="">
+
+                        <!-- Foto do comprovante -->
+                        <div class="mb-3 mt-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-camera me-1"></i> Foto do comprovante <span class="text-danger">*</span>
+                            </label>
+                            <div class="d-grid gap-2">
+                                <!-- Botão câmera (mobile: abre câmera traseira diretamente) -->
+                                <label for="foto_comprovante_camera" class="btn btn-outline-primary mb-0">
+                                    <i class="bi bi-camera-fill me-1"></i> Tirar foto com a câmera
+                                </label>
+                                <input type="file" id="foto_comprovante_camera" name="foto_comprovante"
+                                       accept="image/*" capture="environment" class="d-none"
+                                       onchange="previewFoto(this)">
+
+                                <!-- Botão galeria (alternativo) -->
+                                <label for="foto_comprovante_galeria" class="btn btn-outline-secondary mb-0">
+                                    <i class="bi bi-image me-1"></i> Ou escolher da galeria
+                                </label>
+                                <input type="file" id="foto_comprovante_galeria" name="foto_comprovante"
+                                       accept="image/*" class="d-none"
+                                       onchange="previewFoto(this)">
+                            </div>
+                            <!-- Preview da foto -->
+                            <div id="foto-preview-container" class="mt-2 d-none text-center">
+                                <img id="foto-preview" src="" alt="Preview" class="img-fluid rounded border" style="max-height: 200px;">
+                                <div class="mt-1">
+                                    <small class="text-success"><i class="bi bi-check-circle me-1"></i><span id="foto-preview-nome"></span></small>
+                                </div>
+                            </div>
+                            <div class="form-text text-danger" id="foto-obrigatorio-msg" style="display:none;">
+                                A foto do comprovante é obrigatória.
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmacaoEntrega" required>
+                            <label class="form-check-label" for="confirmacaoEntrega">
+                                Confirmo que o pacote foi entregue ao destinatário correto
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <!-- Botões com as cores do app -->
+                    <button type="button" class="btn btn-am-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="formFinalizarEntrega" class="btn btn-am-primary">Confirmar Entrega</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Erro Cidade Diferente -->
+    <div class="modal fade" id="erroCidadeModal" tabindex="-1" aria-labelledby="erroCidadeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="erroCidadeModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Não Autorizado
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-geo-alt-fill text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <p class="text-center fs-5 mb-4">Você não pode finalizar esta entrega porque não pertence à cidade de destino.</p>
+                    <div id="erro-cidade-detalhes" class="alert alert-light border">
+                        <!-- Detalhes da entrega serão inseridos aqui via JavaScript -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <a href="dashboard.html" class="btn btn-primary">
+                        <i class="bi bi-speedometer2 me-2"></i> Ir para Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Erro Entrega Não Encontrada -->
+    <div class="modal fade" id="erroEntregaModal" tabindex="-1" aria-labelledby="erroEntregaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" id="erroEntregaModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Entrega Não Encontrada
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-search text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <p class="text-center fs-5 mb-2">O código escaneado não corresponde a uma entrega disponível para finalização.</p>
+                    <p class="text-center text-muted">Verifique se o pacote está no status "Centro de Distribuição".</p>
+                    <div id="erro-entrega-codigo" class="alert alert-light border text-center">
+                        <!-- Código escaneado será inserido aqui via JavaScript -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="tentar-novamente">
+                        <i class="bi bi-camera me-2"></i> Escanear Novamente
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ESTILO DO MODAL + ALERTAS -->
+    <style>
+      :root{
+        --am-primary: #FA5430;   /* Vermelho */
+        --am-secondary: #1E3A8A; /* Azul */
+      }
+
+      /* Escopo: só no modal de finalizar entrega */
+      #finalizarEntregaModal .modal-content{
+        border: 0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 18px 50px rgba(0,0,0,.22);
+      }
+
+      #finalizarEntregaModal .modal-header{
+        background: #fff;
+        border-bottom: 1px solid #E9EDF5;
+        padding: 16px 18px;
+        position: relative;
+      }
+
+      /* detalhe superior na cor primária */
+      #finalizarEntregaModal .modal-header::before{
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: var(--am-secondary);
+      }
+
+      #finalizarEntregaModal .modal-title{
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: .2px;
+      }
+
+      #finalizarEntregaModal .modal-body{
+        padding: 18px;
+      }
+
+      #finalizarEntregaModal h6{
+        font-weight: 700;
+        color: var(--am-primary);
+        margin-bottom: 10px;
+      }
+
+      #finalizarEntregaModal .form-label{
+        font-weight: 600;
+        color: #0f172a;
+      }
+
+      #finalizarEntregaModal .form-text{
+        color: #64748b;
+      }
+
+      #finalizarEntregaModal .form-control{
+        border-radius: 10px;
+        padding: 12px 12px;
+        border: 1px solid #E2E8F0;
+      }
+      #finalizarEntregaModal .form-control:focus{
+        border-color: var(--am-primary);
+        box-shadow: 0 0 0 .2rem rgba(30,58,138,.18);
+      }
+
+      #finalizarEntregaModal .form-check-input{
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        border: 1px solid #CBD5E1;
+        margin-top: 4px;
+        accent-color: var(--am-primary);
+      }
+      #finalizarEntregaModal .form-check-input:focus{
+        box-shadow: 0 0 0 .2rem rgba(30,58,138,.18);
+        border-color: var(--am-primary);
+      }
+
+      #finalizarEntregaModal .modal-footer{
+        border-top: 1px solid #E9EDF5;
+        padding: 14px 18px;
+        gap: 10px;
+      }
+
+      /* Botões */
+      #finalizarEntregaModal .btn-am-primary{
+        background: var(--am-secondary);
+        border: 1px solid var(--am-secondary);
+        color: #fff;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-weight: 700;
+      }
+      #finalizarEntregaModal .btn-am-primary:hover{
+        filter: brightness(.95);
+      }
+      #finalizarEntregaModal .btn-am-primary:focus{
+        box-shadow: 0 0 0 .2rem rgba(250,84,48,.25);
+      }
+
+      #finalizarEntregaModal .btn-am-secondary{
+        background: #F1F5F9;
+        border: 1px solid #E2E8F0;
+        color: #0f172a;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-weight: 700;
+      }
+      #finalizarEntregaModal .btn-am-secondary:hover{
+        background: #E2E8F0;
+      }
+
+      #finalizarEntregaModal .btn-close{
+        opacity: .6;
+      }
+      #finalizarEntregaModal .btn-close:hover{
+        opacity: 1;
+      }
+
+      /* ✅ ALERTA ESTILIZADO (substitui alert() do navegador) */
+      #finalizarEntregaModal .alert-danger{
+        background: #FFF1EE;
+        border: 1px solid #FECACA;
+        color: #7F1D1D;
+        border-radius: 10px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      #finalizarEntregaModal .alert-danger::before{
+        content: "⚠️";
+        font-size: 1.2rem;
+      }
+
+      /* ✅ input inválido */
+      #finalizarEntregaModal .form-control.is-invalid{
+        border-color: var(--am-secondary);
+        box-shadow: 0 0 0 .2rem rgba(250,84,48,.25);
+      }
+    </style>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jsQR library -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+
+    <script>
+        // Funcionalidade para o menu lateral recolhível
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const mainContent = document.getElementById('mainContent');
+            const mobileToggle = document.getElementById('mobileToggle');
+
+            // Função para alternar o menu lateral em desktop
+            if(sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    mainContent.classList.toggle('expanded');
+
+                    // Alterna o ícone do botão
+                    const icon = sidebarToggle.querySelector('i');
+                    if (icon.classList.contains('bi-chevron-left')) {
+                        icon.classList.replace('bi-chevron-left', 'bi-chevron-right');
+                    } else {
+                        icon.classList.replace('bi-chevron-right', 'bi-chevron-left');
+                    }
+                });
+            }
+
+            // Função para alternar o menu lateral em dispositivos móveis
+            if(mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                });
+            }
+
+            // Fechar o menu ao clicar fora dele em dispositivos móveis
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnMobileToggle = mobileToggle.contains(event.target);
+
+                if (window.innerWidth <= 768 && !isClickInsideSidebar && !isClickOnMobileToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+
+            // Validação
+            document.addEventListener('submit', function(e) {
+                const form = e.target;
+                if (!form || form.id !== 'formFinalizarEntrega') return;
+
+                const nomeInput = form.querySelector('#recebedor_nome');
+                const docInput  = form.querySelector('#recebedor_doc');
+                if (!nomeInput || !docInput) return;
+
+                const nome = nomeInput.value.trim();
+                const doc  = docInput.value.trim();
+
+                const somenteLetras = /^[A-Za-zÀ-ÿ\s]+$/;
+                const docLimpo = doc.replace(/\D/g, '');
+
+                let erro = '';
+
+                // Nome
+                if (!nome) {
+                    erro = 'Informe o nome completo de quem recebeu.';
+                } else if (!somenteLetras.test(nome)) {
+                    erro = 'Nome inválido. Use apenas letras e espaços.';
+                } else {
+                    const partes = nome.split(' ').map(p => p.trim()).filter(p => p.length >= 2);
+                    if (partes.length < 2) {
+                        erro = 'Informe o nome completo (nome e sobrenome).';
+                    }
+                }
+
+                // Documento
+                if (!erro) {
+                    if (!docLimpo) {
+                        erro = 'Informe o CPF ou RG de quem recebeu.';
+                    } else if (!/^\d+$/.test(docLimpo)) {
+                        erro = 'Documento inválido. Use apenas números.';
+                    } else if (!(docLimpo.length === 11 || (docLimpo.length >= 7 && docLimpo.length <= 9))) {
+                        erro = 'Documento inválido. Informe um CPF (11 dígitos) ou RG (7 a 9 dígitos).';
+                    }
+                }
+
+                // alerta
+                let alertBox = form.querySelector('#alert-validacao-recebedor');
+                if (!alertBox) {
+                    alertBox = document.createElement('div');
+                    alertBox.id = 'alert-validacao-recebedor';
+                    alertBox.className = 'alert alert-danger d-none';
+                    alertBox.setAttribute('role', 'alert');
+                    form.insertBefore(alertBox, form.firstChild);
+                }
+
+                if (erro) {
+                    e.preventDefault();
+                    alertBox.textContent = erro;
+                    alertBox.classList.remove('d-none');
+
+                    nomeInput.classList.add('is-invalid');
+                    docInput.classList.add('is-invalid');
+
+                    if (!nome) nomeInput.focus();
+                    else docInput.focus();
+                } else {
+                    alertBox.classList.add('d-none');
+                    nomeInput.classList.remove('is-invalid');
+                    docInput.classList.remove('is-invalid');
+                }
+            });
+
+            // Remove erro ao digitar
+            document.addEventListener('input', function(e) {
+                if (e.target && (e.target.id === 'recebedor_nome' || e.target.id === 'recebedor_doc')) {
+                    const form = e.target.closest('form');
+                    if (!form || form.id !== 'formFinalizarEntrega') return;
+
+                    const alertBox = form.querySelector('#alert-validacao-recebedor');
+                    if (alertBox) alertBox.classList.add('d-none');
+                    e.target.classList.remove('is-invalid');
+                }
+            });
+
+            // =========================
+            // A PARTIR DAQUI: seu JS original do QR / câmera
+            // (não ajustado, conforme solicitado)
+            // =========================
+
+            // Integração de acesso à câmera e leitura de QR Code
+            const qrCanvas = document.getElementById('qr-canvas');
+            const context = qrCanvas.getContext('2d');
+            const resultDiv = document.getElementById('qr-result');
+            const qrDataDiv = document.getElementById('qr-data');
+            const loadingSpinner = document.getElementById('qr-loading');
+            let videoStream = null;
+            let videoElement = document.getElementById('camera-preview');
+            let scanInterval = null;
+
+            // Se estiver em um dispositivo móvel, selecionar a aba de QR Code por padrão
+            if (window.innerWidth <= 768) {
+                const escanearTab = document.getElementById('escanear-tab');
+                if (escanearTab) {
+                    setTimeout(() => {
+                        escanearTab.click();
+                    }, 500);
+                }
+            }
+
+            // Evento para alternar entre abas
+            document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tabEl => {
+                tabEl.addEventListener('shown.bs.tab', function(event) {
+                    if (event.target.id === 'escanear-tab') {
+                        // Verificar suporte à API Media Devices
+                        checkCameraSupport();
+                    } else {
+                        // Se sair da aba de escanear, parar a câmera se estiver ativa
+                        stopCamera();
+                    }
+                });
+            });
+
+            // Verificar suporte à câmera
+            function checkCameraSupport() {
+                // Verificar se o navegador suporta a API de mídia
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    showCameraError("Seu navegador não suporta acesso à câmera. Por favor, tente usar outro navegador como Chrome ou Firefox, ou faça upload de uma imagem.");
+                    document.getElementById('activate-camera').disabled = true;
+                    document.getElementById('upload-qr').classList.remove('mt-2');
+                    return;
+                }
+
+                // Verificar dispositivos disponíveis
+                if (navigator.mediaDevices.enumerateDevices) {
+                    navigator.mediaDevices.enumerateDevices()
+                    .then(devices => {
+                        // Verificar se existe pelo menos uma câmera
+                        const hasCamera = devices.some(device => device.kind === 'videoinput');
+                        if (!hasCamera) {
+                            showCameraError("Nenhuma câmera detectada no dispositivo. Por favor, verifique se há uma câmera conectada ou faça upload de uma imagem.");
+                            document.getElementById('activate-camera').disabled = true;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao enumerar dispositivos:', error);
+                    });
+                }
+            }
+
+            // Mostrar erro de câmera
+            function showCameraError(message) {
+                resultDiv.classList.remove('d-none', 'alert-info', 'alert-success');
+                resultDiv.classList.add('alert-danger');
+                qrDataDiv.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-2"></i> ${message}`;
+            }
+
+            // Ativar câmera
+            document.getElementById('activate-camera').addEventListener('click', function() {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    // Primeiro tentar parar qualquer stream já existente
+                    if (videoStream) {
+                        videoStream.getTracks().forEach(track => track.stop());
+                        videoStream = null;
+                    }
+
+                    // Limpar o elemento de vídeo
+                    if (videoElement.srcObject) {
+                        videoElement.srcObject = null;
+                    }
+
+                    // Configurações da câmera com fallbacks
+                    const constraints = { 
+                        video: { 
+                            facingMode: { ideal: "environment" }, // Preferir câmera traseira
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 }
+                        },
+                        audio: false
+                    };
+
+                    navigator.mediaDevices.getUserMedia(constraints)
+                    .then(function(stream) {
+                        videoStream = stream;
+                        videoElement.srcObject = stream;
+                        videoElement.classList.remove('d-none');
+                        document.getElementById('camera-placeholder').classList.add('d-none');
+                        document.getElementById('activate-camera').classList.add('d-none');
+                        document.getElementById('capture-qr').classList.remove('d-none');
+
+                        // Garantir que o vídeo inicialize corretamente
+                        videoElement.onloadedmetadata = function(e) {
+                            videoElement.play()
+                            .then(() => {
+                                // Iniciar escaneamento contínuo somente após o vídeo carregar
+                                startQRScan();
+                            })
+                            .catch(err => {
+                                console.error('Erro ao iniciar reprodução do vídeo:', err);
+                                showCameraError("Não foi possível iniciar o vídeo. Tente atualizar a página ou use outro navegador.");
+                            });
+                        };
+                    })
+                    .catch(function(error) {
+                        console.error('Erro ao acessar a câmera:', error);
+
+                        // Mensagens de erro mais específicas baseadas no erro retornado
+                        if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+                            showCameraError("Não foi possível acessar a câmera. A câmera pode estar sendo usada por outro aplicativo ou está com problemas. Tente fechar outros aplicativos que possam estar usando a câmera, reinicie o navegador ou use a opção de upload de imagem.");
+                        } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+                            showCameraError("Nenhuma câmera encontrada no dispositivo. Tente usar a opção de upload de imagem.");
+                        } else if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                            showCameraError("Permissão para acessar a câmera negada. Por favor, permita o acesso à câmera nas configurações do navegador ou use a opção de upload de imagem.");
+                        } else if (error.name === 'OverconstrainedError') {
+                            // Tentar novamente com restrições mais simples
+                            navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                            .then(function(stream) {
+                                videoStream = stream;
+                                videoElement.srcObject = stream;
+                                videoElement.classList.remove('d-none');
+                                document.getElementById('camera-placeholder').classList.add('d-none');
+                                document.getElementById('activate-camera').classList.add('d-none');
+                                document.getElementById('capture-qr').classList.remove('d-none');
+                                videoElement.play();
+
+                                // Iniciar escaneamento contínuo
+                                startQRScan();
+                            })
+                            .catch(function(error) {
+                                showCameraError("Não foi possível acessar a câmera com as configurações disponíveis. Tente usar a opção de upload de imagem.");
+                            });
+                        } else {
+                            showCameraError("Erro ao acessar a câmera: " + error.message + ". Tente atualizar a página, reiniciar o navegador ou usar a opção de upload de imagem.");
+                        }
+                    });
+                } else {
+                    showCameraError("Seu navegador não suporta acesso à câmera. Por favor, tente usar outro navegador ou faça upload de uma imagem.");
+                }
+            });
+
+            // Iniciar escaneamento contínuo
+            function startQRScan() {
+                scanInterval = setInterval(scanQRFromVideo, 500); // Escanear a cada 500ms
+            }
+
+            // Escanear QR do vídeo
+            function scanQRFromVideo() {
+                if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+                    try {
+                        qrCanvas.width = videoElement.videoWidth;
+                        qrCanvas.height = videoElement.videoHeight;
+                        context.drawImage(videoElement, 0, 0, qrCanvas.width, qrCanvas.height);
+
+                        const imageData = context.getImageData(0, 0, qrCanvas.width, qrCanvas.height);
+
+                        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                            inversionAttempts: "attemptBoth",
+                            dontInvert: false,
+                            canOverwriteImage: true,
+                            greyScaleWeights: {
+                                red: 0.2126,
+                                green: 0.7152,
+                                blue: 0.0722
+                            },
+                            horizontalLines: false
+                        });
+
+                        if (code) {
+                            clearInterval(scanInterval);
+                            processQRData(code.data);
+
+                            context.beginPath();
+                            context.lineWidth = 4;
+                            context.strokeStyle = "#FF3B58";
+                            context.moveTo(code.location.topLeftCorner.x, code.location.topLeftCorner.y);
+                            context.lineTo(code.location.topRightCorner.x, code.location.topRightCorner.y);
+                            context.lineTo(code.location.bottomRightCorner.x, code.location.bottomRightCorner.y);
+                            context.lineTo(code.location.bottomLeftCorner.x, code.location.bottomLeftCorner.y);
+                            context.lineTo(code.location.topLeftCorner.x, code.location.topLeftCorner.y);
+                            context.stroke();
+                        }
+                    } catch (error) {
+                        console.error('Erro ao escanear QR Code:', error);
+                    }
+                }
+            }
+
+            // Processar dados do QR Code
+            function processQRData(data) {
+                resultDiv.classList.remove('d-none');
+
+                try {
+                    const qrData = JSON.parse(data);
+
+                    resultDiv.classList.remove('alert-info', 'alert-danger');
+                    resultDiv.classList.add('alert-success');
+
+                    let dataHtml = '<strong>Dados da Entrega:</strong><br>';
+                    dataHtml += '<strong>ID:</strong> ' + qrData.entrega_id + '<br>';
+                    dataHtml += '<strong>Código Rastreio:</strong> ' + qrData.codigo_rastreio + '<br>';
+                    dataHtml += '<strong>Cliente:</strong> ' + qrData.cliente + '<br>';
+                    dataHtml += '<strong>Destinatário:</strong> ' + qrData.destinatario + '<br>';
+                    dataHtml += '<strong>Rota:</strong> ' + qrData.origem + ' → ' + qrData.destino + '<br>';
+                    dataHtml += '<div class="mt-3"><div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Verificando...</span></div> <span>Verificando entrega...</span></div>';
+
+                    qrDataDiv.innerHTML = dataHtml;
+
+                    verificarEntrega(qrData.codigo_rastreio);
+                } catch (error) {
+                    if (typeof data === 'string' && data.trim().length > 0) {
+                        resultDiv.classList.remove('alert-info', 'alert-danger');
+                        resultDiv.classList.add('alert-success');
+
+                        let dataHtml = '<strong>Código Detectado:</strong><br>';
+                        dataHtml += '<strong>Código Rastreio:</strong> ' + data + '<br>';
+                        dataHtml += '<div class="mt-3"><div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Verificando...</span></div> <span>Verificando entrega...</span></div>';
+
+                        qrDataDiv.innerHTML = dataHtml;
+
+                        verificarEntrega(data);
+                    } else {
+                        resultDiv.classList.remove('alert-info', 'alert-success');
+                        resultDiv.classList.add('alert-danger');
+                        qrDataDiv.innerHTML = 'QR Code encontrado, mas o formato não é reconhecido. Tente novamente.';
+                    }
+                }
+            }
+
+            // Função para verificar a entrega via AJAX
+            function verificarEntrega(codigo_rastreio) {
+                const formData = new FormData();
+                formData.append('buscar_pacote', '1');
+                formData.append('codigo_rastreio', codigo_rastreio);
+                formData.append('ajax', '1');
+
+                qrDataDiv.innerHTML = '<div class="d-flex align-items-center"><div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div><span>Verificando código...</span></div>';
+
+                fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro na resposta do servidor: ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    try {
+                        const jsonStart = text.indexOf('{');
+                        if (jsonStart > 0) {
+                            console.warn('Conteúdo indesejado encontrado antes do JSON:', text.substring(0, jsonStart));
+                            text = text.substring(jsonStart);
+                        }
+
+                        const jsonEnd = text.lastIndexOf('}');
+                        if (jsonEnd < text.length - 1) {
+                            console.warn('Conteúdo indesejado encontrado após o JSON:', text.substring(jsonEnd + 1));
+                            text = text.substring(0, jsonEnd + 1);
+                        }
+
+                        const data = JSON.parse(text);
+
+                        if (data.erro) {
+                            document.getElementById('erro-entrega-codigo').innerHTML = '<strong>Código escaneado:</strong> ' + codigo_rastreio;
+                            const erroEntregaModal = new bootstrap.Modal(document.getElementById('erroEntregaModal'));
+                            erroEntregaModal.show();
+                        } else if (!data.pode_finalizar) {
+                            let detalhesHtml = '<p><strong>Entrega #' + data.entrega.id + '</strong></p>';
+                            detalhesHtml += '<p><strong>Destino:</strong> ' + data.entrega.cidade_destino + '/' + data.entrega.uf_destino + '</p>';
+                            detalhesHtml += '<p><strong>Sua cidade:</strong> ' + data.motoboy.cidade_nome + '/' + data.motoboy.estado_nome + '</p>';
+                            document.getElementById('erro-cidade-detalhes').innerHTML = detalhesHtml;
+                            const erroCidadeModal = new bootstrap.Modal(document.getElementById('erroCidadeModal'));
+                            erroCidadeModal.show();
+                        } else {
+                            let finalizarEntregaModal = document.getElementById('finalizarEntregaModal');
+
+                            if (!finalizarEntregaModal) {
+                                // Modal alerta
+                                const modalHtml = `
+                                <div class="modal fade" id="finalizarEntregaModal" tabindex="-1" aria-labelledby="finalizarEntregaModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="finalizarEntregaModalLabel">Finalizar Entrega</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="formFinalizarEntrega" method="post" action="">
+                                                    <div id="alert-validacao-recebedor" class="alert alert-danger d-none" role="alert"></div>
+
+                                                    <input type="hidden" name="entrega_id" value="${data.entrega.id}">
+                                                    <input type="hidden" name="finalizar_entrega" value="1">
+
+                                                    <div class="mb-3">
+                                                        <h6>Detalhes da Entrega:</h6>
+                                                        <p><strong>Destinatário:</strong> ${data.entrega.nome_destinatario || 'Não informado'}</p>
+                                                        <p><strong>Endereço:</strong> ${data.entrega.endereco_entrega || 'Não informado'}</p>
+                                                        <p><strong>Destino:</strong> ${data.entrega.cidade_destino}/${data.entrega.uf_destino}</p>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="recebedor" class="form-label">Nome ou Documento de Quem Recebeu</label>
+                                                        <input type="text" class="form-control" id="recebedor" name="recebedor" required 
+                                                              placeholder="Digite o nome ou documento de quem recebeu o pacote">
+                                                        <div class="form-text">Informe o nome completo ou número do documento da pessoa que recebeu a entrega.</div>
+                                                    </div>
+
+                                                    <input type="hidden" name="codigo_rastreio" value="${data.entrega.codigo_rastreio}">
+
+                                                    <div class="form-check mb-3">
+                                                        <input class="form-check-input" type="checkbox" id="confirmacaoEntrega" required>
+                                                        <label class="form-check-label" for="confirmacaoEntrega">
+                                                            Confirmo que o pacote foi entregue ao destinatário correto
+                                                        </label>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-am-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" form="formFinalizarEntrega" class="btn btn-am-primary">Confirmar Entrega</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+
+                                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                                finalizarEntregaModal = document.getElementById('finalizarEntregaModal');
+                            }
+
+                            const modal = new bootstrap.Modal(finalizarEntregaModal);
+                            modal.show();
+                        }
+                    } catch (jsonError) {
+                        console.error('Erro ao processar JSON:', jsonError);
+                        console.error('Resposta recebida:', text);
+
+                        resultDiv.classList.remove('alert-info', 'alert-success');
+                        resultDiv.classList.add('alert-danger');
+                        qrDataDiv.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-2"></i> Erro ao verificar o código. Tente novamente.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro na verificação:', error);
+                    resultDiv.classList.remove('alert-info', 'alert-success');
+                    resultDiv.classList.add('alert-danger');
+                    qrDataDiv.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-2"></i> Erro ao verificar o código: ' + error.message;
+                });
+            }
+
+            // Evento para tentar escanear novamente
+            document.getElementById('tentar-novamente').addEventListener('click', function() {
+                const erroEntregaModal = bootstrap.Modal.getInstance(document.getElementById('erroEntregaModal'));
+                erroEntregaModal.hide();
+
+                if (videoStream) {
+                    startQRScan();
+                } else {
+                    document.getElementById('activate-camera').click();
+                }
+            });
+
+            // Botão para capturar QR
+            document.getElementById('capture-qr').addEventListener('click', function() {
+                if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+                    qrCanvas.width = videoElement.videoWidth;
+                    qrCanvas.height = videoElement.videoHeight;
+                    context.drawImage(videoElement, 0, 0, qrCanvas.width, qrCanvas.height);
+
+                    const imageData = context.getImageData(0, 0, qrCanvas.width, qrCanvas.height);
+
+                    loadingSpinner.classList.remove('d-none');
+                    resultDiv.classList.remove('d-none');
+                    resultDiv.classList.add('alert-info');
+                    resultDiv.classList.remove('alert-success', 'alert-danger');
+                    qrDataDiv.innerHTML = 'Processando QR Code...';
+
+                    setTimeout(() => {
+                        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                            inversionAttempts: "dontInvert",
+                        });
+
+                        loadingSpinner.classList.add('d-none');
+
+                        if (code) {
+                            processQRData(code.data);
+                        } else {
+                            resultDiv.classList.remove('alert-info', 'alert-success');
+                            resultDiv.classList.add('alert-danger');
+                            qrDataDiv.innerHTML = 'Nenhum QR Code encontrado na imagem. Tente novamente.';
+                        }
+                    }, 500);
+                }
+            });
+
+            // Upload de arquivo
+            document.getElementById('upload-qr').addEventListener('click', function() {
+                document.getElementById('qr-file-input').click();
+            });
+
+            // Processamento do arquivo selecionado
+            document.getElementById('qr-file-input').addEventListener('change', function(e) {
+                if (!this.files || !this.files[0]) {
+                    return;
+                }
+
+                const file = this.files[0];
+                const reader = new FileReader();
+
+                loadingSpinner.classList.remove('d-none');
+                resultDiv.classList.remove('d-none');
+                resultDiv.classList.add('alert-info');
+                resultDiv.classList.remove('alert-success', 'alert-danger');
+                qrDataDiv.innerHTML = 'Processando QR Code...';
+
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        qrCanvas.width = img.width;
+                        qrCanvas.height = img.height;
+                        context.drawImage(img, 0, 0, qrCanvas.width, qrCanvas.height);
+
+                        const imageData = context.getImageData(0, 0, qrCanvas.width, qrCanvas.height);
+
+                        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                            inversionAttempts: "dontInvert",
+                        });
+
+                        loadingSpinner.classList.add('d-none');
+
+                        if (code) {
+                            processQRData(code.data);
+                        } else {
+                            resultDiv.classList.remove('alert-info', 'alert-success');
+                            resultDiv.classList.add('alert-danger');
+                            qrDataDiv.innerHTML = 'Nenhum QR Code encontrado na imagem. Tente novamente.';
+                        }
+                    };
+                    img.src = e.target.result;
+                };
+
+                reader.onerror = function() {
+                    loadingSpinner.classList.add('d-none');
+                    resultDiv.classList.remove('alert-info', 'alert-success');
+                    resultDiv.classList.add('alert-danger');
+                    qrDataDiv.innerHTML = 'Erro ao ler a imagem. Tente novamente.';
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            // Parar a câmera
+            function stopCamera() {
+                if (scanInterval) {
+                    clearInterval(scanInterval);
+                    scanInterval = null;
+                }
+
+                if (videoStream) {
+                    try {
+                        const tracks = videoStream.getTracks();
+                        if (tracks && tracks.length > 0) {
+                            tracks.forEach(track => {
+                                if (track.readyState === 'live') {
+                                    track.stop();
+                                }
+                                videoStream.removeTrack(track);
+                            });
+                        }
+                        videoStream = null;
+                    } catch (error) {
+                        console.error('Erro ao parar a câmera:', error);
+                    }
+                }
+
+                if (videoElement) {
+                    try {
+                        videoElement.pause();
+                        videoElement.srcObject = null;
+                        videoElement.load();
+                        videoElement.classList.add('d-none');
+                    } catch (error) {
+                        console.error('Erro ao limpar o elemento de vídeo:', error);
+                    }
+                }
+
+                document.getElementById('camera-placeholder').classList.remove('d-none');
+                document.getElementById('activate-camera').classList.remove('d-none');
+                document.getElementById('capture-qr').classList.add('d-none');
+
+                if (resultDiv) {
+                    resultDiv.classList.add('d-none');
+                }
+            }
+        });
+    </script>
+
+    <script>
+        // foto do comprovante
+        function previewFoto(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // Sincroniza para q envie o arquivo correto
+            const outroId = (input.id === 'foto_comprovante_camera')
+                ? 'foto_comprovante_galeria'
+                : 'foto_comprovante_camera';
+            document.getElementById('foto_comprovante_camera').removeAttribute('name');
+            document.getElementById('foto_comprovante_galeria').removeAttribute('name');
+            input.setAttribute('name', 'foto_comprovante');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('foto-preview').src = e.target.result;
+                document.getElementById('foto-preview-nome').textContent = file.name;
+                document.getElementById('foto-preview-container').classList.remove('d-none');
+                document.getElementById('foto-obrigatorio-msg').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Validação
+        document.getElementById('formFinalizarEntrega').addEventListener('submit', function(e) {
+            const cameraInput  = document.getElementById('foto_comprovante_camera');
+            const galeriaInput = document.getElementById('foto_comprovante_galeria');
+            const temFoto = (cameraInput.files.length > 0) || (galeriaInput.files.length > 0);
+
+            if (!temFoto) {
+                e.preventDefault();
+                document.getElementById('foto-obrigatorio-msg').style.display = 'block';
+                document.getElementById('foto-obrigatorio-msg').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    </script>
+</body>
+</html>
